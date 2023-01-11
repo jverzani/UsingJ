@@ -12,6 +12,9 @@ book:
   repo-branch: master
   repo-actions: [edit, issue]
   downloads: pdf
+  page-footer:
+    right: |
+      © Copyright 2023, John Verzani. All rights reserved.
   chapters:
     - index.qmd
     - part: "Exploratory Data Analysis"

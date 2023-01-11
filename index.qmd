@@ -15,6 +15,11 @@ an alternative.
 
 [Julia](https://julialang.org/) is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance -- Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than `R` and `Python`, widely used scripting languages for the tasks illustrated herein.
 
+::: {.callout-note}
+##### Contribute
+These notes are a work in progress. Feel free to click the "edit this page" button or report an issue.
+:::
+
 ## Installing and running Julia
 
 Julia can be downloaded from [julialang.org](https://julialang.org/). The language is evolving rapidly. The latest release should be used. These notes should work with any version since `v"1.6.0"`, though post `v"1.9.0"` there are significant speedups with external packages that make the user experience even better.
@@ -33,7 +38,6 @@ These notes use `quarto` to organize the mix of text, code, and graphics. The `q
 2 + 2
 ```
 
-These notes are a work in progress. Feel free to click the "edit this page" button or report an issue.
 
 ## Overview of some basics
 
@@ -79,3 +83,7 @@ When a package is loaded its exported functions are made available to use direct
 Most packages are set up to *extend* generic functions that may be defined elsewhere. Not all. When there are conflicts, they can be resolved by either just *importing* the packages and qualifying all uses, or qualifying the uses that conflict.
 
 These notes will utilize numerous add-on packages including: `StatsBase`, to extend the built-in `Statistics` package; `StatsPlots`, for easier to make plots; `AlgebraOfGraphics` and `GLMakie`, for more advanced statistical graphics; `CSV`, `DataFrames` for working with tabular data; `RDatasets`, for some handy datasets; `FreqTables` and `CategoricalArrays`, for some needed functionality; `Distributions`, for probability distributions; `HypothesisTests`, for the computation of significance tests and confidence intervals; and `GLM`, `Loess`, and `RobustModels`, for statistical modeling.
+
+----
+
+Copyright 2023, John Verzani. All rights reserved.

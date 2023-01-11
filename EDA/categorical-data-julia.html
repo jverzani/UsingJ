@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Using Julia for Introductory Statistics - 5&nbsp; Categorical data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../EDA/makie.html" rel="next">
+<link href="../EDA/bivariate-julia.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Using Julia for Introductory Statistics</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/jverzani/UsingJ" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="../Using-Julia-for-Introductory-Statistics.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Exploratory Data Analysis</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../EDA/univariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../EDA/tabular-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../EDA/bivariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../EDA/categorical-data-julia.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../EDA/makie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The AlgebraOfGraphics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Inference</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Inference/distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Inference/inference.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Linear Models</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../LinearModels/linear-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">The linear regression model</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#univariate-categorical-data" id="toc-univariate-categorical-data" class="nav-link active" data-scroll-target="#univariate-categorical-data"> <span class="header-section-number">5.1</span> Univariate categorical data</a></li>
+  <li><a href="#paired-categorical-data" id="toc-paired-categorical-data" class="nav-link" data-scroll-target="#paired-categorical-data"> <span class="header-section-number">5.2</span> Paired categorical data</a>
+  <ul class="collapse">
+  <li><a href="#conditional-distributions-of-two-way-tables" id="toc-conditional-distributions-of-two-way-tables" class="nav-link" data-scroll-target="#conditional-distributions-of-two-way-tables"> <span class="header-section-number">5.2.1</span> Conditional distributions of two-way tables</a></li>
+  <li><a href="#marginal-distributions-of-two-way-tables" id="toc-marginal-distributions-of-two-way-tables" class="nav-link" data-scroll-target="#marginal-distributions-of-two-way-tables"> <span class="header-section-number">5.2.2</span> Marginal distributions of two-way tables</a></li>
+  <li><a href="#two-way-tables-from-summarized-data" id="toc-two-way-tables-from-summarized-data" class="nav-link" data-scroll-target="#two-way-tables-from-summarized-data"> <span class="header-section-number">5.2.3</span> Two-way tables from summarized data</a></li>
+  <li><a href="#graphical-summaries-of-two-way-contingency-tables" id="toc-graphical-summaries-of-two-way-contingency-tables" class="nav-link" data-scroll-target="#graphical-summaries-of-two-way-contingency-tables"> <span class="header-section-number">5.2.4</span> Graphical summaries of two-way contingency tables</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jverzani/UsingJ/edit/master/EDA/categorical-data-julia.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="ch-categorical-data" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>In the last chapter, the main variable was numeric. Here we consider a variable of a pair of categorical variables.</p>
+<p>We use the following, by now standard, packages in this chapter:</p>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">StatsPlots</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">RDatasets</span>, <span class="bu">DataFrames</span>, <span class="bu">Chain</span>, <span class="bu">CategoricalArrays</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="univariate-categorical-data" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="univariate-categorical-data"><span class="header-section-number">5.1</span> Univariate categorical data</h2>
+<p>Let’s consider a data set from R’s <code>MASS</code> package on a student survey; in particular the <code>Smoke</code> variable, which is stored as a categorical variable. The <code>levels</code> method reports 4 levels for this variable:</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"MASS"</span>, <span class="st">"survey"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>smokes <span class="op">=</span> survey.Smoke</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(smokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>4-element Vector{String}:
+ "Heavy"
+ "Never"
+ "Occas"
+ "Regul"</code></pre>
+</div>
+</div>
+<p>How frequent is each? We would need to tabulate to answer that question. This can be done grouping and applying the <code>nrow</code> from <code>DataFrames</code>:</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(survey, <span class="op">:</span>Smoke), nrow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+
+<div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Smoke</th><th style="text-align: left;">nrow</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Heavy</td><td style="text-align: right;">11</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Never</td><td style="text-align: right;">189</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">Occas</td><td style="text-align: right;">19</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">Regul</td><td style="text-align: right;">17</td></tr></tbody></table></div>
+</div>
+</div>
+<p>Similarly, we can split and apply with <code>SplitApplyCombine</code>:</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SplitApplyCombine</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">group</span>(r <span class="op">-&gt;</span> r.Smoke, <span class="fu">copy</span>.(<span class="fu">eachrow</span>(survey))) <span class="op">.|&gt;</span> length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>5-element Dictionaries.Dictionary{Union{Missing, CategoricalValue{String, UInt8}}, Int64}
+ CategoricalValue{String, UInt8} "Never" │ 189
+ CategoricalValue{String, UInt8} "Regul" │ 17
+ CategoricalValue{String, UInt8} "Occas" │ 19
+ CategoricalValue{String, UInt8} "Heavy" │ 11
+                                 missing │ 1</code></pre>
+</div>
+</div>
+<p>The above could use some tidying up to read quickly, but easily tabulates the same, and would be useful if the data were not in a data frame.</p>
+<p>For tabulation, a separate package has benefits. We use the <code>FreqTables</code> package and its <code>freqtables</code> function. This returns a <em>named</em> vector:</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">FreqTables</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(smokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>5-element Named Vector{Int64}
+Dim1    │ 
+────────┼────
+"Heavy" │  11
+"Never" │ 189
+"Occas" │  19
+"Regul" │  17
+missing │   1</code></pre>
+</div>
+</div>
+<p>Named vectors are from <code>NamedArrays</code> and offer indexing by name, similar to a data frame.</p>
+<p>Either way (and there are others), this shows for this data set, “Never” is by far the most common response, and there is 1 missing response.</p>
+<hr>
+<p>Such tabulations can be visualized.</p>
+<p>A bar chart represents the above table using bars proportional to the counts. The <code>bar</code> function makes a bar chart for the labels in <code>x</code> and the given data. For this example, we have either have to add “missing” to the levels, or, as is done here, excise it from the data set</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(<span class="fu">levels</span>(smokes), tbl[<span class="fl">1</span><span class="op">:</span><span class="kw">end</span><span class="op">-</span><span class="fl">1</span>]; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<p><img src="categorical-data-julia_files/figure-html/cell-7-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+<p>Another common graphic is to use a dot, not a bar, to represent the value.</p>
+</section>
+<section id="paired-categorical-data" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="paired-categorical-data"><span class="header-section-number">5.2</span> Paired categorical data</h2>
+<p>In the <code>survey</code> data set we could look at pairs of data where both are categorical and ask questions about the pair. For example, the data contains information on smoking <em>and</em> identified gender (<code>Sex</code>). Is one gender more likely to smoke?</p>
+<p>Again, we can use grouping and apply to see the counts:</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">combine</span>(<span class="fu">groupby</span>(survey, [<span class="op">:</span>Sex, <span class="op">:</span>Smoke]), nrow)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(tbl, <span class="fl">3</span>) <span class="co"># 3 of 10 rows displayed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+
+<div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Smoke</th><th style="text-align: left;">nrow</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">Never</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Female</td><td style="text-align: left;">Heavy</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Female</td><td style="text-align: left;">Never</td><td style="text-align: right;">99</td></tr></tbody></table></div>
+</div>
+</div>
+<p>A <em>contingency table</em> is the more familiar means to view two-way categorical count data. A count of all combinations of the levels of one and the levels of the other is presented in a grid.</p>
+<p>With <code>unstack</code> we can do this within <code>DataFrames</code>:</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+
+<div><div style="float: left;"><span>2×5 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Heavy</th><th style="text-align: left;">Never</th><th style="text-align: left;">Occas</th><th style="text-align: left;">Regul</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="CategoricalValue{String, UInt8}" style="text-align: left;">Cat…</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Female</td><td style="text-align: right;">5</td><td style="text-align: right;">99</td><td style="text-align: right;">9</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Male</td><td style="text-align: right;">6</td><td style="text-align: right;">89</td><td style="text-align: right;">10</td><td style="text-align: right;">12</td></tr></tbody></table></div>
+</div>
+</div>
+<p>The above dropped missing values; to keep them in, the <code>allowmissing</code> argument may be specified to <code>unstack</code>:</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+
+<div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Never</th><th style="text-align: left;">Heavy</th><th style="text-align: left;">Occas</th><th style="text-align: left;">Regul</th><th style="text-align: left;">missing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Female</td><td style="text-align: right;">99</td><td style="text-align: right;">5</td><td style="text-align: right;">9</td><td style="text-align: right;">5</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Male</td><td style="text-align: right;">89</td><td style="text-align: right;">6</td><td style="text-align: right;">10</td><td style="text-align: right;">12</td><td style="text-align: right;">1</td></tr></tbody></table></div>
+</div>
+</div>
+<p>More conveniently, the <code>freqtable</code> command will produce contingency tables:</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(survey, <span class="op">:</span>Sex, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>3×5 Named Matrix{Int64}
+Sex ╲ Smoke │ "Heavy"  "Never"  "Occas"  "Regul"  missing
+────────────┼────────────────────────────────────────────
+"Female"    │       5       99        9        5        0
+"Male"      │       6       89       10       12        1
+missing     │       0        1        0        0        0</code></pre>
+</div>
+</div>
+<p>The <code>freqtable</code> interface allows the user to pass in two variables of data, or, as above, a tabular data set and two variable names. The <code>freqtable</code> method summarized them with the levels of the first variables naming the rows, and levels of the second naming the columns.</p>
+<section id="conditional-distributions-of-two-way-tables" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="conditional-distributions-of-two-way-tables"><span class="header-section-number">5.2.1</span> Conditional distributions of two-way tables</h3>
+<p>At first glance, there does not seem to be much difference in the smoking variable between the identified genders. As tables may have many more counts in a given row or column, it can be helpful to take proportions of the rows or columns to compare. The <code>FreqTables</code> package provides the <code>prop</code> function to do so. By default, it takes a proportion of all the data; pass in <code>margins=1</code> to get proportions for each row, <code>margins=2</code> to get proportions for each column. For example, to compare the distribution of <code>Smokes</code> for each level of <code>Sex</code>, we take proportions across each row:</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop</span>(tbl; margins<span class="op">=</span><span class="fl">1</span>)  <span class="co"># check `sum(prop(tbl; margins=1); dims=2)` returns 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>3×5 Named Matrix{Float64}
+Sex ╲ Smoke │    "Heavy"     "Never"     "Occas"     "Regul"     missing
+────────────┼───────────────────────────────────────────────────────────
+"Female"    │  0.0423729    0.838983   0.0762712   0.0423729         0.0
+"Male"      │  0.0508475    0.754237   0.0847458    0.101695  0.00847458
+missing     │        0.0         1.0         0.0         0.0         0.0</code></pre>
+</div>
+</div>
+<p>There does not seem to be big differences between the rows, indicating that the gender doesn’t seem to have an effect on the smoking prevalency.</p>
+<p>What about the exercise variable?</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(survey, <span class="op">:</span>Exer, <span class="op">:</span>Smoke)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">prop</span>(tbl; margins<span class="op">=</span><span class="fl">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>3×5 Named Matrix{Float64}
+Exer ╲ Smoke │   "Heavy"    "Never"    "Occas"    "Regul"    missing
+─────────────┼──────────────────────────────────────────────────────
+"Freq"       │ 0.0608696   0.756522   0.104348  0.0782609        0.0
+"None"       │ 0.0416667       0.75      0.125  0.0416667  0.0416667
+"Some"       │ 0.0306122   0.857143  0.0408163  0.0714286        0.0</code></pre>
+</div>
+</div>
+<p>Again, not much difference across the levels of <code>Exer</code>.</p>
+<p>Finding the row (or column) proportions as above finds the <em>conditional distribution</em> for a given value. (Answering the question, say, what is the distribution of the second variable <em>given</em> the first variables has a specific level?)</p>
+</section>
+<section id="marginal-distributions-of-two-way-tables" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="marginal-distributions-of-two-way-tables"><span class="header-section-number">5.2.2</span> Marginal distributions of two-way tables</h3>
+<p>A <em>marginal</em> distribution from a two-way table is found by adding all the values in each row, or each column. With two-way tables generated from the full data, there are more direct ways to realize these, but from a two-way table, we just need to apply <code>sum</code> to each row or column. The <code>sum</code> function takes a <code>dims</code> argument to specify the dimension, which, in this case, is <code>2</code> for adding along the columns (the second dimension) and <code>1</code> for adding down the rows (the first dimension):</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">1</span>) <span class="co"># kinda like `freqtable(survey.Smoke)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>1×5 Named Matrix{Int64}
+Exer ╲ Smoke │ "Heavy"  "Never"  "Occas"  "Regul"  missing
+─────────────┼────────────────────────────────────────────
+sum(Exer)    │      11      189       19       17        1</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">2</span>) <span class="co"># like `freqtable(survey.Exer)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>3×1 Named Matrix{Int64}
+Exer ╲ Smoke │ sum(Smoke)
+─────────────┼───────────
+"Freq"       │        115
+"None"       │         24
+"Some"       │         98</code></pre>
+</div>
+</div>
+</section>
+<section id="two-way-tables-from-summarized-data" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="two-way-tables-from-summarized-data"><span class="header-section-number">5.2.3</span> Two-way tables from summarized data</h3>
+<p>Suppose a data set was presented in the following two-way table:</p>
+<table class="table">
+<caption>A two-way contingency table of fabricated data showing counts of student grades and mode of instruction.</caption>
+<thead>
+<tr class="header">
+<th>Grade</th>
+<th>In person</th>
+<th>Hybrid</th>
+<th>Asynchronous Online</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A - C</td>
+<td>10</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td>10</td>
+<td>15</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>F</td>
+<td>5</td>
+<td>10</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>This table could be <em>stored</em> as a two-way table in different ways. Here we show how to make this a data frame, then expand it to variables, then summarize.</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>([</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"A-C"</span>, IP<span class="op">=</span><span class="fl">10</span>, Hybrid<span class="op">=</span><span class="fl">5</span>,  Asynchronous<span class="op">=</span><span class="fl">5</span>),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"D"</span>,   IP<span class="op">=</span><span class="fl">10</span>, Hybrid<span class="op">=</span><span class="fl">15</span>, Asynchronous<span class="op">=</span><span class="fl">10</span>),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"F"</span>,   IP<span class="op">=</span><span class="fl">5</span>,  Hybrid<span class="op">=</span><span class="fl">10</span>, Asynchronous<span class="op">=</span><span class="fl">10</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+
+<div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Grade</th><th style="text-align: left;">IP</th><th style="text-align: left;">Hybrid</th><th style="text-align: left;">Asynchronous</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">A-C</td><td style="text-align: right;">10</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">D</td><td style="text-align: right;">10</td><td style="text-align: right;">15</td><td style="text-align: right;">10</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">F</td><td style="text-align: right;">5</td><td style="text-align: right;">10</td><td style="text-align: right;">10</td></tr></tbody></table></div>
+</div>
+</div>
+<p>There are <code>80</code> students summarized here:</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>([<span class="fu">sum</span>(r[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>]) for r <span class="kw">in</span>  <span class="fu">eachrow</span>(df)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>80</code></pre>
+</div>
+</div>
+<p>Here we make a data frame with 80 cases:</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>udf <span class="op">=</span> <span class="fu">stack</span>(df, <span class="fu">Not</span>(<span class="op">:</span>Grade), variable_name<span class="op">=:</span>InstructionType)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>ddf <span class="op">=</span> <span class="fu">vcat</span>([<span class="fu">repeat</span>(udf[i<span class="op">:</span>i,<span class="op">:</span>],j) for (i,j) <span class="kw">in</span> <span class="fu">enumerate</span>(udf.value)]<span class="op">...</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">select!</span>(ddf, [<span class="op">:</span>Grade, <span class="op">:</span>InstructionType]) <span class="co"># drop :value columns</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(ddf, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+
+<div><div style="float: left;"><span>3×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Grade</th><th style="text-align: left;">InstructionType</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="String" style="text-align: left;">String</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">A-C</td><td style="text-align: left;">IP</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">A-C</td><td style="text-align: left;">IP</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">A-C</td><td style="text-align: left;">IP</td></tr></tbody></table></div>
+</div>
+</div>
+<p>(It isn’t the most efficient, but we repeat the data frame <code>udf[i:i,:]</code> <code>j</code> times, where <code>j</code> is the value of the <code>i</code>th row in <code>udf.value</code>. Accessing with <code>udf[o,:]</code> returns a <code>DataFrameRow</code>, which has no <code>repeat</code> method defined.)</p>
+<p>To see we could return to the original table, we first give the <code>InstructionType</code> the right ordering of the levels, then create a frequency table:</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ordered_levels <span class="op">=</span> [<span class="st">"IP"</span>, <span class="st">"Hybrid"</span>, <span class="st">"Asynchronous"</span>]</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ddf.InstructionType <span class="op">=</span> <span class="fu">categorical</span>(ddf.InstructionType;</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                                       ordered<span class="op">=</span><span class="cn">true</span>, levels<span class="op">=</span>ordered_levels)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(ddf, <span class="op">:</span>Grade, <span class="op">:</span>InstructionType)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>3×3 Named Matrix{Int64}
+Grade ╲ InstructionType │           "IP"        "Hybrid"  "Asynchronous"
+────────────────────────┼───────────────────────────────────────────────
+A-C                     │             10               5               5
+D                       │             10              15              10
+F                       │              5              10              10</code></pre>
+</div>
+</div>
+</section>
+<section id="graphical-summaries-of-two-way-contingency-tables" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="graphical-summaries-of-two-way-contingency-tables"><span class="header-section-number">5.2.4</span> Graphical summaries of two-way contingency tables</h3>
+<p>We review a few visualizations of dependent categorical variables.</p>
+<section id="grouped-bar-plots" class="level4">
+<h4 class="anchored" data-anchor-id="grouped-bar-plots">Grouped bar plots</h4>
+<p>The bar plot for a single categorical variable shows frequency counts for each level. A grouped bar plot shows a distribution of the second variable for the grouping variable.</p>
+<p>A useful data structure for this graphic is found using <code>groupby</code> with 2 variables:</p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">groupedbar</span>(<span class="op">:</span>Sex, <span class="op">:</span>value, group<span class="op">=:</span>Smoke; xlab<span class="op">=</span><span class="st">"Identified gender"</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">groupedbar</span>(<span class="op">:</span>Sex, <span class="op">:</span>value, group<span class="op">=:</span>Smoke; xlab<span class="op">=</span><span class="st">"Identified gender"</span>,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>                        bar_position <span class="op">=</span> <span class="op">:</span>stack)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1, p2, layout <span class="op">=</span> (<span class="pp">@layout</span> [a b]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div id="fig-grouped-barchart" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="categorical-data-julia_files/figure-html/fig-grouped-barchart-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 5.1: Grouped bar chart of smoking distribution for different levels of the <code>:Sex</code> variable. The <code>bar_position</code> argument can be passed a value <code>:stack</code> to use a stacked display.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As seen in the left graphic of <a href="#fig-grouped-barchart">Figure&nbsp;<span>5.1</span></a>, there are groups of bars for each level of the first variable (<code>:Sex</code>); the groups represent the variable passed to the <code>group</code> keyword argument. The values are looked up in the data frame with the computed column that was named <code>:value</code> through the <code>combine</code> function.</p>
+<p>The same graphic on the left – without the labeling – is also made more directly with <code>groupedbar(freqtable(survey, :Sex, :Smoke))</code></p>
+</section>
+<section id="andrews-plot" class="level4">
+<h4 class="anchored" data-anchor-id="andrews-plot">Andrews plot</h4>
+<p>An <a href="https://en.wikipedia.org/wiki/Andrews_plot">Andrews plot</a> is implemented in <code>StatsPlots</code> showing differences in a collection of <strong>numeric</strong> variables for a given categorical variable. For each row, a trigonometric polynomial with coefficients given by the numeric values in the given row creates a function which is plotted. If the values across the categorical variable are similar, the graphs will be; if not, then the groupings will show up.</p>
+<p>We first show an example with the <code>iris</code> data where the categorical value is <code>:Species</code> and the numeric ones the first 4 values. This will be shown in the left graphic of <a href="#fig-andrews-plots">Figure&nbsp;<span>5.2</span></a>:</p>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"datasets"</span>, <span class="st">"iris"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>andrews_1 <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">andrewsplot</span>(<span class="op">:</span>Species, <span class="fu">cols</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">4</span>));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For the next plot, we use the <code>survey</code> data. There are some efforts needed to wrangle the data: we convert the categorical variables to the numeric levels (<code>levelcode</code>) <em>except</em> for <code>:Sex</code> which we use for the grouping variable. We also drop any <code>missing</code> values:</p>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">iscategorical</span>(x) <span class="op">=</span> <span class="fu">isa</span>(x, CategoricalArray) <span class="co"># predicate function</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(_, <span class="op">:</span>Sex, <span class="fu">findall</span>(iscategorical, <span class="fu">eachcol</span>(_))[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>] <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(levelcode); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>andrews_2 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">andrewsplot</span>(<span class="op">:</span>Sex, <span class="fu">cols</span>(<span class="fl">2</span><span class="op">:</span><span class="fu">ncol</span>(tbl)));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="23">
+<div id="fig-andrews-plots" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="categorical-data-julia_files/figure-html/fig-andrews-plots-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 5.2: Andrews plots of the <code>iris</code> data (left graphic) and the <code>survey</code> data (right graphic). The <code>iris</code> plot shows clear differences based on the <code>:Species</code> variable; the <code>survey</code> data does not for the <code>:Sex</code> variable.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="mosaic-plots" class="level4">
+<h4 class="anchored" data-anchor-id="mosaic-plots">Mosaic plots</h4>
+<p>A mosaic plot presents a graphical view of a two-way contingency table. These are somewhat similar to the grouped bar plot with stacking, but the width of the bars depends on the frequency of the given level.</p>
+<p>This graphic is <em>not</em> part of <code>StatsPlots</code>. We borrow with modification this implementation from <a href="https://github.com/joshday/OnlineStats.jl/blob/master/src/viz/mosaicplot.jl">OnlineStats</a>:</p>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">FreqTables</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaic_plot</span>(f, g; kwargs<span class="op">...</span>) <span class="op">=</span> <span class="fu">mosaic_plot!</span>(Plots.<span class="fu">Plot</span>(), f, g; kwargs<span class="op">...</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mosaic_plot!</span>(p, f, g; xrotation<span class="op">=-</span><span class="fl">45</span>, kwargs<span class="op">...</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    tbl <span class="op">=</span> <span class="fu">freqtable</span>(f, g)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">1</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    a′ <span class="op">=</span> [a.array<span class="op">...</span>]</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">vcat</span>(<span class="fl">0</span>, <span class="fu">cumsum</span>(a′)) <span class="op">/</span> <span class="fu">sum</span>(a′)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    tbl′ <span class="op">=</span> <span class="fu">convert</span>(<span class="dt">Matrix</span>{<span class="dt">Float64</span>}, tbl.array)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    tbl′[tbl′ <span class="op">.==</span> <span class="fl">0</span>] <span class="op">.+=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">10</span>  <span class="co"># give some width when missing</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="fu">prop</span>(tbl′, margins<span class="op">=</span><span class="fl">1</span>)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="fu">reverse</span>(<span class="fu">cumsum</span>(<span class="fu">prop</span>(tbl′, margins<span class="op">=</span><span class="fl">1</span>), dims<span class="op">=</span><span class="fl">2</span>), dims<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bar!</span>(p,</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>         <span class="fu">midpoints</span>(x), y;</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>         legend<span class="op">=</span><span class="cn">false</span>,</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>         bar_width <span class="op">=</span> <span class="fu">diff</span>(x),</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>         xlims<span class="op">=</span>(<span class="fl">0</span>,<span class="fl">1</span>), ylims<span class="op">=</span>(<span class="fl">0</span>,<span class="fl">1</span>), linewidth <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>         xticks <span class="op">=</span>  (<span class="fu">midpoints</span>(x), <span class="fu">string</span>.(<span class="fu">names</span>(a,<span class="fl">1</span>))),</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>         xrotation<span class="op">=</span>xrotation, xmirror<span class="op">=</span><span class="cn">true</span>,</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>         yticks <span class="op">=</span> (<span class="fu">midpoints</span>(<span class="fu">vcat</span>(y[<span class="fl">1</span>,<span class="op">:</span>],<span class="fl">0</span>)), <span class="fu">reverse</span>(<span class="fu">string</span>.(<span class="fu">names</span>(b,<span class="fl">2</span>)))),</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>         kwargs<span class="op">...</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>mosaic_plot! (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>For the first variable, displayed on the <span class="math inline">\(x\)</span>-axis, the relative width of the bar is proportional to the marginal proportions; for each level on the <span class="math inline">\(x\)</span>-axis, the vertical bars show the relative proportions of the second variable. For example,</p>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@df</span> survey <span class="fu">mosaic_plot</span>(<span class="op">:</span>Exer, <span class="op">:</span>Smoke, xlab<span class="op">=</span><span class="st">"Exercise"</span>, ylab<span class="op">=</span><span class="st">"Smoke"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div id="fig-mosaicplot-exer-smoke" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="categorical-data-julia_files/figure-html/fig-mosaicplot-exer-smoke-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 5.3: Mosaic plot of the <code>Exercise</code> and <code>Smoke</code> variables in the <code>survey</code> data set.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../EDA/bivariate-julia.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../EDA/makie.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The AlgebraOfGraphics</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-right">© Copyright 2023, John Verzani. All rights reserved.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

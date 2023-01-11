@@ -1,0 +1,299 @@
+# Categorical data {#ch-categorical-data}
+
+In the last chapter, the main variable was numeric. Here we consider a variable of a pair of categorical variables.
+
+We use the following, by now standard, packages in this chapter:
+
+```{julia}
+using StatsBase, StatsPlots,
+    RDatasets, DataFrames, Chain, CategoricalArrays
+```
+
+
+
+## Univariate categorical data
+
+Let's consider a data set from R's `MASS` package on a student survey; in particular the `Smoke` variable, which is stored as a categorical variable. The `levels` method reports 4 levels for this variable:
+
+
+
+```{julia}
+survey = dataset("MASS", "survey")
+smokes = survey.Smoke
+levels(smokes)
+```
+
+How frequent is each?  We would need to tabulate to answer that
+question. This can be done grouping and applying the `nrow` from `DataFrames`:
+
+```{julia}
+combine(groupby(survey, :Smoke), nrow)
+```
+
+Similarly, we can split and apply with `SplitApplyCombine`:
+
+```{julia}
+using SplitApplyCombine
+group(r -> r.Smoke, copy.(eachrow(survey))) .|> length
+```
+
+The above could use some tidying up to read quickly, but easily tabulates the same, and would be useful if the data were not in a data frame.
+
+For tabulation, a separate package has benefits. We use the `FreqTables` package and its `freqtables` function. This returns a *named* vector:
+
+
+```{julia}
+using FreqTables
+tbl = freqtable(smokes)
+```
+
+Named vectors are from `NamedArrays` and offer indexing by name, similar to a data frame.
+
+Either way (and there are others), this shows for this data set, "Never" is by far the most common response, and there is 1 missing response.
+
+----
+
+Such tabulations can be visualized.
+
+A bar chart represents the above table using bars proportional to the counts. The `bar` function makes a bar chart for the labels in `x` and the given data. For this example, we have either have to add "missing" to the levels, or, as is done here, excise it from the data set
+
+```{julia}
+bar(levels(smokes), tbl[1:end-1]; legend=false)
+```
+
+Another common graphic is to use a dot, not a bar, to represent the value.
+
+## Paired categorical data
+
+In the `survey` data set we could look at pairs of data where both are categorical and ask questions about the pair. For example, the data contains information on smoking *and* identified gender (`Sex`). Is one gender more likely to smoke?
+
+Again, we can use grouping and apply to see the counts:
+
+```{julia}
+tbl = combine(groupby(survey, [:Sex, :Smoke]), nrow)
+first(tbl, 3) # 3 of 10 rows displayed
+```
+
+
+A *contingency table* is the more familiar means to view two-way categorical count data. A count of all combinations of the levels of one and the levels of the other is presented in a grid.
+
+With `unstack` we can do this within `DataFrames`:
+
+```{julia}
+@chain survey begin
+    groupby([:Sex, :Smoke])
+    combine(nrow => :value)
+    dropmissing
+    unstack(:Smoke, :value)
+end
+```
+
+The above dropped missing values; to keep them in, the `allowmissing` argument may be specified to `unstack`:
+
+```{julia}
+@chain survey begin
+    groupby([:Sex, :Smoke])
+    combine(nrow => :value)
+    unstack(:Smoke, :value; allowmissing=true)
+end
+```
+
+More conveniently,
+the `freqtable` command will produce contingency tables:
+
+```{julia}
+tbl = freqtable(survey, :Sex, :Smoke)
+```
+
+The `freqtable` interface allows the user to pass in two variables of data, or, as above, a tabular data set and two variable names. The `freqtable` method summarized them with the levels of the first variables naming the rows, and levels of the second naming the columns.
+
+### Conditional distributions of two-way tables
+
+At first glance, there does not seem to be much difference in the smoking variable between the identified genders. As tables may have many more counts in a given row or column, it can be helpful to take proportions of the rows or columns to compare. The `FreqTables` package provides the `prop` function to do so. By default, it takes a proportion of all the data;  pass in `margins=1` to get proportions for each row, `margins=2` to get proportions for each column. For example, to compare the distribution of `Smokes` for each level of `Sex`, we take proportions across each row:
+
+```{julia}
+prop(tbl; margins=1)  # check `sum(prop(tbl; margins=1); dims=2)` returns 1
+```
+
+There does not seem to be big differences between the rows, indicating that the gender doesn't seem to have an effect on the smoking prevalency.
+
+
+What about the exercise variable?
+
+```{julia}
+tbl = freqtable(survey, :Exer, :Smoke)
+prop(tbl; margins=1)
+```
+
+Again, not much difference across the levels of `Exer`.
+
+Finding the row (or column) proportions as above finds the *conditional distribution* for a given value. (Answering the question, say, what is the distribution of the second variable *given* the first variables has a specific level?)
+
+### Marginal distributions of two-way tables
+
+A *marginal* distribution from a two-way table is found by adding all the values in each row, or each column. With two-way tables generated from the full data, there are more direct ways to realize these, but from a two-way table, we just need to apply `sum` to each row or column. The `sum` function takes a `dims` argument to specify the dimension, which, in this case, is `2` for adding along the columns (the second dimension) and `1` for adding down the rows (the first dimension):
+
+```{julia}
+sum(tbl, dims=1) # kinda like `freqtable(survey.Smoke)`
+```
+
+```{julia}
+sum(tbl, dims=2) # like `freqtable(survey.Exer)`
+```
+
+
+### Two-way tables from summarized data
+
+Suppose a data set was presented in the following two-way table:
+
+| Grade  |In person | Hybrid | Asynchronous Online |
+|--------|----------|--------|---------------------|
+| A - C  |    10    |  5     |     5               |
+| D      |    10    | 15     |    10               |
+| F      |     5    | 10     |    10               |
+
+: A two-way contingency table of fabricated data showing counts of  student grades and mode of instruction.
+
+This table could be *stored* as a two-way table in different ways. Here we show how to make this a data frame, then expand it to variables, then summarize.
+
+```{julia}
+df = DataFrame([
+(Grade="A-C", IP=10, Hybrid=5,  Asynchronous=5),
+(Grade="D",   IP=10, Hybrid=15, Asynchronous=10),
+(Grade="F",   IP=5,  Hybrid=10, Asynchronous=10)
+])
+```
+
+There are `80` students summarized here:
+
+```{julia}
+sum([sum(r[2:end]) for r in  eachrow(df)])
+```
+
+Here we make a data frame with  80 cases:
+
+```{julia}
+udf = stack(df, Not(:Grade), variable_name=:InstructionType)
+ddf = vcat([repeat(udf[i:i,:],j) for (i,j) in enumerate(udf.value)]...)
+select!(ddf, [:Grade, :InstructionType]) # drop :value columns
+first(ddf, 3)
+```
+
+(It isn't the most efficient, but we repeat the data frame `udf[i:i,:]` `j` times, where `j` is the value of the `i`th row in `udf.value`. Accessing with `udf[o,:]` returns a `DataFrameRow`, which has no `repeat` method defined.)
+
+
+To see we could return to the original table, we first give the `InstructionType` the right ordering of the levels, then create a frequency table:
+
+```{julia}
+ordered_levels = ["IP", "Hybrid", "Asynchronous"]
+ddf.InstructionType = categorical(ddf.InstructionType;
+                                       ordered=true, levels=ordered_levels)
+freqtable(ddf, :Grade, :InstructionType)
+```
+
+### Graphical summaries of two-way contingency tables
+
+We review  a few visualizations of dependent categorical variables.
+
+
+#### Grouped bar plots
+The bar plot for a single categorical variable shows frequency counts for each level. A grouped bar plot shows a distribution of the second variable for the grouping variable.
+
+A useful data structure for this graphic is found using `groupby` with 2 variables:
+
+```{julia}
+#| label: fig-grouped-barchart
+#| fig-cap: Grouped bar chart of smoking distribution for different levels of the `:Sex` variable. The `bar_position` argument can be passed a value `:stack` to use a stacked display.
+tbl = @chain survey begin
+    select([:Sex, :Smoke])
+    dropmissing
+    groupby([:Sex, :Smoke])
+    combine(nrow => :value)
+end
+
+p1 = @df tbl groupedbar(:Sex, :value, group=:Smoke; xlab="Identified gender")
+p2 = @df tbl groupedbar(:Sex, :value, group=:Smoke; xlab="Identified gender",
+                        bar_position = :stack)
+
+plot(p1, p2, layout = (@layout [a b]))
+```
+
+As seen in the left graphic of @fig-grouped-barchart, there are groups of bars for each level of the first variable (`:Sex`); the groups represent the variable passed to the `group` keyword argument. The values are looked up in the data frame with the computed column that was named `:value` through the `combine` function.
+
+The same graphic on the left -- without the labeling -- is also made more directly with `groupedbar(freqtable(survey, :Sex, :Smoke))`
+
+
+#### Andrews plot
+
+An [Andrews plot](https://en.wikipedia.org/wiki/Andrews_plot) is implemented in `StatsPlots` showing differences in a collection of **numeric** variables for a given categorical variable. For each row, a trigonometric polynomial with coefficients given by the numeric values in the given row creates a function which is plotted. If the values across the categorical variable are similar, the graphs will be; if not, then the groupings will show up.
+
+We first show an example with the `iris` data where the categorical value is `:Species` and the numeric ones the first 4 values. This will be shown in the left graphic of @fig-andrews-plots:
+
+```{julia}
+iris = dataset("datasets", "iris")
+andrews_1 = @df iris andrewsplot(:Species, cols(1:4));
+```
+
+For the next plot, we use the `survey` data. There are some efforts needed to wrangle the data: we convert the categorical variables to the numeric levels (`levelcode`) *except* for `:Sex` which we use for the grouping variable. We also drop any `missing` values:
+
+```{julia}
+iscategorical(x) = isa(x, CategoricalArray) # predicate function
+tbl = @chain survey begin
+    combine(_, :Sex, findall(iscategorical, eachcol(_))[2:end] .=> ByRow(levelcode); renamecols=false)
+    dropmissing
+end
+
+andrews_2 = @df tbl andrewsplot(:Sex, cols(2:ncol(tbl)));
+```
+
+```{julia}
+#| echo: false
+#| label: fig-andrews-plots
+#| fig-cap: Andrews plots of the `iris` data (left graphic) and the `survey` data (right graphic). The `iris` plot shows clear differences based on the `:Species` variable; the `survey` data does not for the `:Sex` variable.
+plot(andrews_1, andrews_2, layout = (@layout [a b]))
+```
+
+
+#### Mosaic plots
+
+A mosaic plot presents a graphical view of a two-way contingency table. These are somewhat similar to the grouped bar plot with stacking, but the width of the bars depends on the frequency of the given level.
+
+This graphic is *not* part of `StatsPlots`. We borrow with modification this implementation from
+[OnlineStats](https://github.com/joshday/OnlineStats.jl/blob/master/src/viz/mosaicplot.jl):
+
+```{julia}
+using FreqTables
+mosaic_plot(f, g; kwargs...) = mosaic_plot!(Plots.Plot(), f, g; kwargs...)
+function mosaic_plot!(p, f, g; xrotation=-45, kwargs...)
+    tbl = freqtable(f, g)
+    a = sum(tbl, dims=2)
+    b = sum(tbl, dims=1)
+
+    a′ = [a.array...]
+    x = vcat(0, cumsum(a′)) / sum(a′)
+
+    tbl′ = convert(Matrix{Float64}, tbl.array)
+    tbl′[tbl′ .== 0] .+= 1/10  # give some width when missing
+    m = prop(tbl′, margins=1)
+    y = reverse(cumsum(prop(tbl′, margins=1), dims=2), dims=2)
+
+    bar!(p,
+         midpoints(x), y;
+         legend=false,
+         bar_width = diff(x),
+         xlims=(0,1), ylims=(0,1), linewidth = 0.5,
+         xticks =  (midpoints(x), string.(names(a,1))),
+         xrotation=xrotation, xmirror=true,
+         yticks = (midpoints(vcat(y[1,:],0)), reverse(string.(names(b,2)))),
+         kwargs...
+         )
+end
+```
+
+For the first variable, displayed on the $x$-axis, the relative width of the bar is proportional to the marginal proportions; for each level on the $x$-axis, the vertical bars show the relative proportions of the second variable. For example,
+
+```{julia}
+#| label: fig-mosaicplot-exer-smoke
+#| fig-cap: Mosaic plot of the `Exercise` and `Smoke` variables in the `survey` data set.
+@df survey mosaic_plot(:Exer, :Smoke, xlab="Exercise", ylab="Smoke")
+```

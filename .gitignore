@@ -1,0 +1,7 @@
+/.quarto/
+/_book/
+/_freeze/
+/*/*_files/
+/*/*.ipynb/
+TODO.md
+Manifest.toml

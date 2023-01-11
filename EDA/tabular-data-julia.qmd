@@ -1,0 +1,1057 @@
+# Tabular data
+
+Some data sets are naturally stored in a tabular format, like a spreadsheet. This chapter looks at such data.
+
+In the following, we will utilize these basic packages:
+
+```{julia}
+using StatsBase, StatsPlots
+```
+
+## Data frames
+
+The basic framework for exploratory data analysis is a data set with 1 or more observations for  $n$ different cases. For each case (or observation) a *variable* will be a length-$n$ data set, with values measuring the same type of quantity, or perhaps missing. The variables can be stored as vectors. These are *traditionally* arranged in a rectangular manner with each *row* representing the measurements for a given case and each column representing the measured values for each variable. That is the columns are homogeneous (as they measure the same thing), but the rows need not be (as different variables are measuring different quantities).
+
+Matrices contain rectangular data, but are homogeneous. As such, a new structure is needed. A data frame is a concept borrowed from [S Plus](https://sites.stat.washington.edu/people/handcock/505/Lectures/lec9.pdf) where they were introduced in 1991. The R language has data frames as a basic built-in data container. In `Julia` the structure is implemented in an external package, `DataFrames`.
+
+```{julia}
+using DataFrames
+```
+
+::: {.callout-note}
+##### An OG package
+
+The `DataFrames` package dates back to 2012, at least, and must be one of `Julia`'s oldest packages. Julia was on version `0.1` then. It is also under continual development and has a comprehensive set of documentation and tutorials. This introduction attempts to illustrate some basic usage; consult the provided documentation for additional details and applications.
+
+:::
+
+
+
+### Data frame construction
+
+There are different ways to construct a data frame.
+
+Consider the task of the Wirecutter in trying to select the best [carry on travel bag](https://www.nytimes.com/wirecutter/reviews/best-carry-on-travel-bags/#how-we-picked-and-tested). After compiling a list of possible models by scouring travel blogs etc., they select some criteria (capacity, compartment design, aesthetics, comfort, ...) and compile data, similar to what one person collected in a
+[spreadsheet](https://docs.google.com/spreadsheets/d/1fSt_sO1s7moXPHbxBCD3JIKPa8QIZxtKWYUjD6ElZ-c/edit#gid=744941088).
+Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatability, loading style, and a last checked date -- as this market improves constantly.
+
+```
+product         v  p    l loads       checked
+Goruck GR2      40 395  Y front panel 2022-09
+Minaal 3.0      35 349  Y front panel 2022-09
+Genius          25 228  Y clamshell   2022-10
+```
+
+We see that product is a character, volume and price numeric, laptop compatability a Boolean value, load style one of a few levels, and the last checked date, a year-month date.
+
+We create vectors to hold each. We load the `CategoricalArrays` and `Dates` packages for a few of the variables:
+
+```{julia}
+using CategoricalArrays, Dates
+product = ["Goruck GR2", "Minaal 3.0", "Genius"]
+volume = [40, 35, 25]
+price = [395, 349, 228]
+laptop_compatability = categorical(["Y","Y","Y"])
+loading_style = categorical(["front panel", "front panel", "clamshell"])
+date_checked = Date.(2022, [9,9,10])
+```
+
+With this, we use the `DataFrame` constructor to combine these into one data set.
+
+```{julia}
+d = DataFrame(product = product, volume=volume, price=price,
+              var"laptop compatability"=laptop_compatability,
+              var"loading style"=loading_style, var"date checked"=date_checked)
+```
+
+We  use `var".."` for names with spaces.
+
+
+In the above, we  repeated the names of the variables to the constructor. A style akin to the construction of  named tuple, could also have been used where variables after a semicolon are implicitly assumed to have the desired name:
+
+```{julia}
+d = DataFrame(; product, volume, price,
+              var"laptop compatability"=laptop_compatability,
+              var"loading style"=loading_style, var"date checked"=date_checked)
+```
+
+We see that the `DataFrame` type displays values as we might expect with the column header showing the name of the variable and the storage type. The row numbers are added and may be used for reference.
+
+There is a convention for attaching new columns to a data frame that allows an alternate construction:
+
+```{julia}
+d = DataFrame()   # empty data frame
+d.product = product
+d.volume = volume
+d.price = price
+d."laptop compatability" = laptop_compatability
+d."loading style" = loading_style
+d."date checked" = date_checked
+d
+```
+
+This uses one of a few different ways to refer to a column in a data frame.
+
+As an alternative, the `insertcols!` function can insert multiple columns, for example the last one in the example, could have been written `insertcols!(d, "date checked" => date_checked)`.
+
+
+Before exploring how we might query the data frame, we note that an alternate means to describe the data set is by row, or case. For each row, we might use a named tuple with the names indicating the variable, and the values the measurement. The `DataFrame` constructor would accept this, here we shorten the names and only do one row (for now):
+
+```{julia}
+d = DataFrame([
+ (b = "Goruck GR2", v = 40, p = 395, lap = "Y", load = "front panel", d = Date("2022-09-01"))
+])
+```
+
+Here, the variable types are different, as it takes more effort to make one categorical. The same way we defined a column allows us to *redefine* that column (replacing the container, not re-using it for storage). For example, we could do:
+
+```{julia}
+d.lap = categorical(d.lap)
+d.load = categorical(d.load)
+```
+
+and then the two variables would be categorical.
+
+
+There are other ways to define row by row:
+
+* A data frame with empty variables can be constructed and then values as tuples may be `push!`ed onto the data frame
+
+```{julia}
+push!(d,  ("Minaal 3.0", 35, 349, "Y", "front panel", Date("2022-09-01")))
+```
+
+A named tuple can also be used.
+
+* Similarly, rows specified by dictionaries may be pushed onto a data frame
+
+```{julia}
+push!(d, Dict(:b => "Genius", :v => 25, :p => 228, :lap => "Y",
+              :load => "clamshell", :d => Date("2022-10-01")))
+```
+
+(A dictionary is a `key => value` container like a named tuple, but keys may be arbitrary `Julia` objects -- not always symbols -- so we explicitly use symbols in the above command.)
+
+::: {.callout-note}
+##### The `Tables` interface
+
+In the `Julia` ecosystem, the `Tables` package provides a lightweight means to describe tabular data, like a data frame, and provides some basic means to query the data. The different ways in which a data frame can be defined, reflect the different ways `Tables` objects can be created.
+
+The basics involve a vector (a type of array) and a struct (A struct is a composite record, or a named tuple, or a dictionary). Both of these specify a table (provided there is a homogeneity in the inner objects):
+
+* As a struct of arrays. This is used by calling `DataFrame(a=[1,2], b= [2,1])`, say.
+* As an array of structs. This is used by calling `DataFrame([(a=1,b=2), (a=2,b=1)])`
+:::
+
+#### RDataset
+
+Data frames are often read in from external sources, and not typed in. The `RDataSets` package has collected data sets from many different R packages and bundled them into data sets for `Julia` in the form of data frames. We use these for various examples.
+
+```{julia}
+using RDatasets
+cars = dataset("MASS", "Cars93")  # package, data set name
+first(cars, 2)  # first 2 rows only
+```
+
+#### CSV.read
+
+For interacting with spreadsheet data, when it is stored like a data frame, it may be convenient to export the data in some format and then read that into a `Julia` session. A common format is to use comma-separated values, or "csv" data. The `CSV` package reads such files. The `CSV` package reads in delimited text data (the source) using the `Tables` interface and can be instructed to write to a data frame (the sink). The `CSV.read` file is used. Here we write to some file to show that we can read it back:
+
+```{julia}
+using CSV
+f = tempname() * ".csv"
+CSV.write(f, d)  # write simple data frame to file `f`
+d1 = CSV.read(f, DataFrame)
+```
+
+Comma-separated-value files are simple text files, with no metadata to
+indicate what type a value may be. Some guesswork is necessary.  We
+observe that the two categorical variables were read back in as
+strings, as that is the default. As seen above, that can be
+addressed. The date data was properly identified as dates, but a day attribute was added.
+
+The filename, may be more general. For example, it could be `download(url)` for some url that points to a csv file to read data from the internet.
+
+::: {.callout-note}
+##### Read and write
+The methods `read` and `write` are qualified in the above usage with the `CSV` module. In the `Julia` ecosystem, the `FileIO` package provides a common framework for reading and writing files; it uses the verbs `load` and `save`. This can also be used with `DataFrames`, though it works through the `CSVFiles` package -- and not `CSV`, as illustrated above. The read command would look like `DataFrame(load(fname))` and the write command like `save(fname, df)`. Here `fname` would have a ".csv" extension so that the type of file could be detected.
+:::
+
+| Command | Description |
+|---------|-------------|
+| `CSV.read(file_name, DataFrame)` | Read csv file from file with given name |
+| `CSV.read(IOBuffer(string), DataFrame)` | Read csv file from a string using an `IOBuffer` |
+| `CSV.read(download(url), DataFrame)` | Read csv file an url |
+| `open(file_name,"w") do io; CSV.write(io, dd); end` | Write data frame `df` to csv file |
+| `DataFrame(load(file_name))` | Read csv file from file with given name using `CSVFiles` |
+| `save(file_name, df)` | Write data frame `df` to a csv file using `CSVFiles` |
+
+: Basic usage to read/write `.csv` file into a data frame.
+
+#### TableScraper
+
+The `TableScraper` package can scrape tables from an HTML file in a manner that can be passed to `DataFrame` for conversion to a data frame. The command `DataFrame.(scrape_tables(url))` may just work to create the tables, but in practice, only well-formed tables can be scraped successfully; tables used for formatting purposes may fail. `TableScraper` is built on `Cascadia` and `Gumbo`, as is the `Harbest` package, which provides more access to the underlying data than `TableScraper`.
+
+### Column names
+
+The variable names of a data set are returned by the `names` function, as strings:
+
+```{julia}
+names(d)
+```
+
+This function has a second argument which can be used to narrow or filter the names that are returned. For example, the following is a convenience for matching columns whose element type is a subtype of `Real`:
+
+```{julia}
+names(d, Real)
+```
+
+
+The `rename!` function allows the names to be changed in-place (without returning a new data frame). There are many different calling patterns, but:
+
+* to replace one name, the form `rename!(df, :v => :nv)` is used, where `:v` is the old name, and `:nv` the new one. The form follows the generic `replace!` function. The pair notation can be *broadcast* (`.=>`) to replace more than one name, as with `replace!(df, [:v1, :v2] .=> [:nv1, :nv2])`.
+* to replace allnames, the form `renames!(df, [...])` is used, where the vector is of length matching the number of columns in `df`.
+
+### Indexing and assignment
+
+The values in a data frame can be referenced by a row number and column number, both 1-based. For example, the 2nd row and 3rd column of `d` can be seen to be `349` by observation
+
+```{julia}
+d
+```
+
+but it can be referenced through indexing (row number first, column number second):
+
+```{julia}
+d[2, 3]
+```
+
+A value can also be assigned. Suppose, that bag went on sale and is now 20% off. This new price could be adjusted with:
+
+```{julia}
+d[2, 3] = floor(Int, 0.80 * d[2, 3]) # need an integer here
+```
+
+#### Column selectors
+
+The 3rd column has a name, `p` in this case. We can use a [column selector](https://www.juliabloggers.com/column-selectors-in-dataframes-jl/) to avoid having to know which column number a variable is. For this a string or a symbol may be used, as in:
+
+```{julia}
+d[2, :p], d[2, "p"]
+```
+
+More generally, it is possible to use more than 1 column in column selection. For example, to get both the volume and price, for the second bag we have:
+
+```{julia}
+d[2, [:v, :p]]
+```
+
+As well, either `[2, 3]` or `["v", "p"]` could have been used.
+
+For data frames with many columns, a *regular* expression can be
+used. The column selector `r"^l"` would match all columns whose name
+begins with `l` (`lap` and `load`) in this case. (Regular expressions
+can be very complicated, but here we only assume that `r"name"` will
+match "name" somewhere in the string; `r"^name"` and `r"name$"` will
+match "name" at the beginning and ending of a string.  Using a regular
+expression will return a data frame row (when a row index is
+specified) -- not a value -- as it is possible to return 0, 1 or more
+columns in the selection.
+
+
+Column selectors, as seen may be column number(s), column names as strings, column names as symbols, regular expression.
+
+In addition:
+
+* Boolean vectors of a length matching the number of columns (`d[2, [false, true, true, false, false, false]]` would return the 2nd and 3rd columns.)
+* The value `All()` which selects all columns
+* the value `Between(a, b)` where, `a` and `b` are column selectors (such as `Between(:v, 3)`).
+* `Not(...)` to select those columns not specified in `...`
+* `Cols(a,b,...)` which combines different selectors, such as `Cols(:v, 3)`.
+
+
+#### Slices
+
+The `All()` column selector has a shortcut inherited from the indexing of arrays in base `Julia`, this being a colon, `:`. When used in the column position it refers to all the values in the row:
+
+```{julia}
+d[2, :]
+```
+
+When used in the *row position*, it refers to all rows:
+
+```{julia}
+d[:, 3]
+```
+
+In the above use, a vector is returned, not a data frame, as only one column was selected. But which vector? Is it a *copy* of the one the `d` holds, or is it the same container? In base `Julia` the answer depends on what side of an equals sign the use is on (meaning, if used in assignment the answer is different, as mentioned later). In this usage, a *copy* is returned.
+
+To get the underlying column (not a copy), the selector `!` is used instead:
+
+```{julia
+d[!, 3]
+```
+
+The notation `d.p` also refers to the 3rd variable. In this case, `d.p` is a view of the underlying data (using `!`) and not a copy.
+
+The notation `d[:,:]` will refer to all rows and all columns of `d`, and in this case will be a *copy* of the data frame.
+
+
+#### Assignment
+
+Single values can be assigned, as previously illustrated. These values are assigned to the underlying vector in the data frame, so as with vectors, the assigned value will be converted to the column type, if necessary. Assigning a value that can't be converted will throw and error, as it would were such an assignment tried for a vector. To do such an assignment, the underlying vector must be changed.
+
+The row selector `:` or `!` had different semantics when accessing the underlying data, the first returning a copy, the second a view. When used with assignment though, `:` refers to the underlying vector or does in-place assignment; whereas `!` will replace the the underlying container with the assigned container.
+
+To illustrate, suppose the prices are rounded down, but actually contain an extra 99 cents. We can reassign `price` as following:
+
+```{julia}
+d[!, :p] = price .+ 0.99
+```
+
+as even though `price .+ 0.99` is no longer an integer vector, the `!` row indicator will instruct `d` to point to this new vector. Had `d[:, :p] = ...` been used above, an error would have been thrown as the underlying container is integer, but the new prices require floating point values to represent them.
+
+Broadcast assignment (using `.=`) will be similar. The right hand side is expanded, and then assigned. Attempts to assign the wrong value type using `:` will error.
+
+#### Missing values
+
+Trying to assign a value of `missing` to a data frame requires the underlying vector to allow missing values. As with vectors, the `allowmissing` function is useful. For example, to give the 2nd bag a price of missing, we could do:
+
+```{julia}
+allowmissing!(d, :p)
+d[2, :p] = missing
+```
+
+By using the mutating form (with the trailing `!`), the data frame `d` is mutated in the `allowmissing!` call. This could be observed by looking a the underlying column type.
+
+The new type is a union of the old type and `Missing`, so we could reassign the old value:
+
+```{julia}
+d[2, :p] = 349.99
+```
+
+
+#### Tables.jl interface
+
+A table, like a data frame can be expected to loop, or iterate, over columns, say to find which columns are numeric. Or, they can be expected to iterate over rows, say to find which values are within a certain range. What should be the case with a data frame? As there are reasons to prefer either, none is specified. Rather, there is a difference based on the calling function. Data frames respect the `Tables` interface, which has methods to iterate over rows or columns. When iterating over columns, the individual vectors are given; when iterating over rows, a `DataFrameRow` object is returned. Calling `copy` on these rows objects will return a named tuple.
+
+The basic iterators are `eachrow` and `eachcol`. For example, to see the column type for a data frame, we can broadcast `eltype` over the variables returned by `eachcol`:
+
+```{julia}
+eltype.(eachcol(d))  |> permutedims
+```
+
+To get the data frame as a vector of named tuples, then broadcasting `copy` over `eachrow` can be used: `copy.(eachrow(d))`.
+
+
+### Sorting
+
+A data frame can be sorted by specifying a permutation of the indices, such as is returned by `sortperm`. For example, `d[sortperm(d.price), :]` will sort by price in increasing order. The keyword argument `rev` can be passed `true` to reverse the default sort order.
+
+The generic `sort` function has a method for data frames, that offers a more convenient, though no additional, functionality. The `sort!` method does in-place sorting. The simplest call is to pass in a column to sort by, as in
+
+```{julia}
+sort(d, :p)
+```
+
+This sorts by the price (`:p`) variable in *increasing* order. To sort by decreasing order a keyword argument `rev=true` can be specified:
+
+```{julia}
+sort(d, "d"; rev=true)
+```
+
+There can be one or more column selectors. For this, the `order` function can be used to reverse just one of the columns, as in the following, which first sorts the dates in reverse order (newest first) and then within a data, uses lowest price first to sort:
+
+```{julia}
+sort(d, [order("d", rev=true), :p])
+```
+
+
+
+### Filtering rows
+
+Filtering, or subsetting, is a means to select a specified selection of rows.
+
+Let's consider the `cars` data set, previously defined by loading `dataset("MASS", "Cars93")`. This data set consists of 27 measurements on 93 cars from the 1990s. The data set comes from R's `MASS` package, and is documented there.
+
+
+Two ready ways to filter are by using specific indices, or by using boolean indices generated by a logical comparison.
+
+For the `cars` data set, the latter can be used to extract the Volkswagen models. To generate the indices we compare the `:Manufacturer` variable with the string `Volkswagen` to return a vector of length 93 that indicates if the manufacturer is VW. This is done with *broadcasting*: `cars.Manufacturer .== "Volkswagen"`. We use the easy dot access to variables in `cars`, alternatively `cars[:, :Manufacturer]` (or, more efficiently, `!`, as is used by the dot access) could be used were `:Manufacturer` coming from some variable. With this row selector, we have:
+
+```{julia}
+cars[cars.Manufacturer .== "Volkswagen", :]
+```
+
+(Yes, there are two dots, *each with different meanings* **and** two colons, *each with different meanings*.)
+
+This approach lends itself to "find all rows matching some value" then "extract the identified rows." Written as two steps to emphasize there are two passes through the data. Another mental model would be loop over the rows, and keep those that match the query. This is done generically by the `filter` function for collections in `Julia` or by the `subset` function of `DataFrames`.
+
+The `filter(predicate, collection)` function is used to identify just the values in the collection for which the predicate function returns `true`. When a data frame is used with `filter`, the iteration is over the rows, so the `eachrow` iterator is not used. We need a predicate function to replace the `.==` above. One follows. It doesn't need `.==`, as `r` is a data frame row and access produces a value not a vector:
+
+```{julia}
+filter(r -> r.Manufacturer == "Volkswagen", cars)
+```
+
+There are some *conveniences* that have been developed to make the predicate functions even easier to write, which will be introduced incrementally:
+
+The basic binary comparisons, like `==`, are defined by functions essentially of the form `(a,b) -> ==(a,b)`. There are *partially applied* versions, essentially `a -> ==(a,b)`, with `b` applied, formed by `==(b)`. So the syntax `==("Volkswagen")` is a predicate taking a single argument which is then compared to the string `"Volkswagen"`.
+
+However, `r` is a data frame row, what we need to pass to `==("Volkswagen")` is the value of the `:Manufacturer` column. For this another convenience is available.
+
+The `pair` syntax, `=>` of the form `column selector(s) => predicate function` will pass just the value in the column(s) to the predicate function. Combined, the above can be simplified to:
+
+```{julia}
+filter(:Manufacturer => ==("Volkswagen"), cars)
+```
+
+It doesn't save much for this simple example, but this specification styles is the basis of the `DataFrames` mini language, which provides a standardized and performant means of wrangling a data frame.
+
+
+Filtering may be done on one or more values. There are different approaches.
+
+For example, to first filter by the manufacturer, then by city mileage, we might write a more complicated predicate function using `&&` to combine Boolean values:
+
+```{julia}
+pred(r) = r.Manufacturer == "Volkswagen" && r.MPGCity >= 20
+filter(pred, cars)
+```
+
+The mini language can also be used. On the left hand side of (the first) `=>` a vector of column selectors may be indicated, in which the predicate function (on the right hand side of the first `=>`) will get multiple arguments that can be used to implement the logic:
+
+```{julia}
+pred(m, mpg) = m == "Volkswagen" && mpg >= 20
+filter([:Manufacturer, :MPGCity] => pred, cars)
+```
+
+Finally, we could use `filter` twice:
+
+```{julia}
+cars1 = filter(:Manufacturer => ==("Volkswagen"), cars)
+cars2 = filter(:MPGCity => >=(20), cars1)
+```
+
+The above required the introduction of an intermediate data frame to store the result of the first `filter` call to pass to the second. This threading through of the modified data is quite common in processing pipelines. The first two approaches with complicated predicate functions can grow unwieldly, so staged modification is common. To support that the chaining or piping operation is often used `|>`:
+
+```{julia}
+filter(:Manufacturer => ==("Volkswagen"), cars) |>
+    d -> filter(:MPGCity => >=(20), d)
+```
+
+The right-hand side of `|>` expects a function for application, so an anonymous function is created. There are *macros* available in user-contributed packages that shorten this pattern by using a placeholder.
+
+A popular one is `Chain`, with its basic usage based on two simple principles:
+
+* a new line is a pipe
+* a `_` receives the argument from the pipe. If none is given, the first argument does
+
+For example,
+
+```{julia}
+using Chain
+```
+
+```{julia}
+@chain cars begin
+    filter(:Manufacturer => ==("Volkswagen"), _)
+    filter(:MPGCity => >=(20), _)
+end
+```
+
+
+#### Subset
+
+The calling style `filter(predicate, collection)` is consistently used with several higher-order functions, for example, `map` and `reduce` and is supported by `Julia`'s `do` syntax.
+
+However, with data frames, the convention is to have action functions expect the data frame in the first position.
+
+
+The `subset` function also returns a copy of the data frame with rows matching a certain selection criteria. It's usage is somewhat similar to `filter` with the order of its arguments reversed, but the predicate must return a vector of indices, so broadcasting or the `ByRow` function may be necessary.
+
+For example, these  produce the same data frame:
+
+```{julia}
+d1 = subset(cars, :Manufacturer => m -> m .== "Volkswagen") # use .== not just ==
+d2 = subset(cars, :Manufacturer => ByRow(==("Volkswagen"))) # use `ByRow` to ensure predicate is applied to each
+```
+
+Unlike `filter`, `subset` allows multiple arguments to be applied:
+
+```{julia}
+subset(cars,
+       :Manufacturer => ByRow(==("Volkswagen")),
+       :MPGCity => ByRow(>=(20)))
+```
+
+The mini language uses a default of `identity` for the function so, if the columns are Boolean, they can be used to subset the data:
+
+```{julia}
+dd = DataFrame(a = [true, false], b = [true, missing])
+subset(dd, :a)  # just first row
+```
+
+
+For data with missing values, like in the `:b` column of `dd`, the comparison operators implement 3-valued logic, meaning the response can be `true`, `false`, *or* `missing`. Using `subset(dd, :b)` above will error.  The keyword `skipmissing` can be passed `true` to have these skipped over. The default is false.
+
+```{julia}
+subset(dd, :b; skipmissing=true)
+```
+
+The `dropmissing` function filters out each row that has a `missing` value.
+
+### Selecting columns; transforming data
+
+Filtering of a data frame can be viewed as accessing the data in `df` with a boolean set of row indices, as in `df[inds, :]`. (There are flags to have a "view" of the data, as in `df[inds, !]`). Filtering returns a data frame with a possibly reduced number of rows, and the same number of columns.
+
+The `select` function is related in that it can be viewed as passing a set of Boolean vector of column indices to select specific columns or variables, as in `df[:, inds]`. The syntax of `select` adds also extends this allowing transformations of the data and reassignment, as with `df.new_variable = f(other_variables_in_df)`.
+
+The `select` function will return a data frame with the same number of rows (cases) as the original data frame. The variables returned are selected using column selectors. There is support for the `DataFrames` mini language.
+
+First, we can select on or more columns by separating column selectors with commas:
+
+Here, using the backpack data in the variable `d`, we select the first column by column number, the second using a symbol, the third by a string, and the fourth and fifth using a regular expression:^[This combination of column selectors is also performed by `Cols(1, :v, "p", r"^l")`.]
+
+```{julia}
+select(d, 1, :v, "p", r"^l")
+```
+
+One use of `select` is to rearrange the column order, say by moving a column to the front. The `:` or `All()` column selector will add the rest. That is this command would move "`d`" to the front of the other columns: `select(d, :d, All())`.
+
+
+Selection also allows an easy renaming of column names, using the pairs notation `column name => new column name`:
+
+
+```{julia}
+select(d, :v => :volume, "p" => "price")
+```
+
+This usage is a supported abbreviation of `source_column => function => target_column_name`, where the function is `identity`. Here the function is not necessarily a predicate function, as it is with `subset`, but rather a function which returns a vector of the same length as the number of columns in the data frame (as `select` *always* returns the same number of columns as the data frame it is passed.)
+
+The function receives column vectors and should return a column vector. For a scalar function, it must be applied to each entry of the column vector, that is, each row. Broadcasting is one manner to do this. As used previously, the `DataFrames` package provides `ByRow` to also apply a function to each row of the column vector(s).
+
+For example to compute a ratio of price to volume, we might have:
+
+```{julia}
+select(d, [:p, :v] => ByRow((p,v) -> p/v) => "price to volume")
+```
+
+The above would be equivalent to `select(d, [:p, :v] => ((p,v) -> p./v) => "price to volume")` (broadcasted `p ./ v` **and** parentheses), but not `select(d, [:p, :v] => (p,v) -> p./v => "price to volume")`, as the precedence rules for `=>` do not parse the expressions identically. That is, the use of parentheses is around an anonymous function is needed.
+
+The specification of a target column name is not necessary, as one will be generated. In this particular example, it would be `:p_v_function`. For named functions, the automatic namings are a bit more informative, as the method name replaces the "`function`" part. The `renamecols` keyword argument can be set to `false` to drop the addition of a function name, which in this case would leavel `:p_v` as the name. For a single-column selector it would not rename the column, rather replace it.
+
+
+The above reduced the number of columns to just that specified. The `:` selector will select *all* columns (as it does with indexing) and return them:
+
+```{julia}
+select(d, [:p, :v] => ByRow((p,v) -> p/v) => "price to volume", :) # return all columns
+```
+
+As seen in this last example, the source column selectors can select more than one column. The function receives multiple arguments. It is possible that there be *multiple* target columns. For example, we could compute both price to volume and volume to price quantities. A function to do so would be
+
+```{julia}
+pv_and_vp(p,v) = [p/v, v/p]
+```
+
+When we use this, we see the two values are stored in one column.
+
+```{julia}
+select(d, [:p, :v] => ByRow(pv_and_vp))
+```
+
+To split these up, we can give *two* names:
+
+
+```{julia}
+select(d, [:p, :v] => ByRow(pv_and_vp) => [:pv, :vp])
+```
+
+The `AsTable` function has two meanings in the mini language. If on the target side, it assumes the output of the function is a vector of containers (in this example the vectors `[p/v, v/p]`) that should be expanded into multiple columns. It uses the keys (were the containers named tuples) or, in this case generates them, to create multiple columns in the destination:
+
+```{julia}
+select(d, [:p, :v] => ByRow(pv_and_vp) => AsTable)
+```
+
+Had we used a named tuple in our function,  `pv_and_vp(p, v) = (pv = p/v, vp = v/p)`, then the names would come from that.
+
+When `AsTable` is used on the source columns, as in `AsTable([:p,:v])` then the function receives a named tuple with column vector entries. (For this, `pv_and_vp` would be written `pv_and_vp(r) = [r.p/r.v, r.v/r.p]`, with `r` representing a row in a two-column table with names `:p` and `:v`.
+
+
+
+#### Transform
+
+Extending the columns in the data frame by `select` is common enough that the function `transform` is supplied which always keeps the columns of the original data frame, though they can also be modified through the mini language. The use of transfrom is equivalent to `select(df, :, args...)`.
+
+
+::: {.callout-note}
+##### The DataFrames' mini language
+
+The mini language is well documented in the documentation string of `transform` and the [blog post](https://bkamins.github.io/julialang/2020/12/24/minilanguage.html) of Bogumil Kasminski "DataFrames.jl minilanguage explained."
+:::
+
+
+### Combine
+
+The `combine` function creates a new data frame whose columns are the result of transformations applied to the source data frame. The name will be more clear after we discuss grouping or splitting of a data set.
+
+A typical usage of combine is to apply some reduction to the data, for example finding an average.
+
+In this example, we use the `mean` function from the  `StatsBase` package and apply that to the `:MPGCity` measurements in the `cars` data:
+
+```{julia}
+combine(cars, :MPGCity => mean)
+```
+
+(A second pair can be used to specify a name for the target, as in `:MPGCity => mean => :AvgMPGCity`)
+
+There are several numeric variables in this data set, we may wish to find the mean of more than 1 at a time. For this, we can broadcast the columns via `.=>`, as in this example:
+
+```{julia}
+combine(cars, [:MPGCity, :MPGHighway] .=> mean)
+```
+
+(That is an alternate to `combine(cars, :MPGCity => mean, :MPGHighway => mean)`.)
+
+Broadcasting `=>` lends itself to succinctly applying a function to multiple columns.
+
+For example, to apply `mean` to all the numeric values, we might select them first (using the filtering feature of `names`), then pass to the mini language, as follows:
+
+```{julia}
+nms = names(cars, Real)
+combine(cars, nms .=> mean; renamecols=false)
+```
+
+More than one transformation at a time is possible, as already seen in the mini language. With `combine` the number of rows is determined by the output of the transformation. In this example, the `mean` reduces to a number, but `unique` reduces `:Origin` to the number of levels. The result of `mean` is repeated, **it is not** the mean for each group (a task we demonstrate shortly):
+
+```{julia}
+combine(cars, :MPGCity => mean, :Origin => unique)
+```
+
+### Flatten
+
+The `repeat` function is used to repeat values in a vector, or other iterable. The simplest usage looks like this:
+
+```{julia}
+repeat([1,2,3], 2) |> permutedims
+```
+
+The `2` value is passed to the `outer` argument, and the entire iterable is repeated `2` times. Whereas the `inner` argument repeats each element a certain number of times and combines:
+
+```{julia}
+repeat([1,2,3], inner=2) |> permutedims
+```
+
+A common use of repetition is to take two variables, say `x` and `y`, perhaps of unequal length and create a data frame with two columns: one to store the values and one to indicate if a value came from `x` or `y`. This could be achieved like `DataFrame(variable=vcat(repeat([:x], length(x)), repeat([:y], length(y))), values = vcat(x,y))`, but the `flatten` function offers an alternative. Consider the data frame:
+
+```{julia}
+x = [1,2,3]
+y = [4, 5]
+d = DataFrame(variable=[:x,:y], value=[x, y])
+```
+
+The `flatten` function will iterate over the indicated columns and repeat the other variables:
+
+```{julia}
+flatten(d, :value)
+```
+
+### SplitApplyCombine
+
+The split-apply-combine strategy for wrangling data frames was popularized in the influential paper "*The Split-Apply-Combine Strategy for Data Analysis*: [@JSSv040i01] by H. Wickham which introduces this description: "where you break up a big problem into manageable pieces, operate on each piece independently and then put all the pieces back together."
+
+
+The `groupby` function for data frames does the breaking up, the `combine` function can put things together again, and the `DataFrames` mini language can operate on each piece.
+
+The `groupby` function splits a data frame into pieces of type `GroupedDataFrame`. The basic signature is `groupby(df, cols; sort=nothing, skipmissing=false)`. The `cols` are one or more column selectors. The value of `sort` defaults to `nothing` leaving the order of the groups in the result undefined, but the grouping uses the fastest identified algorithm. The `skipmissing` argument can instruct the skipping of rows which have missing values in the selected columns.
+
+For example, grouping by loading style, returns two sub data frames.
+
+```{julia}
+gdf = groupby(d, :load)
+```
+
+Indices may be used to get each sub data frame. Moreover, the `keys` method returns keys, like indices, to efficiently look up the different sub data frames in `gdf`. The levels for the keys are found in the property `.load`, as with `keys(gdf)[1].load`. Grouped data frames may be iterated over; the `pairs` iterator iterates over both keys and values.
+
+The `select` and `subset` functions work over `GroupedDataFrame` objects, here we see the returned values are combined:
+
+```{julia}
+subset(gdf, :p => ByRow(<=(350)))
+```
+
+(The command `[subset(g, :p => ByRow(<=(350))) for g in gdf]` avoids the `combine` step.)
+
+We can see that `combine` also works over `GroupedDataFrame` objects. This example shows how to find the mean city mileage of groups formed by the value of `:Origin` in the `cars` data set:
+
+```{julia}
+combine(groupby(cars, :Origin), :MPGCity => mean)
+```
+
+More than one column can be used to group the data. This example first groups by the number of cylinders, then groups by origin. For each of the 9 resulting groups, the group mean for city mileage is taken:
+
+```{julia}
+combine(groupby(cars, [:Cylinders, :Origin]), :MPGCity => mean)
+```
+
+The `@chain` macro may make this more readable:
+
+```{julia}
+@chain cars begin
+    groupby([:Cylinders, :Origin])
+    combine(:MPGCity => mean)
+end
+```
+
+
+##### Example
+
+For an example, we download a data set from the internet describing all the sets of Legos sold during some time period. This data set is part of the data sets provided by `openintro.org`, an organization trying to make interesting educational products that are free and transparent.
+
+```{julia}
+csv_data = download("https://www.openintro.org/data/csv/lego_population.csv")
+legos = CSV.read(csv_data, DataFrame)
+first(legos, 2)
+```
+
+Let's explore this data.
+
+The size of the data set is printed, though suppressed above as only the first 2 rows are requested to be show, or can be programmatically identified with `size(legos)`.
+
+```{julia}
+size(legos)
+```
+
+There are 1284 different products, and 9 measures for each product.
+
+The types *identified* by `CSV.read` are not perfect. The data uses `NA` for not-available. We read again using `missingstring="NA"`:
+
+```{julia}
+legos = CSV.read(csv_data, DataFrame; missingstring="NA")
+first(legos, 2)  # show first 2 rows
+```
+
+The `:theme` and `:packaging` variables are categorical, so we make them so:
+
+```{julia}
+legos.theme = categorical(legos.theme)
+legos.packaging = categorical(legos.packaging);
+first(legos, 2)
+```
+
+We see data on the number of pieces and the age range. Is there some relationship?
+
+
+The `:age` variable should be an ordered factor, ordered by the youngest age intended for use.
+The `:ages` variable has a pattern `Ages_startXXX` where `XXX` may be `+` to indicate or up, or a dash to indicate a range. We use this to identify the youngest intended age.
+
+```{julia}
+# alternative to
+# `(m = match(r"Ages_(\d+)", x); m === nothing ? missing : parse(Int, m.captures[1]))`
+function pick_first_age(x)
+    ismissing(x) && return missing
+    nos = collect(string(0:9...))
+    out = ""
+    for xi in x[6:end] # drop Ages_
+        !(xi in nos) && break
+        out = out * xi
+    end
+    out == "" && return missing
+    parse(Int, out)
+end
+
+
+transform!(legos, :ages => ByRow(pick_first_age) => :youngest_age)
+legos.youngest_age = categorical(legos.youngest_age, ordered=true)
+first(legos[:,r"age"], 2)
+```
+
+With that ordering, an expected pattern becomes clear -- kits for older users have on average more pieces -- though there are unexpected exceptions:
+
+```{julia}
+@chain legos begin
+    groupby(:youngest_age)
+    combine([:pieces, :unique_pieces] .=> mean∘skipmissing
+            .=> [:avg_pieces, :avg_unique_pieces])
+end
+```
+
+(We composed the two functions `skipmissing` with `mean` using the `\circ[tab]` operator and use `.=>` in both places to avoid defining the transformation function twice.)
+
+::: {.callout-note}
+##### The Lego Group
+
+[Lego](https://en.wikipedia.org/wiki/Lego), was the largest toy company in the world by 2021. By 2015 it had produced over 600 billion parts.
+
+:::
+
+Lego is a mature company with an origin dating to 1934. The number of products per year should be fairly stable, though it is easy enough to check. The data set has a `:year` variable, so we would only need to group the data by that, then count the number of cases per each group. The `nrow` function will count the cases. This function is special cased in the `DataFrames`' mini language and can appear by itself:
+
+```{julia}
+combine(groupby(legos, :year), nrow) # use `nrow => :n`, or some such, to label differently
+```
+
+We can take other summaries by year, for example, here we find the average price by year and size:
+
+```{julia}
+@chain legos begin
+    groupby([:year, :size])
+    combine(nrow => :n,
+            :price => mean∘skipmissing => :avg_price
+            )
+end
+```
+
+
+The youngest age range is a bit long. We wish to collapse it to the ranges 1-6, 7-12, and 12-18. The  data has been stored as a categorical array. The `cut` function can group numeric data easily, but to group categorical data, the cut-ranges must be promoted to a `CategoricalValue`. We have the following, where `Ref` is used to stop the broadcasting for that value:
+
+```{julia}
+vals = CategoricalValue.([1, 6, 12, 18], Ref(legos.youngest_age))
+transform!(legos,
+           :youngest_age => (x ->cut(x, vals; extend=true))
+           => :youngest_age_range);
+```
+
+We now check if the number of pieces has dramatically changed over the year. We break up the data by the age range, as we expect variation in that value so it is best to dis-aggregate over that factor:
+
+```{julia}
+@chain legos begin
+    groupby([:youngest_age_range, :year])
+    combine(nrow => :n,
+            :pieces => mean∘skipmissing => :avg_pieces)
+end
+```
+
+There are many different themes. The command `unique(legos.theme)` shows 41.  Which are the most popular? To see, the data is grouped by the theme, each group is counted, missing themes are dropped, then the data frame is sorted and the top 5 rows are shown:
+
+```{julia}
+@chain legos begin
+    groupby(:theme)
+    combine(nrow => :n)
+    dropmissing
+    sort(:n; rev=true)
+    first(5)
+end
+```
+
+#### The SplitApplyCombine package
+
+There is support for the split-apply-combine paradigm outside of the `DataFrames` package in the package `SplitApplyCombine`. This package is much lighter weight than `DataFrames`.
+This support targets other representations of tabular data, such as a vector of nested tuples:
+
+
+```{julia}
+using SplitApplyCombine
+tbl = [
+(b = "Goruck GR2", v = 40, p = 395, lap = "Y", load = "front panel", d = Date("2022-09-01")),
+(b = "Minaal 3.0", v = 35, p = 349, lap = "Y", load = "front panel", d = Date("2022-09-01")),
+(b = "Genius",     v = 25, p = 228, lap = "Y", load = "clamshell",   d = Date("2022-10-01"))
+]
+```
+
+Many of the main verbs are generic functions `filter`, `map`, `reduce`, `invert`; `group` does grouping. There are some others. A few examples follow.
+
+For indexing this structure, we can't not index by `[row, col]`, rather we can use `[row][col]` notation, the first to extract the row, the second to access the entries in the column. For example, he we index a selected row by position, by name, and then with multiple names:
+
+```{julia}
+tbl[2][2], tbl[2].v, tbl[2][ [:v, :p] ]
+```
+
+The `invert` function reverses the access pattern, allowing in this case, `[col][row]` access, with:
+
+```{julia}
+itbl = invert(tbl)
+itbl[3][1], itbl[:p][2]
+```
+
+To filter out rows, we have the same calling style as with data frames: `filter(pred, tbl)`. For example,
+
+```{julia}
+filter(r -> r.v >= 35, tbl) |> DataFrame
+```
+
+(The call to `DataFrame` is to take advantage of the prettier printing. `DataFrame` can consume a vector of named tuples for its input.)
+
+The `DataPipes` package composes a bit more nicely with this approach, but we continue using `Chain` for examples^[The `DataPipes` package inserts a magical `_` in the last positional argument, which is common with higher-order functions like `filter`. The example could become `@p tbl |> filter(_.v >= 25) |> filter(_.p >= 350)` with the new lines replacing the pipe operation as a convenience with longer chains], like this one of nested calls to `filter`.
+
+```{julia}
+@chain tbl begin
+    filter(r -> r.v >= 35,  _)
+    filter(r -> r.p >= 350, _)
+    DataFrame
+end
+```
+
+Selecting columns and adding a transformation can be achieved through `map`, which iterates over each named tuple in this example:
+
+```{julia}
+map(r -> (b=r.b, v=r.v, p=r.p, pv = round(r.p/r.v; digits=2)), tbl) |>
+    DataFrame
+```
+
+The `group` function can group *by* values of a function call. This example from the package's Readme is instructive:
+
+```{julia}
+nms = ["Andrew Smith", "John Smith", "Alice Baker",
+       "Robert Baker", "Jane Smith", "Jason Bourne"]
+group(last, split.(nms))
+```
+
+The names are split on spaces, and the keys of the group are determined by the `last` function, which here gets the last piece after splitting (aka the "last" name, but by coincidence, not intelligence).
+
+For numeric operations, this is quite convenient. Here we find group by the remainder upon division by `3`:
+
+```{julia}
+group(x -> rem(x,3), 1:10)
+```
+
+The grouping basically creates a dictionary and adds to the key determined by the function.
+
+To apply a function to the values of a base `Julia` dictionary is not directly supported by `map`, however the dictionary used by `group` (from the `Dictionaries` packages)  does allow this, so we could, for example, add up the values in each group with:
+
+```{julia}
+map(sum, group(x -> rem(x,3), 1:10))
+```
+
+The `group` function can do this in one call, by placing the function
+to apply in between the `by` function and the table.  Here we apply
+`first` to pick off the first name. That is, `["Andrew", "Smith"]`
+becomes just `"Andrew"`, the first element of that vector.
+
+```{julia}
+gps = group(last, first, split.(nms))
+```
+
+::: {#exm-prison-count}
+##### A tally function
+The `Tally` package provides a quick way to tally up numbers. Here we do a simplified version.
+
+To tally, we have three steps: group by each by value, count the number in each groups, sort the values. This is implemented with:
+
+```{julia}
+tally(v; by=identity) = SplitApplyCombine.sortkeys(map(length, group(by, v)))
+```
+
+To see, we have:
+
+```{julia}
+v = rand(1:5, 50)
+d = tally(v)
+```
+
+Using `map`, we can provide an alternate, oft used view for tallying:
+
+```{julia}
+tallies = "\u007C"^4
+ftally = "┼┼┼┼ "
+function prison_count(x)
+    d, r = divrem(x, 5)
+    ftally^d * tallies[1:r]
+end
+
+
+map(prison_count, d)
+```
+
+:::
+
+Let's return to the `cars` data and use `group` to identify the average mileage per type. For this task, we group by `:Type`and then apply a function to extract the mileage from a row. The `copy.(eachrow(cars))` command creates a vector of named tuples.
+
+```{julia}
+cs = copy.(eachrow(cars))
+gps = group(r -> r.Type, r -> r.MPGCity, cs)
+```
+
+We now can map `mean` over each group:
+
+```{julia}
+ms = map(mean, gps)
+```
+
+This requires two passes through the grouped data, the first to get just the mileage values, the next to call `mean`. The `DataFrames` syntax hides this:
+
+```{julia}
+combine(groupby(cars, :Type), :MPGHighway => mean)
+```
+
+Reductions, like sum and count which can be written easily using `reduce` have support to combine the grouping and reduction. The `groupreduce` function takes the additional arguments of `reduce` (an *op*eration and an optional `init` value). For example, go get the group sum, we could call:
+
+```{julia}
+groupreduce(r -> r.Type, r -> r.MPGCity, +, cs)
+```
+
+The group sum and group count have shortcuts, so the mean could have been computed as:
+
+```{julia}
+groupsum(r -> r.Type, r -> r.MPGCity, cs) ./ groupcount(r -> r.Type, cs)
+```
+
+(Unlike for a `Dict` instance, the dictionaries above allow such division.)
+
+----
+
+The "combine" part of the paradigm takes the pieces and reassembles. The data frames example returns a data frame, whereas with `SplitApplyCombine.jl` we have a dictionary. A dictionary does not map directly to a data frame. While both dictionaries and named tuples are associative arrays, we wouldn't necessarily want to map our data to a row. Rather, here we use the `pairs` iterator to iterate over the keys and values to produce an array of named tuples:
+
+```{julia}
+[(; Type=k, MPG=v) for (k,v) in pairs(ms)] |> DataFrame
+```
+
+
+
+
+### Tidy data
+
+The split-apply-combine paradigm suggest that storing data so that it can be split readily is preferable to other ways of storage. The notion of "tidy data," [@tidy-data] as presented in R's `tidyr` package and described in this [vignette](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) suggests data sets should follow:
+
+* Every column is a *variable*.
+* Every row is an *observation*.
+* Every cell is a single *value*.
+
+These terms are defined by
+
+> A dataset is a collection of values, usually either numbers (if quantitative) or strings (if qualitative). Values are organised in two ways. Every value belongs to a variable and an observation. A variable contains all values that measure the same underlying attribute (like height, temperature, duration) across units. An observation contains all values measured on the same unit (like a person, or a day, or a race) across attributes.
+
+The `DataFrames` package provides the functions `stack` and `unstack` for tidying data. We illusrate with an abbreviated version of an example in the `tidyr` vignette.
+
+Consider this data from the Global Historical Climatology Network for one weather station (MX17004) in Mexico for five months in 2010. The full data has 31 days per month, this abbreviated data works with just the first 8:
+
+```{julia}
+weather = """
+"id","year","month","element","d1","d2","d3","d4","d5","d6","d7","d8"
+"MX17004","2010","1","tmax","---","---","---","---","---","---","---","---"
+"MX17004","2010","1","tmin","---","---","---","---","---","---","---","---"
+"MX17004","2010","2","tmax","---","27.3","24.1","---","---","---","---","---"
+"MX17004","2010","2","tmin","---","14.4","14.4","---","---","---","---","---"
+"MX17004","2010","3","tmax","---","---","---","---","32.1","---","---","---"
+"MX17004","2010","3","tmin","---","---","---","---","14.2","---","---","---"
+"MX17004","2010","4","tmax","---","---","---","---","---","---","---","---"
+"MX17004","2010","4","tmin","---","---","---","---","---","---","---","---"
+"MX17004","2010","5","tmax","---","---","---","---","---","---","---","---"
+"MX17004","2010","5","tmin","---","---","---","---","---","---","---","---"
+"""
+
+w = CSV.read(IOBuffer(weather), DataFrame; missingstring="---")
+first(w, 4)
+```
+
+This example is said to have variables  stored in both rows and columns. The first step to tidying the data is to stack days 1 through 8 into a column. We use the `Between` column selector to select the columns for `d1` though `d8`:
+
+```{julia}
+w1 = @chain w begin
+    stack(Between(:d1, :d8); variable_name = :day)
+    filter(:value => !ismissing, _)
+end
+```
+
+As in the example being followed, missing values are skipped, requiring the reader to imply the lack of measurement on a given day.
+
+The day is coded with a leading "d" and as a string, not an integer. We can strip this prefix out using a regular expression or, as here, string indexing then parse the result to an integer:
+
+```{julia}
+transform!(w1, :day => ByRow(x -> parse(Int, x[2:end])) => :day)
+```
+
+Finally, the `element` column does not hold a variable, rather it stores the names of two variables (`tmin` and `tmax`). For this the data is "unstacked" splitting the longer variable `value` in two:
+
+```{julia}
+w2 = unstack(w1, :element, :value)
+```
+
+As described in the vignette, now each variable is in one column, and each row describes one day.

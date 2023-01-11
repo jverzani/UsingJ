@@ -1,0 +1,630 @@
+# The linear regression model
+
+We discuss the linear regression model in the following using linear algebra to quickly formulate the main results. For those unfamiliar with linear algebra, its use is only to illustrate various aspects that have pre-defined methods in `GLM`; no user-level linear algebra is  necessary for computation.
+
+For this, we utilize the following packages:
+
+```{julia}
+using StatsBase, Distributions, GLM, HypothesisTests
+using CSV, DataFrames, CategoricalArrays, RDatasets
+using GLMakie, AlgebraOfGraphics
+using LinearAlgebra
+```
+
+## Multiple linear regression
+
+The simple linear regression model related a covariate variable, $x$, to a response variable $Y$ through a formulation:
+
+$$
+y_i = \beta_0 + \beta_1 \cdot x_i + e_i,
+$$
+
+where $\beta_0, \beta_1$ are the parameters for the model that describe the average value of the $Y$ variable for a given $x$ value and the random errors, $e_i$, are *assumed* to be described to be a random sample from  some distribution, usually $Normal(0, \sigma)$. Some inferential results require this sample to be iid.
+
+The model for multiple regression is similar, though there are $k = 0, 1$, or more covariates accounted for in the notation:
+
+$$
+y_i = \beta_0 + \beta_1 \cdot x_{1i} + \beta_2 \cdot x_{2i} + \cdots + \beta_k \cdot x_{ki} + e_i.
+$$
+
+
+Following [@WackerlyMendenhallSchaeffer] we formulate the regression model using matrix algebra and quickly review their main results.
+
+If there are $n$ groups of data, then the main model matrix is the $n\times k$ matrix:
+
+$$
+X =
+\begin{bmatrix}
+1      & x_{11} & x_{12} & \cdots & x_{1k}\\
+1      & x_{21} & x_{22} & \cdots & x_{2k}\\
+\vdots & \vdots & \vdots & \vdots & \vdots \\
+1 & x_{n1} & x_{n2} & \cdots & x_{nk}
+\end{bmatrix}.
+$$
+
+The response, parameters, and errors are recorded in column vectors:
+
+$$
+Y = [y_1, y_2, \cdots, y_n], \quad \beta = [\beta_0, \beta_1, \dots, \beta_k], \quad e= [e_1, e_2, \dots, e_n].
+$$
+
+The collection of equations can then be written as $Y = X\beta + e$. The notation $\hat{Y} = X\beta$ is common, as the values $X\beta$ are used to *predict* the values of the response. The least squares problem to estimate the parameters is then to find $\beta$ to minimize:
+
+$$
+\lVert Y - \hat{Y} \rVert^2 = \lVert Y - X\beta \rVert^2.
+$$
+
+Using calculus, it can be seen that any minimizer, $\hat{\beta}$, will satisfy $X'X\hat{\beta}=X'Y$, with $X'$ denoting the transpose^[In `Julia`, the `'` notation for a matrix denotes the adjoint of the matrix, which differs from the transpose for complex valued matrices.]. When written out these are called the *normal equations*, which, *if* the matrix $X$ is non-degenerate (rank $k+1$ in this case), can be solved algebraically by
+
+$$
+\hat{\beta} = (X'X)^{-1}X' Y.
+$$
+
+(Though this isn't the formula used in practice where inverse taking is usually done in a roundabout, though more computationally efficient, manner.)
+
+We now assume the errors are an iid random sample from a distribution with mean $0$ and variance $\sigma^2$. The matrix of covariances $COV(\beta_i, \beta_j)$ is called the covariance matrix and denoted $\Sigma_{\hat{\beta}\hat{\beta}}$. Under these assumptions, it can be shown to satisfy:
+
+$$
+\Sigma_{\hat{\beta}\hat{\beta}} = \sigma^2 (X'X)^{-1}.
+$$
+
+
+The parameter $\sigma^2$ can be estimated. We have the *residuals* are given in vector form by $\hat{e} = Y - \hat{Y}$. But $\hat{Y} = \hat{H}Y$ where $\hat{H} = X(X'X)^{-1}X'$ is called the "hat" matrix and comes from $\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y$.
+
+The hat matrix has the property of a *projection matrix* taking values in an $n$ dimensional space and projecting onto a subspace described by the columns of the $X$ matrix. This allows a geometric interpretation of the least-squares formulation.^[This geometric interpretation of projection gives insight into the presence of an $F$ statistic later in this discussion.]
+
+The sum of squared residuals is:
+
+$$
+\sum (Y_i - \hat{Y_i})^2 = \lVert Y - \hat{Y} \rVert^2 = \lVert (1-\hat{H})Y\rVert^2 = Y'(I-\hat{H})Y,
+$$
+
+where $I$ is the diagonal matrix of all ones that acts like an identity under multiplication.
+
+The expected value can be computed to get $E(\lVert Y - \hat{Y} \rVert^2) = (n - 1 - k)\sigma^2$, which is used to *estimate* $\sigma^2$:
+
+$$
+s^2 = \frac{\lVert Y - \hat{Y} \rVert^2}{n-1-k} = \frac{\sum (Y_i - \hat{Y_i})^2}{n-1-k}.
+$$
+
+(When $k=0$, this is the same as the sample standard deviation with $\hat{Y_i}$ simply $\bar{Y}$.)
+
+
+More is known of the $\hat{\beta}$, in particular the distribution of:
+
+$$
+\frac{(\hat{\beta}-\beta) \cdot (X'X) \cdot (\hat{\beta} - \beta)}{\sigma_2}
+$$
+
+Is $Chisq(k+1)$and if the errors are from an iid random sample with population $Normal(0, \sigma)$, then this is independent of $s^2$ and so the ratio is $F$ distributed, leading to the following for a $(1-\alpha)\cdot 100$% *joint* confidence interval for $\beta$ being:
+
+$$
+(\hat{\beta}-\beta) \cdot (X'X) \cdot (\hat{\beta}-\beta) \leq (1+k)s^2 F_{1-\alpha; 1 + k, n-1-k}.
+$$
+
+
+While the error terms, $e$, are assumed to be *independent*, the residuals, $\hat{e}$, are not so, as one large residual must be offset by other smaller ones due to the minimization of the squared residuals. The matrix of their covariances can be expressed as $\Sigma_{\hat{e}\hat{e}} = \sigma^2 (I-\hat{H})$. The *standardized* residuals account for the $(I-\hat{H})$ and are given by: $e_i/(s\sqrt{1 - \hat{H}_{ii}})$.
+
+When the errors are an iid sample then the fitted values, $\hat{Y}$, are uncorrelated with the residuals.
+
+If it is assumed the error population is normal, then the least-square estimates for $\beta$, given by $\hat{\beta} = (X'X)^{-1}X Y$, are linear combinations of *independent* normal random variables, and consequently are normally distributed. (This is assuming the covariates are not random, or the $Y$ values are conditionally independent.) For each $i$, we have $E(\hat{\beta}_i) = \beta_i$ and $SE(\hat{\beta}_i) = s_{\hat{\beta}_i} = s \sqrt{c_{ii}}$, where $c_{ii}$ is the diagonal entry of $(X'X)^{-1}$. Moreover, the $T$-statistic:
+
+$$
+T = \frac{\hat{\beta}_i - \beta_i}{SE(\hat{\beta}_{ii})},
+$$
+
+will have a $T$-distribution with $n-k-1$ degrees of freedom, when the errors are iid and normally distributed. For a single estimate, $\hat{\beta}_i \pm t_{1 - \alpha/2, n-1-k} s \sqrt{((X'X)^{-1})_{ii}}$ forms a $(1 - \alpha)\cdot 100$% confidence interval for $\beta_i$.
+
+
+
+When the regression model is used for predicting the mean response for a given set of covariates, $x_0$, the predictor would be $\hat{\mu}_0 = x_0 \cdot \hat{\beta}$ (with the first value for $x_0$ being $1$). The variance can be computed to give $VAR(\hat{\mu}_0) = \sigma^2 x_0'(X'X)^{-1}x_0$, which depends on the value of $x_0$. Confidence bands drawn by the `linear()` visualization for a scatterplot of data use this formula and a related one to estimate a single value, not an average value. The dependence on $x_0$ gives the curve away from the center, $\bar{x}$.
+
+A measure of how much variation in the response is explained by the dependence on the respective covariates (the *coefficient of determination*) is given by $R^2$ which is computed by
+
+$$
+R^2 = 1 - \frac{SSR}{SST},
+$$
+
+where $SSR = \sum \hat{e}_i^2 = \sum (y_i - \hat{y}_i)^2$ is the sum of the squared residuals and $SST = \sum (y_i - \bar{y})^2$ is the total sum of the squares. When the ratio $SSR/SST$ is close to $1$, then the model ($\hat{y}$) doesn't explain much of the variation compared to the null model with all the $\beta_i$'s, $i \geq 1$ being $0$ and the sample mean of the $y$, $\bar{y}$, used for prediction. Conversely, when the ratio is close to $0$, then the model explains much of the variation. By subtracting this from $1$, as is customary, we have the interpretation that $R^2$ explains $R^2 \cdot 100$% of the variation in the $y$ values.
+
+The value of $R^2$ can be made equal to $1$ with enough variables; the *adjusted* $R^2$ value is a modification that weights $SSR/SST$ by $(n-1)/(n-k-1)$ so more variables (bigger $k$) will makes this smaller.
+
+
+### Generic methods for statistical models
+
+The `StatsBase` package defines methods for the above calculations and more. These are generic methods with similar usage for other models than the linear regression model discussed here.  @tbl-stat-models-api lists several.
+
+| Method | Description |
+|--------|-------------|
+| `coef` | Least squares estimates for intercept, $\hat{\beta}_0, \hat{\beta}_1, \dots, \hat{\beta}_k$ |
+| `coefnames` | Names of coefficients       |
+| `stderror` | Standard errors of coefficients |
+| `residuals` | Residuals, $y_i - \hat{y}_i$      |
+| `fitted` |  $\hat{y}_i$ values      |
+| `predict` | Predict future values using  $\hat{\beta}$s       |
+| `confint` | Confindence interval for estimated parameters       |
+| `modelmatrix` | Matrix ($X$) used in computations   |
+| `nobs` | $n$       |
+| `dof` |  *Consumed* degrees of freedom (matrix rank plus $1$)      |
+| `dof_residual` | residual degrees of freedom. $n-k-1$       |
+| `r2` | Coefficient of determination, $1 - SSR/SST$       |
+| `adjr2` | Adjusted $R^2$, $1 - SSR/SST \cdot (n-1)/(n-1-k)$       |
+| `vcov` | Variance/Covariance matrix for the $\hat{\beta}$s |
+| `dispersion`$^*$ | Estimate for $\sigma$, $\hat{\sigma} = \sqrt{SSR/(n-1-k)}$|
+| `deviance` | Residual sum of squares, $SSR$       |
+| `nulldeviance` | Total sum of squares $SST = \sum(y_i - \bar{y})^2$.       |
+| `loglikelihood` | Log-likelihood of the model  |
+| `nullloglikelihood` | Log-likelihood of null model        |
+| `ftest`$^*$ | Compute $F$-test of two or more *nested* models       |
+| `aic` |  Akaike's Information Criterion, $-2\log(L) + 2(k+2)$       |
+| `bic` | Bayesian Information Criterion, $-2\log(L) + (k+2)\log(n)$   |
+
+
+: Generic methods for statistical models defined in [`StatsBase`](https://juliastats.org/StatsBase.jl/stable/statmodels/). Those marked with a $*$ are defined on the `model` property of the `lm` output. {#tbl-stat-models-api tbl-colwidths="[25,75]"}
+
+::: {#exm-simple-linear-regression}
+##### Example of simple linear regression
+
+Consider some simulated data on dosage amount of Ivermectin and days to recovery of COVID-19 fit by a simple linear model:
+
+```{julia}
+x = [100, 100, 200, 200, 400, 400, 600, 800]
+y = [5, 5, 6, 4, 5, 8, 6, 6];
+res = lm(@formula(y ~ x), (; x, y))  # uses named tuple to specify data
+```
+
+
+The output shows the estimated coefficients, $\hat{\beta}_0$ and $\hat{\beta}_1$. These are computed by $(X'X)^{-1}XY$:
+
+```{julia}
+X = modelmatrix(res)
+inv(X' * X) * X' * y
+```
+
+These are also returned by the `coef` method, as in `coef(res)`.
+
+The default output also computes confidence intervals and performs two-sided tests of whether the parameter is $0$. Focusing on $\hat{\beta}_1$, we can find its standard error from $s \sqrt{c_{ii}}$. First we compute $s$:
+
+```{julia}
+n, k = length(x), 1
+s² = sum(eᵢ^2 for eᵢ in residuals(res)) / (n - k - 1)
+s = sqrt(s²)  # also dispersion(res.model)
+C = inv(X'*X)
+sbetas = s * sqrt.(diag(C))
+```
+
+More conveniently, these are returned by the `stederror` method:
+
+```{julia}
+stderror(res)
+```
+
+These are also the square root of the diagonal of the covariance matrix, $\Sigma_{\hat{\beta}\hat{\beta}}$, computed by the `vcov` method:
+
+```{julia}
+Σᵦᵦ = vcov(res)
+```
+
+```{julia}
+sqrt.(diag(Σᵦᵦ))
+```
+
+
+The $T$ statistic for $H_0: \beta_1 = 0$ is then
+
+```{julia}
+β̂₁, SE₁ = coef(res)[2], stderror(res)[2]
+T_obs = (β̂₁ - 0) / SE₁
+```
+
+The $p$-value is then found directly with:
+
+```{julia}
+2 * ccdf(TDist(n-k-1), T_obs)
+```
+
+This computation is needed were there different assumed values than $\beta_1 = 0$ for the null.
+
+The confidence intervals are of the form $\hat{\beta}_i \pm t_{1-\alpha/2; n-k-1} \cdot SE(\hat{\beta}_i)$. We find one for the intercept term, $\beta_0$:
+
+```{julia}
+alpha = 0.05
+ta = quantile(TDist(n-k-1), 1 - alpha/2)
+β̂₀ = coef(res)[1]
+SE₀ = stderror(res)[1]
+β̂₀ .+ ta * [-SE₀, SE₀]
+```
+
+The `confint` method will also compute these, returning the values as rows in a matrix:
+
+```{julia}
+confint(res)
+```
+
+
+We compute the confidence interval for $\hat{\mu}$ when $x=500$ using the variance formula above.
+
+```{julia}
+x0 = [1, 500]
+μ̂ = predict(res, (x=[500],))[1]  # also  dot(inv(X'*X)*X'*y, x0)
+SE = s * sqrt(x0' * inv(X' * X) * x0)
+ci = μ̂ .+ ta * [-SE, SE]
+```
+
+We can visualize (@fig-linear-regression-confidicence-interval) with the following commands:
+
+```{julia}
+#| label: fig-linear-regression-confidicence-interval
+#| fig-cap: Illlustration of linear regression model with confidence band drawn. The vertical line is computed directly for the value of $x=500$.
+p = AlgebraOfGraphics.data((;x, y)) *
+    (visual(Scatter) + linear(;interval=:confidence)) * mapping(:x, :y)
+p += data((x=[500, 500], y=ci)) * visual(Lines) * mapping(:x, :y)
+draw(p)
+```
+
+The value of $R^2$ can be computed directly:
+
+```{julia}
+1 - sum(eᵢ^2 for eᵢ in residuals(res)) / sum((yᵢ - mean(y))^2 for yᵢ in y)
+```
+
+This can also be computed using several of the methods defined for model outputs by `GLM`:
+
+```{julia}
+r2(res), 1 - deviance(res)/nulldeviance(res)
+```
+
+Whichever way, for this model a low $R^2$ implies the model does not explain much of the variance in the response.
+
+
+:::
+
+::: {#exm-multiple-regression}
+##### Multiple regression example
+
+We give an example of multiple linear regression using a data set on various cereal boxes in a US grocery store.
+
+```{julia}
+cereal = dataset("MASS", "UScereal")
+first(cereal, 2)
+```
+
+The data set collected numerous variables, here we consider numeric ones:
+
+```{julia}
+names(cereal, Real) |> permutedims
+```
+
+The initial model we consider has `Calories` as a response, and several covariates:
+
+```{julia}
+fm = @formula(Calories ~ Protein + Fat + Sodium + Carbo + Sugars)
+res = lm(fm, cereal)
+```
+
+
+The output shows what might have been anticipated: there appears to be no connection with `Sodium`, though were this data on dinner foods that might not be the case. The $T$-test for `Sodium` is  a test of whether  the slope based on `Sodium` is $0$ -- holding the other variables constant -- and the large $p$-value would lead us to accept that hypotheses.
+
+
+We drop this variable from the model and refit:
+
+```{julia}
+res = lm(@formula(Calories ~ Protein + Fat + Carbo + Sugars), cereal)
+```
+
+How to interpret this? Each coefficient (save the intercept) measures the *predicted* change in *mean* number of calories for a $1$-unit increase *holding* the other variables fixed. For example, it is suggested that adding 1 unit of protein additional would add nearly 4 calories per serving, on average.
+:::
+
+:::{#exm-polynomial-regression}
+##### Polynomial regression
+
+[Dickey](http://jse.amstat.org/v3n1/datasets.dickey.html) provides an analysis of Galileo's falling ball data. Galileo rolled a ball down an elevated ramp at certain distances, the ball then jumped down a certain distance that varied depending on the height of the ramp. The collected data is:
+
+```{julia}
+release = [1000, 800, 600, 450, 300, 200, 100]
+horizontal_distance = [573, 534, 495, 451, 395, 337, 253]
+galileo = DataFrame(; release, horizontal_distance)
+first(galileo, 3)
+```
+
+With an assumption that the horizontal distance was related to $v_xt$ and $t$ was found by solving for $0 = h - (1/2)gt^2$, we might expect $h$ and $t$ to be quadratically related. We consider, somewhat artifcially, the release height modeled *linearly* by the horizontal distance:
+
+```{julia}
+res = lm(@formula(y ~ x), (y=galileo.release, x=galileo.horizontal_distance))
+```
+
+Without much effort, the small $p$-value would lead one to conclude the linear term is statistically significant.  But Galileo might have expected a *quadratic* relationship and a modern reader might, as well, viewing @fig-galileo-linear, such as modeled by the following:
+
+
+```{julia}
+res₂ = lm(@formula(y ~ x + x^2), (y=galileo.release, x=galileo.horizontal_distance))
+```
+
+The rules of `@formula` parse the above as adding a variable `x^2` to the model. Alternatively, the data frame could have been transformed to produce that variable. The output shows the test of $\beta_2=0$ would be rejected for reasonable values of $\alpha$, as Galileo might have expected.
+
+```{julia}
+#| echo: false
+#| label: fig-galileo-linear
+#| fig-cap: Scatter plot of falling-ball data of Galileo with a linear model fit. The curve suggests a quadratic model.
+p = data(galileo) * (visual(Scatter) + linear()) * mapping(:horizontal_distance, :release)
+draw(p)
+```
+
+:::
+
+## Categorical covariates
+
+The linear regression model is more flexible than may appear on first introduction through simple regression.
+
+For example, the regression model when there are no covariates is just a one-sample $T$-test, as seen from this example where a two-sided test of $0$ mean is carried out.
+
+```{julia}
+y = [-0.2, 1.9, 2.7, 2.6, 1.5, 0.6]
+lm(@formula(y ~ 1), (;y)) # using a named tuple for the data
+```
+
+The formula usually has an *implicit* intercept, but here with no covariates listed, it must be made explicit. Compare the values with the following:
+
+```{julia}
+OneSampleTTest(y)
+```
+
+Further, the two-sample $T$-test (with equal variances assumed) can be performed through the regression model. After tidying the data, we fit a model:
+
+```{julia}
+y1 = [5,4,6,7]
+y2 = [7,6,5,4,5,6,7]
+df = DataFrame(group=["g1","g2"], value=[y1, y2])
+d = flatten(df, [:value])
+res = lm(@formula(value ~ group), d)
+```
+
+We can compare the computed values to those computed a different way:
+
+```{julia}
+EqualVarianceTTest(y2, y1)
+```
+
+However, some comments are warranted. We would have found a slightly different answer (a different sign) had we done `EqualVarianceTTest(y1, y2)`. This is because a choice is made if we consider $\bar{y}_1-\bar{y}_2$ or $\bar{y}_2 - \bar{y}_1$ in the statistic.
+
+In the use of the linear model, there is a new subtlety -- the `group` variable is *categorical* and not numeric. A peek at the *model matrix* (`modelmatrix(res)`) will show that the categorical variable was *coded* with a $0$ for each `g1` and $1$ for each `g2`. The details are handled by the underlying `StatsModels` package which first creates a `ModelFrame` which takes a formula and the data; `ModelMatrix` then creates the matrix, $X$. The call to `ModelFrame` allows a specification of *contrasts*. The above uses the `DummyCoding`, which picks a  base level (`"g1"` in this case) and then creates a variable for *each* other level, these variables having values either being `0` or `1`, and `1` only when the factor has that level. Using the notation $1_{j}(x_i)$ for this, we have the above call to `lm` fits the model $y_i = \beta_0 + \beta_1 \cdot 1_{\text{g2}}(x_i) + e_i$ and the model matrix shows this (2nd row below):
+
+```{julia}
+modelmatrix(res) |> permutedims # turned on side to save page space
+```
+
+The model can't be $y_i = \beta_0 + \beta_1 \cdot 1_{\text{g2}}(x_i) + \beta_2 \cdot 1_{\text{g1}}(x_i) + e_i$ as there can't be a unique solution (the model $y_i = (\beta_0 + \beta_2) + \beta_2\cdot 1_{\text{g2}}(x_i)$ would also fit). More mathematically, the model matrix, $X$, would have 3 columns, but one of them could be expressed as a sum of the other 2. This would mean $X$ would not have full rank and the least-squares formula wouldn't have the form it does.
+
+To fit a model with different contrasts, the `lm` function has a `contrast` keyword argument.
+
+
+The above formulation does not require the factor to have just 2 levels; if there are $k$ levels, then $k-1$ variables are formed in the model.
+
+
+::: {#exm-regression-with-categorical-variables}
+##### Categorical covariates example
+
+Consider the `cereal` data set. The `Shelf` variable is numeric, but really it should be considered categorical for any study using a linear model, as differences between shelf 1 and 2 and shelf 2 and 3 should not be expected to be uniform (as they would were the values treated numerically). The following first ensures shelf is categorical, then fits a model on how the shelf placement impacts the number of calories:
+
+```{julia}
+cereal.shelf = categorical(cereal.Shelf)
+res = lm(@formula(Calories ~ shelf), cereal)
+```
+
+The $p$-value for shelf 2 is consistent with there being no difference between shelf 1 and 2, but that of shelf 3 (counting from the floor) is significantly different from shelf 1 and would be interpreted as having 60 additional calories over shelf 1. (The lowest-shelf traditionally holds the least sold cereals, hence the most healthy in 1993 when this data was collected).
+
+
+We can check that the model matrix has $2$ variables a few ways: directly from the size (with first column being the intercept), and indirectly by the residual degrees of freedom:
+
+```{julia}
+size(modelmatrix(res)), nobs(res) - dof_residual(res) - 1 # dof_residual = n - k - 1
+```
+
+The omnibus $F$-test is a statistical test for a null hypothesis that $\beta_i=0$ for all $i$ except $i=0$. It is implemented in the `ftest` method of `GLM`. It requires fitting the null model of just a constant, which we do with:
+
+```{julia}
+res₀ = lm(@formula(Calories ~ 1), cereal)  # null model
+```
+
+The test takes the model, which is stored in the `model` property:
+
+```{julia}
+ftest(res.model, res₀.model)
+```
+
+Ignoring for now all but the bottom right number which gives the $p$-value, we see that this null model would be rejected.
+
+:::
+
+## Interactions
+
+An *interaction* is when the effect of one explanatory variable depends on the values of a different explanatory variable. We see such a case in the following example.
+
+::: {#exm-regression-interactions}
+
+The `ToothGrowth` data set is included in base R and summarizes an experiment on the effect of vitamin C on tooth growth in guinea pigs. Each of the 60 animals in the study received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid. We load the data set using `RDatasets`:
+
+```{julia}
+ToothGrowth = dataset("datasets", "ToothGrowth")
+first(ToothGrowth, 2)
+```
+
+
+`Dose` is seen to be stored as a numeric variable (`Float64`), but we treat it as a categorical variable in the following. The table shows that the 6 different treatment pairs were tested on 10 animals.
+
+```{julia}
+ToothGrowth.Dose = categorical(ToothGrowth.Dose)
+combine(groupby(ToothGrowth, 2:3), nrow)
+```
+
+@fig-tooth-growth-violinplot shows a violinplot with sides reflecting the distribution of the `:Supp` variable. A quick glance suggests that there may be some effect due to the dosage amount and a difference between the `OJ` and `VC` delivery.
+
+```{julia}
+#| echo: false
+#| label: fig-tooth-growth-violinplot
+#| fig-cap: ToothGrowth data set
+p = data(ToothGrowth) * visual(Violin) * mapping(:Dose, :Len, side=:Supp, color=:Supp)
+draw(p)
+```
+
+We proceed to fit the *additive* model where `Supp` introduces one variable, and `Dose` two:
+
+```{julia}
+res = lm(@formula(Len ~ Supp + Dose), ToothGrowth)
+```
+
+The small $p$-values support the visual observation that there are differences. The value for "`Supp: VC`", for instance, indicates that holding the dose equal, administering the dosage through citamin C and not ascorbic acid  had a negative effect of $-3.7$ units on the predicted average tooth length.
+
+
+Visually, the distribution of the `VC` variable seems to depend on the dosage. Perhaps there is an *interaction*.
+
+For this data we can fit a model
+
+
+\begin{align*}
+y_i & = \beta_0 + \\
+    & \beta_1 \cdot 1_{\text{VC}}(\text{Supp}_i) + \\
+	& \beta_2 \cdot 1_{1.0}(\text{Dose}_i) + \beta_3 \cdot 1_{2.0}(\text{Dose}_i) + \\
+	& \beta_4 \cdot 1_{\text{VC}, 1.0}(\text{Supp}_i, \text{Dose}_i) + \beta_5 \cdot 1_{\text{VC}, 2.0}(\text{Supp}_i, \text{Dose}_i) + e_i
+\end{align*}
+
+The additional terms account for cases where, say, `Supp = VC` *and* `Dose = 1.0`.
+
+Interactions are specified in the modeling formula through `*`. (Which when used also includes the additive terms without interactions. Plain interactions are specified with `&`.). The model is:
+
+```{julia}
+resᵢ = lm(@formula(Len ~ Supp * Dose), ToothGrowth)
+```
+
+As expected from the graph, the $p$-value for the "`Supp: VC & Dose: 2.0`" case is significant.
+
+As before, an $F$ test can test the difference between the model with and without the interaction:
+
+```{julia}
+ftest(res.model, resᵢ.model)
+```
+
+The small $p$-value suggests the interaction is statistically significant.
+
+:::
+
+
+## F test
+
+Consider the linear regression model with parameters $\beta$ and a significance test with some constraint on the parameters (e.g. $\beta_1 = 0$ or $\beta_1 = \beta_2$). Suppose the error terms are an iid random sample from a $Normal(0, \sigma)$ distribution. The a test of $H_0$ against an alternative of not $H_0$ can be carried out by considering the likelihood ratio statistic. The likelihood function for a set of parameters $\beta$ is:
+
+\begin{align*}
+L(\beta, \sigma, x) &= \prod_{i=1}^n \frac{1}{(2\pi\sigma^2)^{n/2}} e^{-\frac{1}{2\sigma^2}(y_i - \hat{y}_i)^2}
+\\
+&=\frac{1}{(2\pi)^{n/2}} \frac{1}{\sigma^n} e^{-\frac{1}{2\sigma^2}\sum_i(y_i - \hat{y}_i)^2},
+\end{align*}
+
+where $\hat{y}_i = X\beta$ for some $X$ related to the data. As $e^{-x}$ is decreasing, $L$ is maximized in $\beta$ when $\sum_i (y_i - \hat{y}_i)^2$ is *minimimized* (a least squares estimate), say at $m(\hat{\beta})$. In terms of $\sigma$ we take a logarithm and seek to maximize:
+
+$$
+-\frac{n}{\sigma}\ln(2\pi)  - n \ln(\sigma) - \frac{1}{2\sigma^2} m(\hat{\beta}).
+$$
+
+This occurs at
+
+$$
+\hat{\sigma} = \frac{m(\hat{\beta})}{n} = \frac{1}{n} SSR,
+$$
+
+where $SSR$ indicates the sum of the squared residuals, $y_i - \hat{y}_i$. (This is a *biased* estimate, as the divisor does not account for the degrees of freedom.)
+
+
+The log-likelihood ratio statistic consider the two models: the restricted one under $H_0$ and the unrestricted one. This simplifies to
+
+$$
+\lambda = -2 \ln \frac{L_0}{L} = n \ln(\frac{SSR_0}{SSR}),
+$$
+
+with $SSR_0$ being the sum of the squared residuals under $H_0$ and $SSR$ the sum of the squared residuals under the full model, which necessarily is smaller than $SSR_0$. The *asymptotic* distribution is $Chisq(k-p)$ where $p$ variables are free in $H_0$.
+
+The above says *if* $SSR_0/SSR$ is sufficiently large it is statistically significant. Algebraically, the same thing can be said about
+
+$$
+F = \frac{n-k-1}{k-p} \cdot \frac{SSR_0 - SSR}{SSR} =
+\frac{(SSR_0 - SSR)/(k-p)}{SSR/(n-k-1)}.
+$$
+
+The distribution of $SSR/(n-k-1)$ is $Chisq(n-k-1)$. However, under these assumptions and under the null hypothesis, by Cochran's theorem $SSR_0- SSR$ is *independent* of $SSR$ and $(SSR_0-SSR)/(k-p)$ is $Chisq(k-p)$. That is $F$ has a $FDist(n-k-1, k-p)$ distribution. (Not asymptotically.)
+
+This is used by `ftest` to compare two *nested* models. Nested means the parameters in the reduced model are related to those in the full model; no new ones are introduced. More technically, the column space of the reduced model is embedded in that of the full model.
+
+
+:::{#exm-vc-continued}
+
+Consider again the output of the last call to `ftest` which checked for an interaction between the `Supp` and `Dose` variables in the `ToothGrowth` data:
+
+```{julia}
+res₀ = lm(@formula(Len ~ Supp + Dose), ToothGrowth)
+res = lm(@formula(Len ~ Supp * Dose), ToothGrowth)
+ftest(res₀.model, res.model)
+```
+
+The *null* hypothesis is $H_0: \beta_4 = \beta_5 = 0$. The full model has $k=5$, the null has $p=3$. The reported degrees of freedom is the *consumed degrees of freedom* which is this number of (linearly independent) columns in the model matrix ($k+1$) plus $1$. The sum of squares can be computed directly or through the `deviance` method:
+
+```{julia}
+SSR₀, SSR = deviance(res₀), deviance(res) # or, say, sum(residuals(res₀).^2)
+```
+
+The difference between the two is the numerator of the $F$ statistic when divided by $2 = 5-3$ (or $7-5$). The denominator should be $SSR/(n-k-1)$:
+
+```{julia}
+((SSR₀ - SSR)/(5 - 3)) / (SSR / (60 - 1 - 5))
+```
+
+The degrees of freedom ($n-1-k$) is  also calculated by
+
+```{julia}
+dof_residual(res)
+```
+
+
+The `ftest` can test more than rwo models. For example, suppose we test the null model with just an intercept, as in:
+
+```{julia}
+resᵢ = lm(@formula(Len ~ 1), ToothGrowth)
+ftest(resᵢ.model, res₀.model, res.model)
+```
+
+The output here has two $p$-values, the first testing if the additive model is statistically significant (with a very small $p$-value), the second testing, as mentioned, if the model with interaction is statistically significant compared to the additive model.
+
+:::
+
+
+:::{#exm-faraway}
+
+We borrow an example from [@Faraway] to illustrate how the $F$-test can be used to test a null hypothesis of $H_0: \beta_i = \beta_j$.
+
+The dataset is in the `datasets` package of R:
+
+```{julia}
+savings = dataset("datasets", "LifeCycleSavings")
+first(savings, 2)
+```
+
+We fit the full model for `SR` through:
+
+```{julia}
+res = lm(@formula(SR ~ Pop15 + Pop75 + DPI + DDPI), savings)
+```
+
+A test of $H_0: \beta_1 = \beta_2$ is done by preparing a variable `Pop15 + Pop75` (rather than a modification to the formula):
+
+```{julia}
+res1575 = lm(@formula(SR ~ Pop1575 + DPI + DDPI),
+             transform(savings, [:Pop15, :Pop75] => (+) => :Pop1575))
+```
+
+The `ftest` then can be applied:
+
+```{julia}
+ftest(res.model, res1575.model)
+```
+
+The large $p$ value suggests no reason to reject this null.
+
+:::

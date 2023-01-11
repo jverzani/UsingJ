@@ -1,0 +1,81 @@
+# Julia introduction
+
+This is a collection of notes for using `Julia` for Introductory Statistics.
+
+Why? No compelling reason save I had done something similar for `R` when was a fledgling `S-Plus` clone. No more, `R` is a juggernaut, and it is almost certain `Julia` will never replace `R` for this statistics. `Julia` users can already interface with `R` quite easily through `RCall`. *However*, there are some reasons that `Julia` could be a useful language when learning basic inferential statistics, especially if other real strengths of the `Julia` ecosystem were needed. So these notes show how `Julia` can be used for these tasks, and also shows that it works pretty well.
+
+There are some great books published about using `Julia` with data
+science, within which much of this material is covered. For example,
+[@JuliaForDataAnalysis] is a quite thorough treatmeant,
+[@storopolihuijzeralonso2021juliadatascience] is very well done,
+[@nazarathy2021statisticsjulia] covers topics here (cf. [JuliaCon
+Workshop](https://www.youtube.com/watch?v=IlPoU5Yr2QI). View this as
+an alternative.
+
+
+[Julia](https://julialang.org/) is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance -- Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than `R` and `Python`, widely used scripting languages for the tasks illustrated herein.
+
+## Installing and running Julia
+
+Julia can be downloaded from [julialang.org](https://julialang.org/). The language is evolving rapidly. The latest release should be used. These notes should work with any version since `v"1.6.0"`, though post `v"1.9.0"` there are significant speedups with external packages that make the user experience even better.
+
+Once downloaded and installed the `Julia` installation will provide a *command line* for interactive usage and a binary to run scripts. It is envisioned most users will use an alternative interface, though `Julia` has an excellent REPL for command-line usages.
+
+Some alternatives to the REPL for interacting with `Julia` are:
+
+* [IJulia](https://github.com/JuliaLang/IJulia.jl): This is a means to use the Jupyter interactive environment to interact with `Julia` through notebooks. It is made available by installing the package `IJulia` (details on package installation follow below). This relies on `Julia`'s seamless interaction with  `Python` and leverages many technologies developed for that langauge.
+* [Pluto](https://githuhttps://plutojl.org/): The Pluto environment provides a notebook interface for `Julia` written in `Julia` leveraging many JavaScript technologies for the browser. It has the feature of being reactive, making it well suited for many exploratory tasks and pedagogical demonstrations.
+* [Visual Studio Code](https://www.julia-vscode.org/): `Julia` is a supported language for the Visual Studio Code editor of Microsoft, a programmer's IDE.
+
+These notes use `quarto` to organize the mix of text, code, and graphics. The `quarto` publishing system is developed by [Posit](https://posit.co/), the developers of the wildly sucessful `RStudio` interface for `R`. The code snippets are run as blocks (within `IJulia`) and the last command executed is shown. (If code is copy-and-pasted into the REPL, each line's output will be displayed.) The code display occurs below the cell, as here, where we show that `Julia` can handle basic addition:
+
+```{julia}
+2 + 2
+```
+
+These notes are a work in progress. Feel free to click the "edit this page" button or report an issue.
+
+## Overview of some basics
+
+This section gives a quick orientation for using `Julia`. See the collection of [tutorials](https://julialang.org/learning/tutorials/) for more comprehensive introductions.
+
+As will be seen `Julia` use *multiple dispatch* (as does `R`) where different function methods can be called using the same generic name. Different methods are dispatched depending on the type and number of the arguments. The `+` sign above, is actually a function call to the `+` function, which in base `Julia` has over 200 different methods, as there are many different implementations for addition.
+
+`Julia` is a *dynamically typed* language, like `R` and `Python`, meaning variables can be reassigned to different values and with different types.^[With the one caveat that generic function names can not be reassigned as variables or vice versa.] Dynamicness makes interactive usage at the REPL or through a notebook much easier.
+
+::: {.callout-note}
+##### Interactive help
+Interacting with `Julia` primarily involves variables and functions. Most all functions have documentation, which can be called up by prefacing the function name with an immediate question mark, as in `?sqrt` to see the documentation for `sqrt`. More than one method may be documented. A call like `?sqrt(9)` will limit the help to the method called by `sqrt(9)` (the square root function for integers.)
+:::
+
+Julia supports the usual mathematical operations familiar to users of a calculator, such as `+`, `-`, `*`, `/`, and `^`. In addition, there a numerous built in functions such as mathematical ones like `sqrt` or programming oriented ones, like `map`.
+
+These functions are called with arguments which may be *positional* ($0$, $1$, or more positional arguments) or specified by *keywords*. Multiple dispatch considers the  positions and types of arguments a function is called with.
+
+Values in `Julia` have types. A particular instance will have a concrete type but *abstract* types help to organize code bases and participate in dispatch. Values can be assigned to variable names, or bindings. The ability to simply create new user-defined types makes generic programming quite accessible and `Julia` code very *composable*.
+
+This simple example, taking the average of several numbers, shows most of this:
+
+```{julia}
+xs = [1, 2, 3, 7, 9]
+sum(xs) / length(xs)
+```
+
+The first line *assigns* to a variable, `xs`, a value that is a *vector* of numbers, integers of type `Int53` in this case. For this illustration, a vector is a container of different numbers. The second line calls three functions: `sum` to add the elements in the vector; `length` to count the number of elements in the vector; and `/` to divide these two quantities. All of these functions are *generic*, with different methods for different types of argument(s). The same pattern would work for different container types:
+
+```{julia}
+xs = (1, 2, 3, 7, 9) # tuple
+sum(xs) / length(xs)
+```
+
+## Add-on packages
+
+Base `Julia` provides a very useful programming environment which can be extended through *packages*. Some packages are provided by base `Julia`, such as `Dates`, others are external add-on packages, such as `IJulia` mentioned previously. Julia has one key package, `Pkg`, to manage the installation. By default, the installation of a single package will download all dependent packages. On installation, packages are partially compiled. This speeds up the *loading* of a package when it is used within a session.
+
+Packages need be installed just once, but must be loaded each session. Loading a package is done by a command like `using Statistics`, which will load the built in `Statistics`  package. At the REPL, calling `using PKGNAME` on an uninstalled package will lead to a prompt to install the package. For other interfaces, packages may need to be installed through the `Pkg` package, loaded through `using Pkg`.
+
+When a package is loaded its exported functions are made available to use directly. Non-exported functions can be accessed by *qualifying* the function with the name of a *module* (usually the name of the package). For example, we will see the command `CSV.read` which calls the `read` function provided in the `CSV` package.
+
+Most packages are set up to *extend* generic functions that may be defined elsewhere. Not all. When there are conflicts, they can be resolved by either just *importing* the packages and qualifying all uses, or qualifying the uses that conflict.
+
+These notes will utilize numerous add-on packages including: `StatsBase`, to extend the built-in `Statistics` package; `StatsPlots`, for easier to make plots; `AlgebraOfGraphics` and `GLMakie`, for more advanced statistical graphics; `CSV`, `DataFrames` for working with tabular data; `RDatasets`, for some handy datasets; `FreqTables` and `CategoricalArrays`, for some needed functionality; `Distributions`, for probability distributions; `HypothesisTests`, for the computation of significance tests and confidence intervals; and `GLM`, `Loess`, and `RobustModels`, for statistical modeling.

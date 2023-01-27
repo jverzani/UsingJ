@@ -2,7 +2,7 @@
 
 Statistics involves the study of data. A data set can be a single value, or *scalar*, but more commonly is a collection of values. This chapter covers the basic containers used in `Julia` to store and
 manipulate data sets for a single variable in statistics. In addition it
-shows some basic summaries of a single variable.
+shows some well-known summaries of a single variable.
 
 
 
@@ -19,13 +19,13 @@ We consider this data on the number of whale beachings in a certain area by year
 As the data in a data set is typically of the same type (integer here, or character, number, ...) and may be quite large a vector is a natural choice for storage in `Julia`.
 
 Vectors are created using square brackets with entries separated by commas.
-Storing this in a vector and assigning to a variable, `whale`, is then done with:
+Storing the data in a vector and assigning to a variable, `whale`, is then done with:
 
 ```{julia}
 whale = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
 ```
 
-Without using commas, a matrix is created:
+Without using commas in the construction, a matrix is created:
 
 ```{julia}
 whale_matrix = [74 122 235 111 292 111 211 133 156 79]
@@ -35,20 +35,25 @@ whale_matrix = [74 122 235 111 292 111 211 133 156 79]
 ::: {.callout-note}
 ##### Space saving measure
 
-For purposes of printing only, we use the trailing `|> permutedims` below to to print a *column* vector, as a *row* vector in the following, as with:
+For purposes of printing only, we use `show` or the trailing `|> show` (which uses the chaining operation to call the `show` function) in the following to format how a vector is printed.
+This is only a space saving measure and wouldn't normally be done when interacting with `Julia`.^[For some case, where `show` takes too much horizontal space, `permutedims` is used for a similar purpose, as may elide some values.]
 
 ```{julia}
-whale |> permutedims
+show(whale)
 ```
 
-This uses the chaining operation to call the `permutedims` function on the vector.
 :::
 
 
-Internally a vector is a $1$-dimensional array, a matrix a $2$
-dimensional array. `Julia` has a general $N$ dimensional array type
-that these are specializations of.  For a matrix, one uses space to
-separate row elements and semicolons to separate rows. Vectors are useful for storing data; matrices can be used to store data, but are widely used to represent mathematical values, as they have an associated algebra that can compactly represent many operations; arrays are not used in our discussion.
+Internally a vector is a $1$-dimensional array, a matrix a
+$2$-dimensional array. `Julia` has a general $N$-dimensional array
+type that these are specializations of.  For a matrix, one uses space
+to separate row elements and semicolons to separate rows. Vectors are
+useful for storing data; matrices can be used to store data, as will
+be seen through exmaple, but are widely used to represent mathematical
+values, as they have an associated algebra that can compactly
+represent many operations (we will see a data frame is more idiomatic
+for storing rectangular data); arrays are not used in our discussion.
 
 
 As seen in the output above, `Julia` prints the size and *element type* of a vector. In this case, a vector of integers (`Int64`). The constructor (`[]`) will promote values to a common type, which may be `Any`, a catch all type.
@@ -67,7 +72,7 @@ The `length` function is a reduction, returning a summary of a vector. Similarly
 sum(whale) / length(whale)
 ```
 
-The `mean` function is not part of base `Julia`. It can be found in the `Statistics` package, which comes bundled with `Julia`, but we prefer to use the `StatsBase` package:
+The `mean` function is not part of base `Julia`. It can be found in the `Statistics` package, which comes bundled with `Julia`, but we prefer to use the add-on `StatsBase` package:
 
 ```{julia}
 using StatsBase
@@ -104,7 +109,7 @@ The `missing` value propagates through computations:
 sum(hip_cost)
 ```
 
-In particular, all of these basic combinations with `missing` yield `missing`, as they should -- if data is not available, combinations based on that data are still not available:
+In particular, all of these  combinations with `missing` yield `missing`, as they should -- if data is not available, combinations based on that data are still not available:
 
 ```{julia}
 1 + missing, 1 - missing, 1*missing, 1/missing, missing^2, missing == true
@@ -113,8 +118,7 @@ In particular, all of these basic combinations with `missing` yield `missing`, a
 ::: {.callout-note}
 ##### Also nothing and something
 
-In `Julia` there is also `nothing`. The semantics are a bit different, and `missing` is the designed choice for data. (The `nothing` value is useful for general programming purposes.) For floating point values, there is also `NaN`, or not a number. This too ios often used, as a sentinel value, to indicate missingness, though `missing` is suggested. The `something` function is used to skip over its arguments until a non-`nothing` value is found.
-
+In `Julia` there is also `nothing`. The semantics are a bit different, and `missing` is the designed choice for data. (The `nothing` value is useful for general programming purposes.) For floating point values, there is also `NaN`, or not a number. This too is often used, as a sentinel value, to indicate missingness, though `missing` is idiomatic. The `something` function is used to skip over its arguments until a non-`nothing` value is found. The `coalesce` function does a similar thing with `missing` values.
 :::
 
 To work with missing data, it can be removed or skipped over. The `skipmissing` function provides a wrapper around an object which when iterated over, will skip the missing values. For example:
@@ -129,7 +133,7 @@ The `sum` function iterates over the values in the container it is passed to red
 mean(skipmissing(hip_cost))
 ```
 
-(Which is helpful, as `length`, used above to compute a mean, does not work with `skipmissing`.)
+(Which is helpful, as `length`, used above to compute a mean, does not compose with `skipmissing`.)
 
 ### Names (named tuples)
 
@@ -142,10 +146,10 @@ e.g. `NamedArrays`, which arise in our discussion of contingency tables.) If nam
 
 While vectors are collections of *homogeneous* values, tuples are
 collections of *heterogeneous* values. Tuples are constructed with
-commas, and typically parentheses to delimit the comma^[The
+commas, and typically parentheses to delimit the commas:^[The
 parentheses for constructing tuples with 2 or more elements are
 technically optional, a fact that is useful for bundling different
-outputs into one]:
+outputs into one]
 
 ```{julia}
 whale = (74, 122, 235, 111, 292, 111, 211, 133, 156, 79)
@@ -171,7 +175,7 @@ Tuples can also have names. The basic construction uses "key=value" pairs:
 test_scores = (Alice = 87, Bob = 72, Shirley = 99)
 ```
 
-The names are not quoted, and are stored internally as a tuple of symbols. Extra effort is necessary to create names with spaces or number. In the following we show that `var"..."` is useful to create more complicated symbols^[The `var` implementation is via a *string macro*, and is documented through `@var_str`.]:
+The names are not quoted, and are stored internally as a tuple of symbols. Extra effort is necessary to create names with spaces or number. In the following example we show that `var"..."` is useful to create more complicated symbols^[The `var` implementation is via a *string macro*, and is documented through `@var_str`.]:
 
 ```{julia}
 children = (var"X Æ A-Xii" = 1,
@@ -179,9 +183,9 @@ children = (var"X Æ A-Xii" = 1,
 			var"Exa Dark Sideræl" = 3)
 ```
 
-The above also shows that Unicode values are easily used within `Julia` in strings or as identifiers.
+The above also shows that [Unicode](https://docs.julialang.org/en/v1/manual/unicode-input/) values are easily used within `Julia` in strings or as identifiers.
 
-Named tuples can also have their "names" attached via parsing, through a syntax similar to keyword arguments of functions, as identifiers imply names:
+Named tuples can also have their "names" attached via parsing, through a syntax similar to keyword arguments of functions, as identifiers [imply names](https://docs.julialang.org/en/v1/base/base/#Special-Types):
 
 ```{julia}
 a = [1,2]; b = [3,4]
@@ -209,12 +213,12 @@ Named tuples being both named and heterogeneous are a natural container for coll
 #### Associative arrays
 
 Abstractly, an *associative array* is a container for storing (key,value) pairs. `Julia` has the notation `key => value` for representing a *pair*.
-A named tuple is an immutables associative array where the keys are symbols. A *dictionary* is a more general *mutable* type with the keys being arbitrary (numbers, strings, symbols, ...). There are various implementations, the `Dict` constructor the most commonly used. As with a named tuple, the keys are returned by `keys`, the values by `values`, and pairs by `pairs`.
+A named tuple is an immutable associative array where the keys are symbols. A *dictionary* is a more general *mutable* type with the keys being arbitrary (numbers, strings, symbols, ...). There are various implementations of an `AbstractDict`, the `Dict` constructor being the  most commonly used, though the one provided in the `Dictionaries` package will be seen. As with a named tuple, the keys are returned by `keys`, the values by `values`, and pairs of (key/value)s by `pairs`.
 
 
 ### Indexing
 
-The elements of a vector, like a data set, are indexed. For basic vectors Julia uses one-based indexing^[In `Julia` there are options to have offsets for indexing, e.g. `OffsetArrays` that allow for other access patterns, such as would be useful for zero-based indexing.]. The `whale` data, as defined, has $10$ elements, we can get the third, fourth, and sixth with:
+The elements of a vector, like a data set, are indexed. For  vectors Julia uses one-based indexing^[In `Julia` there are options to have offsets for indexing, e.g. `OffsetArrays` that allow for other access patterns, such as would be useful for zero-based indexing.]. The `whale` data, as defined, has $10$ elements, we can get the third, fourth, and sixth with:
 
 ```{julia}
 whale = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
@@ -239,7 +243,7 @@ whale[end], whale[begin]
 These values allow simple arithmetic. Here we see how to trim off the first and last through indexing^[This example uses the `colon` operator to produce a range of values between it two arguments with increment of $1$.]:
 
 ```{julia}
-whale[begin+1:end-1] |> permutedims
+whale[begin+1:end-1] |> show
 ```
 
 The colon, `:`, refers to all indices in a vector; `whale[:]` will return a copy of the data in `whale`.
@@ -253,7 +257,7 @@ The range `1:1` specifies the value `1`, as does just `1`, but for indexing the 
 whale[1], whale[1:1]
 ```
 
-The idiom is indexing by a scalar -- like `1` -- can drop dimensions (the vector becomes a scalar), whereas indexing by a container -- like `1:1` or, say, `[1]` -- does not drop dimensions. The documentation for indexing of an array has: "If all the indices are scalars, then the result, `X`, is a single element from the array, `A`. Otherwise, `X` is an array with the same number of dimensions as the sum of the dimensionalities of all the indices."
+The design is indexing by a scalar -- like `1` -- can drop dimensions (the vector becomes a scalar), whereas indexing by a container -- like `1:1` or, say, `[1]` -- does not drop dimensions. The documentation for indexing of an array has: "If all the indices are scalars, then the result, `X`, is a single element from the array, `A`. Otherwise, `X` is an array with the same number of dimensions as the sum of the dimensionalities of all the indices."
 
 :::
 
@@ -269,7 +273,7 @@ view(whale, [3,4,6])
 The `end` and `begin` keywords do not work with `view`^[Though `:` does, as it is a function, not a keywoard.], though the `lastindex` and `firstindex` functions do:
 
 ```{julia}
-view(whale, firstindex(whale)+1:lastindex(whale)-1) |> permutedims
+view(whale, firstindex(whale)+1:lastindex(whale)-1) |> show
 ```
 
 
@@ -279,7 +283,7 @@ The assignment
 
 ```{julia}
 whale = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
-whale |> permutedims
+show(whale)
 ```
 
 binds the name `whale` to the *container* holding the $10$ numbers.
@@ -288,24 +292,29 @@ If we make another assignment, as in
 
 ```{julia}
 whale_copy = whale
-whale_copy  |> permutedims
+show(whale_copy)
 ```
 
 the container is copied, but -- unlike if we had used `copy(whale)` -- the two variables point to the same container. When a vector is passed into a function, the function works with the container, not a copy.
 
-The values in the container may be reassigned, which is done by using the indexing notation on the left-hand side of the equals sign:
+### Modification
+
+Data may need to be modified after read in or constructed, such as is
+done with data cleaning.  As such, the values in the data vector may need to be
+reassigned. This is carried out by using the indexing notation on the
+left-hand side of an assignment:
 
 ```{julia}
 whale[1] = 75
 ```
 
-The value `75` is returned, as the *right-hand* side of an assignment is always the returned value, but we can see that `whale` was modified:
+The value `75` is returned, as the *right-hand* side of an assignment is always the returned value. We can see that `whale` was modified:
 
 ```{julia}
 whale[1], whale_copy[1]
 ```
 
-We also see that  as `whale_copy` points to the same container, it too was modified.
+We also see that as `whale_copy` points to the same container, it too was modified.
 
 ::: {.callout-note}
 ##### Mutation
@@ -319,16 +328,24 @@ Multiple values can be assigned at once. For example, if the data was mis-arrang
 
 ```{julia}
 whale[[1,2,3]] = [235, 74, 122]
-whale |> permutedims
+show(whale)
 ```
 
 The above modified the original container, so these changes would also be reflected in `whale_copy`.
 
-`Julia` does not recycle by default, but *broadcasted assignment* (cf. `?.=`) can produce a similar behavior. Broadcasted assignment expands the right hand side and then does in-place assignment. For example, if we wanted to use a sentinel value to indicate unknown data for the first 3 values, we might have:
+`Julia` does not recycle values to be assigned by default, where
+recycling involves some rules where the space rferenced on the
+left-hand side of an assignment does not match in size the space
+needed to store the right-hand side of an assignment.  *Broadcasted
+assignment* (cf. `?.=`) can produce a similar behavior. Broadcasted
+assignment expands the right-hand side to match the space expected on
+the left and then does the assignment. For example, if we wanted
+to use a sentinel value to indicate unknown data for the first 3
+values, we might have:
 
 ```{julia}
 whale[[1,2,3]] .= 999
-whale |> permutedims
+show(whale)
 ```
 
 Notice, without the dot an error will be thrown
@@ -342,13 +359,13 @@ The "recycling" above uses the left-hand side to identify the size needed. Broad
 
 ```{julia}
 whale .= [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
-whale |> permutedims
+show(whale)
 ```
 
 But `whale` is not a new object -- as it would be without that dot -- but rather, these values are placed into the container `whale` already refers to -- which also is the container `whale_copy` points at:
 
 ```{julia}
-whale_copy  |> permutedims
+show(whale_copy)
 ```
 
 This assignment avoids the needed allocation of more memory.
@@ -358,7 +375,8 @@ This assignment avoids the needed allocation of more memory.
 The use of `[:]` on the *left-hand side* also does in-place assignment^[The `:` *copies* on the right-hand side, but does in-place assignment on the left-hand side]. So unlike `whale = [...]` which *replaces* the container `whale` points at, this command reuses the container:
 
 ```{julia}
-whale[:] = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]  |> permutedims
+whale[:] = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
+show(whale)
 ```
 
 
@@ -378,7 +396,7 @@ whale[:] = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]  |> permutedims
 |`x[[2,3]] = [4,5]`| Assign values to second and third elements of `x`.
 |`x[:] = [1, 2, 3]` | In-place assignment. Size *and type* of right-hand side must match left-hand side |
 
-: Various uses of indexing by numeric indices.  {tbl-colwidths="[35,65]"}
+: Various indexing patterns.  {tbl-colwidths="[30,70]"}
 
 
 
@@ -389,6 +407,7 @@ A vector has a length which can not be changed during assignment. Attempting to 
 * `push!(v, x)`: extend the vector `v` pushing `x` to the *last* value
 * `pushfirst!(v, x)`: extend the vector `v` pushing `x` to the *first* value
 * `append!(v, v1)`: append the entries in `v1` to the end of `v`
+* `insert(v, i, x)`: insert `x` into `v` at index `i`, shifting as needed
 * `vcat(v, v1)`: **v**ertically con**cat**enate `v` and `v1`. (Unlike `append!` this returns a new vector, so the type of the output will be recomputed).
 
 The vector can also be shrunk. These generic functions for containers are useful:
@@ -425,7 +444,7 @@ This assigns `whale` to a *new* container which accepts floating point values, a
 
 Though cumbersome, this is not typical usage, as the constructor used to create the data set will promote to a common type, so it would only matter when adjusting the initial values.
 
-For the special case of assigning a *missing* value, the `allowmissing` function from the `DataFrames` package^[With data frames, the `allowmissing!` function is used, as well.] creates a vector with a type that allows -- as well -- missing values^[The `allowmissing` function creates a union type with `Missing` in addition to the original data type. It some printouts, a `?` is appended to the type name to indicate this addition.]. Again, re-assignment is necessary:
+For the special case of assigning a *missing* value, the `allowmissing` function from the `DataFrames` package^[The `DataFrames` package is almost always utilized, as it provides a fundamental type to work with tabular data, the data frame. With data frames, the `allowmissing!` function is used, as well, for this task.] creates a vector with a type that allows -- as well -- missing values^[The `allowmissing` function creates a union type with `Missing` in addition to the original data type. It some printouts, a `?` is appended to the type name to indicate this addition.]. Again, re-assignment is necessary:
 
 ```{julia}
 using DataFrames
@@ -435,7 +454,7 @@ whale[1] = missing
 
 #### Broadcasting
 
-As seen, the functions `length` and `sum` are reductions, returning a single number from a vector of numbers. To compute a *sample standard deviation*, say, we follow the formula:
+As seen, the functions `length` and `sum` are reductions -- in this case, returning a single number, a scalar, from a vector of numbers. To compute a *sample standard deviation*, say, we follow the formula:
 
 $$
 s = \sqrt{\frac{\sum_i (x_i - \bar{x})^2 }{n-1}}.
@@ -444,52 +463,62 @@ $$
 
 To do so we would need to:
 
-* Subtract a scalar value from from each element of the data vector: ($x_i - \bar{x}$).
+* Subtract a scalar value, resulting for a reduction, from from each element of the data vector: ($x_i - \bar{x}$).
+
 * Apply the squaring function to each element of this difference.
+
 * Reduce the resulting data to a number through `sum`.
 
-Embarking on this with a simple attempt: `whale - mean(whale)` will fail.
+* Divide a number by another number and take the square root.
 
-The subtraction of a scalar value from a vector value is not defined, as `Julia` is not implicitly vectorized. Rather the user must be explicit. For this, the concept of broadcasting is useful. Broadcasting will expand the scalar to match the size of the vector and then use vector subtraction to find the result. Broadcasting is done simply by adding a "." (the dot) to the function. For infix operations like `-` this is *before* the operator:
+Embarking on this punch list with a naive attempt at the first --
+`whale - mean(whale)` -- will fail.
+
+The subtraction of a scalar value from a vector value is not defined, as `Julia` is not implicitly vectorized. Rather the user must be explicit. For this, the concept of broadcasting is useful. In this context, broadcasting will expand the scalar to match the size of the vector and then use vector subtraction to find the result. Broadcasting is done simply by adding a "." (the dot) to the function. For infix operations like `-` this is *before* the operator:
 
 ```{julia}
 whale = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
-whale .- mean(whale)  |> permutedims
+whale .- mean(whale)  |> show
 ```
 
 We also would need to square these values. This could *also* be done by broadcasting `^`, as in:
 
 ```{julia}
-(whale .- mean(whale)).^2  |> permutedims
+(whale .- mean(whale)).^2  |> show
 ```
 
 To avoid having to use *too* many dots, it is typical to define a function for doing a scalar computation and broadcast that^[Also the `@.` *macro* can automatically broadcast all operations.]. An example will wait, but to illustrate the syntax, we can broadcast the `sqrt` function using a "." after the function name and before the opening parentheses:
 
 ```{julia}
-sqrt.(whale)  |> permutedims
+sqrt.(whale)  |> show
 ```
 
 Broadcasting works with functions of multiple arguments and multiple shapes.
 
-The use of multiple shapes allows scalars and vectors to be broadcast over and is used in `whale .- mean(whale)`. But vector and *row* vectors can also be broadcast over, So `[1,2] .+ [3,4]` does vector addition, `[1,2] .+ [3 4]` pads out the vector to a matrix, the row vector to a matrix, then adds:
+The use of multiple shapes allows scalars and vectors to be broadcast over and is used in `whale .- mean(whale)`. But vector and *row* vectors can also be broadcast over, So `[1,2] .+ [3,4]` does vector addition, `[1,2] .+ [3 4]` pads out the vector to a matrix, the row vector to a matrix, then adds entry-by-entry:
 
 ```{julia}
 (v=[1,2], rv=[3 4], va = [1,2] .+ [3,4], ma = [1, 2] .+ [3 4], ck=[1 1; 2 2] + [3 4; 3 4])
 ```
 
-This behavior may not be desirable. Some objects broadcast as scalars, others as containers. But there may be times where broadcasting as a container may be incorrect. To force a value to broadcast like a scalar, the value can be wrapped in `Ref`. That is `mean(whale)` is the same as `mean.(Ref(whale))` *but* `mean.(whale)` would broadcast `mean` over each element in `whale`. As `mean` for a single number is just that number, `mean.(whale)` would just be the same container.
+This behavior may not be desirable. Some objects broadcast as scalars, others as containers. But there may be times where broadcasting as a container may be incorrect. To force a value to broadcast like a scalar, the value can be wrapped in `Ref`. That is `mean(whale)` is the same as `mean.(Ref(whale))` *but* `mean.(whale)` would broadcast `mean` over each element in `whale`. As `mean` for a single number is just that number, `mean.(whale)` would just be the same values.
 
 ## Data types {#sec-data-types}
 
-An old [taxonomy](https://en.wikipedia.org/wiki/Statistical_data_type) of levels of measurement include nominal, ordinal, interval, and ratio; where nominal values have no rank, ordinal values have a rank, but no meaning is assigned to the different between values, interval data has a meaning between differences but $0$ is arbitrary, and ration has a meaningful zero, such as most numeric data. As data can easily be coded (explicitly or behind the scenes) with numbers, this keeps the different types distinct. However, for use with the computer, in particular `Julia` here, we see it makes more sense to emphasize different aspects of the data related to the underlying type.
+An old [taxonomy](https://en.wikipedia.org/wiki/Statistical_data_type) of levels of measurement include nominal, ordinal, interval, and ratio; where nominal values have no rank; ordinal values have a rank, but no meaning is assigned to the difference between values; interval data has a meaning between differences but $0$ is arbitrary; and ratio has a meaningful zero, such as most numeric data. As data can easily be coded (explicitly or behind the scenes) with numbers, this keeps the different types distinct. However, for use with the computer, in particular `Julia` here, we see it also more sense to emphasize different aspects of the data related to the underlying type.
 
-`Julia` has numerous data types. Some are "abstract" types, such as `Real` or `Integer`, others are "concrete", often indicating how the data is stored, such as `Float64` or `Int64`, with the "`64`" indicating $64$ bits of memory.
-In `Julia`, these data types can be used to direct method dispatch.
-For statistics a few common types are used to represent data. These are reviewed in the following.
+`Julia` has numerous data types. Some are "abstract" types, such as
+`Real` or `Integer`, others are "concrete", often indicating how the
+data is stored, such as `Float64` or `Int64`, with the "`64`"
+indicating $64$ bits of memory.  In `Julia`, these data types can be
+used to direct method dispatch.  For statistics a few common types are
+used to represent data.
+
+These are reviewed in the following.
 
 ### Numeric data types {#sec-numeric-data-types}
 
-The `Julia` parser readily identifies the following values of $1$ and stores the value using a different type:
+The `Julia` parser readily identifies the following values of $1$ and reads each using a different type:
 
 ```{julia}
 1, 1.0, 1//1, 1 + 0im, big(1), BigFloat(1)
@@ -512,7 +541,7 @@ The above illustrates that addition of an integer and a floating point yields a 
 ::: {.callout-note}
 ##### Type stability
 
-`Julia` programmers try to make functions "type stable," if possible, as this generally leads to more performant code once compiled. A consequence is addition of numbers, like `1 + 1.0` will *always* be a floating point value, even if in the case of these particular *values* an integer could be the answer. That is the output type of `+` here is determined by the input *types*, not the input *values*.
+`Julia` programmers try to make functions "type stable," if possible, as this generally leads to more performant code, once compiled. A consequence is addition of numbers, like `1 + 1.0` will *always* be a floating point value, even if in the case of these particular *values* an integer could be the answer. That is the output type of `+` here is determined by the input *types*, not the input *values*.
 
 :::
 
@@ -530,7 +559,7 @@ There are different options available for the storage of categorical data.
 
 #### Character data
 
-The `String` type in `Julia` is the basic type for holding character data. Strings are created with matching single quotes *or* -- for multiline strings -- with matching triple quotes:
+The `String` type in `Julia` is the default type for holding character data. Strings are created with matching single quotes *or* -- for multiline strings -- with matching triple quotes:
 
 ```{julia}
 s = "The quick brown fox ..."
@@ -542,7 +571,14 @@ our fathers brought forth...
 
 The string type in `Julia` can hold Unicode data, such as non-ASCII letters and even emojis.
 
-Double quotes are used to create a string. Triple quotes can be used to create multi-line strings. Single quotes are for `Char` types. A character represents a Unicode code point. Strings are iterable, and iteration yields back `Char` values. The `collect` function iterates over an object and returns the values. Here we see the `Char`s in a string:
+::: {.callout-note}
+##### Entering Unicode
+In the REPL Unicode values may be entered using $\LaTeX$ [shortcuts](https://docs.julialang.org/en/v1/manual/unicode-input/), e,g., `\alpha[tab]` to produce $\alpha$. Many interfaces also allow this.
+:::
+
+Double quotes are used to create a string. Triple, double quotes can be used to create multi-line strings.
+
+Single quotes are for `Char` types. A character represents a Unicode code point. Strings are iterable, and iteration yields back `Char` values. The `collect` function iterates over an object and returns the values. Here we see the `Char`s in a string:
 
 ```{julia}
 s = "Zoë"
@@ -590,9 +626,9 @@ x = "Alice"
 
 (To include a dollar sign in the string, it can be escape with a leading slash, "`\`", or a `raw` string can be used, as in `raw"$(2+2) is not evaluated"`.)
 
-For *formatted* values, such as needed when printing floating point values, the built-in `Printf` package provides support. For more performant solutions, an `IOBuffer` can be useful^[These are illustrated in the `stemplot` function defined later.].
+For *formatted* values, such as needed when printing floating point values, the built-in `Printf` package provides support. For more performant solutions, an `IOBuffer` can be useful.^[These are illustrated in the `stemplot` function defined later.]
 
-A common means to generate strings is from reading in delimited files, such as comma-separated files. These may produce strings with leading or trailing spaces. To strip these off, `Julia` offers `strip`, `lstrip`, and `rstrip`. The `lstrip` function strops the left side, `rstrip` the right side, and `strip` combines the two. An option to pass in other characters to strip besides spaces is available.
+A common means to generate strings is from reading in delimited files, such as comma-separated files. These may produce strings with leading or trailing spaces. To strip these off, `Julia` offers `strip`, `lstrip`, and `rstrip`. The `lstrip` function strips the left side, `rstrip` the right side, and `strip` combines the two. An option to pass in other characters to strip besides spaces is available.
 
 ```{julia}
 strip("   abc    "),  strip("...abc...", '.')
@@ -609,9 +645,9 @@ job_title = ["Data Scientist", "Machine Learning Scientist", "Big Data Engineer"
 
 #### Symbols
 
-`Julia` as a language can be used to represent the language's code as a data structure in the [language](https://stackoverflow.com/questions/23480722/what-is-a-symbol-in-julia). Symbols are needed to refer to the name, or identifier, of a variable as opposed to the values in the variable. Symbols, being part of the language, are used for other purposes, such as keys for a named tuple. The access pattern `nt.a` has been mentioned; this is a convenience for `getfield(nt, :a)`, the symbol being used as a key. When data frames are introduced -- essentially a collection of matched data vectors -- symbols can be used to reference the individual variables.
+`Julia` as a language can be used to represent the language's code as a data structure in the [language](https://stackoverflow.com/questions/23480722/what-is-a-symbol-in-julia). Symbols are needed to refer to the name, or identifier, of a variable as opposed to the values in the variable. Symbols, being part of the language, are used for other purposes, such as keys for a named tuple of flags for an argument. The access pattern `nt.a` has been mentioned; this is a convenience for `getfield(nt, :a)`, the symbol being used as a key. When data frames are introduced -- essentially a collection of matched data vectors -- symbols will be used to reference the individual variables.
 
-The simple constructor for a symbol is `:`, as in `:some_symbol`. The `Symbol` constructor can also be used to create symbols with spaces, e.g., `Symbol("some symbol")`; the string macro `var"..."` is a convenience.
+The simple constructor for a symbol is `:`, as in `:some_symbol`. (The `:` constructor makes *expressions*, but in this use, these are interpreted as symbols.) The `Symbol` constructor can also be used to create symbols with spaces, e.g., `Symbol("some symbol")`; the string macro `var"..."` is a convenience.
 
 The `string` function (or `String` constructor) will create a string from a symbol.
 
@@ -627,7 +663,6 @@ Factors are not a built-in data type, but are provided by the `CategoricalArrays
 using CategoricalArrays
 ```
 
-We use an example from the package's documentation:
 
 We use an example based on coffee sizes at your neighborhood Starbucks. An order consisted of $4$ drinks with these sizes, put into a categorical array:
 
@@ -650,7 +685,9 @@ x.refs
 The levels are the labels assigned to the internal values.
 We can see that the levels are internally kept as 32-bit integers, which in general is more space efficient than storing the labels. The command `levelcode.(x)` will show the values using the more readable 64-bit integers.
 
-Working with levels is the key difference. First levels, may be *ordered* either by specifying `ordered=true` to the constructor *or* by calling `ordered!(x, true)`. The example data has an odd order (call `levels(x)` to see), it coming from lexical sorting. So `Grande` is before `Venti`, despite the latter being 16 oz. and the former 20 oz (for hot drinks, 24oz for cold)^[There are also Demi (3oz), short (8oz), and Trenta (31oz).].
+Working with levels is the key difference. First levels, may be *unordered* (nominal) or *ordered* (ordinal), the latter indicated by specifying `ordered=true` to the constructor *or* by calling `ordered!(x, true)` for an unordered variable.
+
+The example data has an odd order (call `levels(x)` to see), it coming from lexical sorting. So `Grande` is before `Venti`, despite the latter being 16 oz. and the former 20 oz (for hot drinks, 24oz for cold)^[There are also Demi (3oz), short (8oz), and Trenta (31oz).].
 
 
 ```{julia}
@@ -672,7 +709,7 @@ x[3] = "Tall, 12oz"
 
 After this command, there are 4 levels though only 3 used in the vector. To trim out extra levels, the `droplevels!` function can be used.
 
-For multiple replacements, the `replace` function is useful and the levels are adjusted accordingly:
+In general and for multiple replacements, the `replace` function is useful and the levels are adjusted accordingly:
 
 ```{julia}
 replace(x, "Grande" => "Grande, 20oz", "Venti" => "Venti, 16oz")
@@ -696,9 +733,15 @@ false && false, true && false, false && true, true && true
 false || false, true || false, false || true, true || true
 ```
 
-These are called "short circuiting," as the right hand side is only evaluated if it need be (as in `true || false`, the statement is known to be true after the left side of `||` is evaluated, so the right hand side is not evaluated). This is used frequently for error messages, as the `error` is not called when the expression is true. These operations may be broadcasted, so the above might have been illustrated by `[true false] .&& [true, false]`. The operation have left-to-right associativity, so it is common to see them in a sequence.
+These are called "short circuiting," as the right-hand side is only evaluated if it need be (as in `true || false`, the statement is known to be true after the left side of `||` is evaluated, so the right-hand side is not evaluated). This is used frequently for error messages, as the `error` is not called when the expression is `true`. These operations may be broadcasted, so the above might have been illustrated by
 
-Many operations promote these values to `1` and `0`. For example,
+```{julia}
+[true false] .&& [true, false]  # produces a matrix to accommodate sizes
+```
+
+The operations have left-to-right associativity, so it is common to see them in a sequence.
+
+Many operations promote Boolean values to `1` and `0`. For example,
 `true + false` is `1`, `true * false` is `0`, and `sum([true,false, true])` is `2`;
 internally, the complex number $i$ is internally a pair `(false,
 true)` indicating no real part and an imaginary part.
@@ -730,11 +773,11 @@ There are other helper functions to query the elements of a Boolean vector.
 
 * `any(v)` will return `true` if any of the elements of the Boolean vector `v` are `true`.
 * `all(v)` will return `true` if all of the elements of the Boolean vector `v` are `true`.
-* `findfirst(v)` will return the index of the *first* `true` value in the Boolean vector `v` or return `nothing` if none is found. A *predicate* function can be used, as in `findfirst(f, v)` which effectively calls `findfirst` on `f` applied to each element of `v`.
-* `findlast(v)` will return the index of the *last* `true` value in the Boolean vector `v` or return `nothing` if none is found. A *predicate* function can be used, as in `findlast(f, v)` which effectively calls `findlast` on `f` applied to each element of `v`.
-* `findnext(v, i)` will find the first `true` value after *index* `i` in the Boolean vector `v` or return `nothing` if none is found. A *predicate* function can be used, as in `findnext(f, v, i)` which effectively calls `findnext` on `f` applied to each element of `v`.
+* `findfirst(v)` will return the index of the *first* `true` value in the Boolean vector `v` or return `nothing` if none is found. A *predicate* function can be used, as in `findfirst(f, w)` which effectively calls `findfirst` on `f` applied to each element of a vector `w`.
+* `findlast(v)` will return the index of the *last* `true` value in the Boolean vector `v` or return `nothing` if none is found. A *predicate* function can be used, as in `findlast(f, w)` which effectively calls `findlast` on `f` applied to each element of a vector `w`.
+* `findnext(v, i)` will find the first `true` value after *index* `i` in the Boolean vector `v` or return `nothing` if none is found. A *predicate* function can be used, as in `findnext(f, w, i)` which effectively calls `findnext` on `f` applied to each element of a vector `w`.
 
-In general, `x in v` will check if the element `x` is in the vector `v`. The Unicode operator `∈` can replace `in`.
+In general, `x in v` will check if the element `x` is in the vector `v`. The Unicode operator `∈` (`\in[tab]`) can replace `in`.
 
 
 ### Date and time types {#sec-date-time-types}
@@ -771,7 +814,7 @@ The objects allow for natural operations, such as comparisons and differences:
 ve < ss < ae < ws, ae - ve, ve + Day(93)
 ```
 
-The difference is returned in the number of days. The last command shows the duration of 93 days can be consteucted with `Day` and its value added to a `Date` object.
+The difference is returned in the number of days. The last command shows the duration of 93 days can be constructed with `Day` and its value added to a `Date` object.
 
 
 There are ways to query  how a date falls within the calendar
@@ -780,16 +823,16 @@ There are ways to query  how a date falls within the calendar
 dayofyear(ve), dayofweek(ve), dayname(ve), dayofweekofmonth(ve)
 ```
 
-The last command returning that the vernal equinox in 2022 fell on the third Sunday of the month.
+The last command indicating that the vernal equinox in 2022 fell on the third Sunday of the month.
 
 
 ### Structured data
 
 Structured data may not represent statistical data, but is useful nonetheless, e.g, for specifying the year of the counts in the `whale` data set.
 
-For a vector of all ones or all zeros, the `ones` and `zeros` functions are useful. The command `ones(n)` will return a vector of `n` zeros using the default `Float64` type. To specify a different type, such as `Int64`, the two-argument form, `ones(T, n)`, is available. Similarly, `zeros` is used to create a vector of zeros. The singular `one()`, `zero()` (one `one(T)` and `zero(T)`) are useful for generic programming.
+For a vector of all ones or all zeros, the `ones` and `zeros` functions are useful. The command `ones(n)` will return a vector of `n` zeros using the default `Float64` type. To specify a different type, such as `Int64`, the two-argument form, `ones(T, n)`, is available. Similarly, `zeros` is used to create a vector of zeros. The singular `one()`, `zero()` (one `one(T)` and `zero(T)`) are useful for generic programming. For example, we use the idiom `one.(x)` to create a vector of all `1`s with the length and type of the vector `x`.
 
-Arithmetic sequences, $a, a+h, a+2h, \dots, b$ can be created with the colon operator `a:h:b` or `a:b` when `h` is `1`. This operator returns a recipe for generating the sequence, it is lazy -- it does not generate the sequence. The precedence is such that simple arithmetic operations do not need parentheses. That is `a+1:b-1` represents the sequence $a+1, a+2, \dots, b-1$. Arithmetic sequences are useful for indexing into a vector.
+Arithmetic sequences, $a, a+h, a+2h, \dots, b$ can be created with the colon operator `a:h:b` or `a:b` when `h` is `1`. This operator returns a recipe for generating the sequence, it is lazy -- it does not generate the sequence. The precedence is such that simple arithmetic operations do not need parentheses. That is `a+1:b-1` represents the sequence $a+1, a+2, \dots, b-1$. Arithmetic sequences prove useful for indexing into a vector.
 
 The colon operator for floating point values may or may not stop at `b`. Programming this is harder than it seems. The simple example of `1/10:1/10:3/10` should be $1/10, 2/10, 3/10$, but it turns out that on the computer `1/10 + 2*1/10` is actually *just larger* than `3/10`. See the value of `3/10 - (1/10 + 1/10 + 1/10)` to investigate. However, the algorithm of `:` does produce the result with $3$ values here.
 
@@ -809,19 +852,35 @@ oddyrs = 2011:2:2019
 whale[oddyrs .- 2010 .+ 1] # 1-based offset is why we add 1
 ```
 
+The `fill` function creates an array of a specific size, filling it with a value. For example, to create a vector of all `1`s of length 10, `fill(1, 10)` will do so. A tuple is used for the second positional argument to construct higher-dimensional filled arrays.
+
+For more complicated patterns, the `repeat` function can prove useful. For an array, it creates a new array comprised of repeats of the given array. For a vector, the only use here, two repeating patterns are often desired: repeating the whole vector several times; repeating each entry of a vector several times then combining.
+
+```{julia}
+v = [1, 2, 3]
+repeat(v, 3) |> show
+```
+
+In the above, the entire vector is repeated three times. The `3` is passed to the `outer` argument. To repeat the `1`s then the `2`s and then the `3`s the `inner` argument is used:
+
+```{julia}
+repeat(v, inner=3) |> show
+```
+
+
+
 
 ## Functions {#sec-defining-functions}
 
-`Julia` has simple syntax for basic user-defined functions.
+`Julia` has a simple syntax for user-defined functions.
 
-<!-- f(x) -->
-For simple functions, the syntax borrowed from math is useful. For example, here we define a function to find the `mad` defined by the median of the transformed data $|x_i - M_x|$.
+For simple functions, the syntax borrowed from common mathematics is used. For example, here we define a function to find the [`mad`](https://en.wikipedia.org/wiki/Median_absolute_deviation) defined by the median of the transformed data $|x_i - M_x|$.
 
 ```{julia}
 MAD(x) = median(abs.(x .- median(x)))
 ```
 
-The function is named `MAD` (to distinguish it from the already defined `mad` function in `StatsBase`) and as written accepts a vector and returns a summary number:
+The function is named `MAD` (to distinguish it from the already defined `mad` function in `StatsBase`) and, as written, accepts a vector and returns a summary number:
 
 ```{julia}
 MAD(whale)
@@ -830,7 +889,7 @@ MAD(whale)
 For functions which are not one liners, a pair of `function`-`end` keywords will define a block. For example, the following computes the fifth standardized moment (skewness and kurtosis related to the 3rd and 4th). The first line is one way to document a function in `Julia`.
 
 ```{julia}
-" Compute 5th standardized momemt: m_5 / m_2^(5/2)"
+"Compute 5th standardized momemt: m_5 / m_2^(5/2)"
 function fifth_sm(x)
 	xbar, n = mean(x), length(x)
 	m5 = sum((xi - xbar)^5 for xi in x) / n
@@ -859,7 +918,7 @@ Functions can have a variable number of arguments. Here is a way to find the pro
 proportion(xs...) = collect(xs) / sum(xs)
 ```
 
-The splat syntax `...` indicates a variable number of arguments in a function definition, and can be used to expand a list of arguments when used inside a function call. The use of `collect`, above, is needed above to generate a vector, as `xs` is passed to the body of the function as a tuple and tuples do not have division defined for them.
+The splat syntax `...` indicates a variable number of arguments in a function definition, and can be used to expand a list of arguments when used inside a function call. The use of `collect`, above, is needed above to generate a vector, as `xs` is passed to the body of the function as a tuple and tuples do not have division defined for them.^[Tuples and vectors are at times interchangeable, but tuples do not have the associated algebraic operations defined for them, as they need not be homogeneous. With data frames, they are treated quite differently.]
 
 The `mad` function from `StatsBase` has signature `mad(x; center=median(x), normalize=true)`. This shows the use of *keyword arguments*. These have a default value, which, as illustrated, can depend on the data passed in. To call a function without the default, the keyword is typed, as in:
 
@@ -867,7 +926,7 @@ The `mad` function from `StatsBase` has signature `mad(x; center=median(x), norm
 mad(whale; center=mean(whale))
 ```
 
-(We use a semicolon to separate positional from keyword arguments, as that is needed to define a keyword, but commas can be used to call a keyword argument. What is important is the keywords come last.)
+(We use a semicolon to separate positional arguments from keyword arguments, as that is needed to define a keyword, but commas can be used to call a keyword argument. What is important is the keywords come last.)
 
 Functions, as defined above, are methods of a  `generic function`. That is, there can be more than one method for a given name. (There are over 200 methods for the generic function named `+` in base `Julia` -- and packages can extend this even more.) To direct or *dispatch* a call to the appropriate method, `Julia` considers the number and types of its positional arguments. That is, like `+`, functions can be defined differently for integers and floating point values.
 
@@ -878,10 +937,11 @@ MAD(x::Vector{String}) = print("Sorry, MAD is not defined for vectors of strings
 MAD(["one", "three", "four"])
 ```
 
-(There are many different types that one might wish to exclude; there are many tricks to efficiently code for this. It is common to define a default method which errors and then a  special case for the types that can be worked with. As types can be *concrete*, as the above, or *abstract*, it is possible to *parameterize* the type used for dispatch so that subtypes can be identified. For example, some operations return a `SubString` not a `String`. A vector of `SubString` will not match `Vector{String}` as even though both hold string data. The subtleties of parameterization are necessary to understand to write many special cases, but won't be necessary in these notes.)
+(There are many different types that one might wish to exclude and there are many tricks to efficiently code for this. It is common to define a default method which errors and then a  special case for the types that can be worked with. Additionally, as types can be *concrete*, as the above, or *abstract*, it is possible to *parameterize* the type used for dispatch so that subtypes can be identified. For example, some operations return a `SubString` not a `String`. A vector of `SubString` will not match `Vector{String}` as even though both hold string data. The subtleties of parameterization are necessary to understand to write many special cases, but won't be necessary in these notes.)
 
-<!-- anonymous functions -->
-A *higher order* function is one that takes one or more *functions* as an argument. As example is the calling style of `findfirst(predicate, x)` where `predicate` is a function which returns a boolean value. Higher-order functions are widely used with data wrangling. For such uses it is convenient to be able to define an *anonymous* function. These do not create methods for a generic function, as they have no name (though they can be assigned a name). Anonymous functions are easily defined through the pattern: `argument(s) -> body`, where `body`, when multi-line, can be contained within `begin`/`end` blocks.
+A *higher order* function is one that takes one or more *functions* as an argument. As example is the calling style of `findfirst(predicate, x)` where `predicate` is a function which returns a boolean value. Higher-order functions are widely used with data wrangling. For such uses it is convenient to be able to define an *anonymous* function. These do not create methods for a generic function, as they have no name (though anonymous functions can be assigned a name).
+
+Anonymous functions are easily defined through the pattern: `argument(s) -> body`, where `body`, and, when multi-line, can be contained within `begin`/`end` blocks.
 
 For example, to find the index of the first year that there were 200 or more whale beachings we have:
 
@@ -895,7 +955,7 @@ For the tasks of logical comparisons, there are partially-applied versions of th
 findfirst(>=(200), whale), findlast(!<(200), whale)
 ```
 
-Another example would be to filter out those values less than `100`. The `filter(predicate, v)` function does this:
+Another example would be to filter those values less than `100`. The `filter(predicate, v)` function does this:
 
 ```{julia}
 filter(<(100), whale)
@@ -903,7 +963,7 @@ filter(<(100), whale)
 
 #### Broadcasting alternatives; iteration
 
-As an illustration of a few other concepts, we consider alternatives to broadcasting that can prove useful. Consider the simplest case of broadcasting a function `f` over a single collection `x`.
+As a quick illustration of a few other concepts, we consider alternatives to broadcasting that can prove useful. Consider the simplest case of broadcasting a function `f` over a single collection `x`.
 
 For example here is broadcasting:
 
@@ -925,7 +985,7 @@ Either broadcasting or  `map` do the following: for each element of `x` apply th
 x .|> f
 ```
 
-The iteration over `x` can be made explicit with a `for`  loop. The basic syntax would be:
+The iteration over `x` can be made explicit with a `for`  loop. The essential syntax would include:
 
 ```{julia}
 out = Any[]
@@ -935,7 +995,7 @@ end
 out
 ```
 
-For loops require extra effort for accumulation, which, in the  above, required the selection of a container. We used `Any[]` to create a zero-length container that can hold any object and push values onto this. If would be preferable to have a concrete type, which in this case is just `Float64[]`, but that requires some peeking to the output of `f`. This is to point out some background work performed by `map` and broadcasting that simplify other common tasks.
+For loops require extra effort for accumulation, which, in the  above, required the selection of a container. We used `Any[]` to create a zero-length container that can hold any object and push values onto this. If would be preferable to have a concrete type, which in this case is just `Float64[]`, but, in general, that requires some peeking into the output of `f`. This is to point out some background work performed by `map` and broadcasting that simplify other common tasks.
 
 The `for xi in x` part of the for loop assigns `xi` to each iterate of `x`. There are some iterations that return more than one value at once, and it is common to see these *destructured* in the syntax. For example, `enumerate` is a helper function which takes an iterable object, like a vector, and iterates over both the index and the value:
 
@@ -945,7 +1005,7 @@ for (i, xi) in enumerate(x)
 end
 ```
 
-A *comprehension* is a good alternative to a for loop when accumulation is required and the computation for each iterate is simple to express. Comprehensions have the basic syntax `[ex for x in xs]` and additional syntax for multiple iterations. The expression `ex` can use the variable `x`; `xs` is some iterable, such as a vector. For example, we might have this alternative to `f.(x)`
+A *comprehension* is a good alternative to a for loop when accumulation is required and the computation for each iterate is simple to express. Comprehensions have the  syntax `[ex for x in xs]` and additional syntax for multiple iterations. The expression `ex` can use the variable `x`; `xs` is some iterable, such as a vector. For example, we might have this alternative to `f.(x)`
 
 ```{julia}
 [xi - mean(x) for xi in x]
@@ -963,10 +1023,10 @@ sum(f, xi - mean(whale) for xi in whale)
 | Iterator | Description |
 |----------|-------------|
 | `eachindex`  | iterate over each index |
-| `values` | iterate over values in a container |
-| `enumerate` | iterate over index and value |
-| `keys`   | iterate over keys for the container |
-| `pairs`  | iterate over (key,value) pairs in the container |
+| `values` | iterate over value in a container |
+| `enumerate` | iterate over index and value in a container |
+| `keys`   | iterate over keys for a container |
+| `pairs`  | iterate over (key,value) pairs in a container |
 | `zip`    | iterate over multiple iterators; the value is a tuple with an element from each |
 | `eachcol` | for tabular data, iterate over the columns |
 | `eachrow` | for tabular data, iterate over the rows |
@@ -994,7 +1054,7 @@ For **measures of spread** we have the standard deviation, the median absolute d
 std(whale), mad(whale), iqr(whale)
 ```
 
-The `quantile(x, p)` function returns **measures of position**. Keywords `alpha` and `beta` can be used to adjust the algorithm employed. The `0` quantile is the minimum, the `1` quantile is the maximum, and `0.5` the median. The `p` may be an iterable. Here we see that type of `p` is used to compute the value output:
+The `quantile(x, p)` function returns **measures of position**. Keywords `alpha` and `beta` can be used to adjust the algorithm employed. The `0` quantile is the minimum, the `1` quantile is the maximum, and `0.5` the median, or middle value. The $p$th quqntile is an interpolated value that aspires to split the data with $p\cdot 100$% of the values to the left and $(1-p)\cdot 100$% of the values to the right. The `p` specified to `quantile` may be an iterable, useful to computing more than one at a time. Here we see that the type of `p` is used to compute the output type:
 
 ```{julia}
 quantile(whale, (0, 1//2, 1.0))
@@ -1003,19 +1063,26 @@ quantile(whale, (0, 1//2, 1.0))
 The `quantile` function is used internally by `StatsBase`: the `iqr` is defined by the difference of `quantile(x, [1/4, 3/4])`;
 the `summarystats` function returns a summary of a data set, with the 5-number summary of the quantiles (`p=0:1/4:1`), the mean, the length, and the number of missing data values.
 
+```{julia}
+summarystats(whale)
+```
+
 A **measure of position** gives a sense of how large a value is relative to the data set. Knowing a value is the 20th percentile, say, says it is larger than 20 percent of the data and smaller than 80 percent. The percent of data less or equal a value can be computed by `sum(data .<= value)` or `sum(x <= value for x in data)`.
 
-The $z$-score is a different measure of position.  The $z$ score is computed by `(value - mean(data))/std(data)` or for all values at once with:
+The $z$-score is a different measure of position. It measures differences from the mean on a scale of standard deviations.  The $z$ score is computed by `(value - mean(data))/std(data)` or for all values at once with:
 
 ```{julia}
 zs = (whale .- mean(whale)) / std(whale)
 ```
 
-A rule of thumb, based on a certain bell-shaped distribution, is that values larger than 3 in absolute value are unusual, none of which are seen in this data. The $z$ score measures the difference from the mean on a scale of standard deviations. It is typical form of *standardization* and is supported directly through either:
+A rule of thumb, based on a certain bell-shaped distribution, is that values larger than 3 in absolute value are unusual, none of which are seen in this data.
+
+The $z$-score is the typical form of *standardization* and is also supported directly through either of the following:
 
 ```{julia}
 zs1 = zscore(whale)
 zs2 = standardize(ZScoreTransform, Float64.(whale))
+
 zs == zs1 == zs2
 ```
 
@@ -1035,7 +1102,7 @@ A property of the mean is when we *center* by the mean, i.e. take the transforma
 
 The standard deviation, as a sense of scale, has the property that if we center and *then scale* by the standard deviation, the center will be $0$ and the scale will be $1$. That is, the $z$-scores have mean $0$ (as we've centered) and standard deviation $1$ (as we've scaled) -- the $z$ scores speak to the "shape" or distribution of values of a data set.
 
-These measures are sensitive -- or not *resistant* -- to one or more *outlying* values. For example, the average wealth of people in a bar changes dramatically if someone like a pre-crash Elon Musk walks in. The standard deviation is similar. So measures based on position are better when data is *skewed*, especially if heavily skewed. For these, the median and IQR are not impacted greatly by 1 large value. That is they are resistant to outliers. The extreme values (the minimum and maximum) are less so, so the range of the data is a poor measure of spread, the range of the middle quartiles (the IQR) a resistant measure of spread.
+These measures are sensitive -- or not *resistant* -- to one or more *outlying* values. For example, the average wealth of people in a bar changes dramatically if someone like a pre-crash Elon Musk walks in. The standard deviation is similar. So measures based on position are better when data is *skewed*, especially if heavily skewed. For these, the median and IQR are not impacted greatly by one large value. That is they are resistant to outliers. The extreme values (the minimum and maximum) are less so. As such, the range of the data is a poor measure of spread, the range of the middle quartiles (the IQR) a much more resistant measure of spread.
 
 :::
 
@@ -1058,13 +1125,13 @@ These measures are sensitive -- or not *resistant* -- to one or more *outlying* 
 
 ## Shape {#sec-shape}
 
-The $5$-number summary gives some insight into the *shape* of a distribution, in that it can show skewness. The `skewness` function numerically quantifies this:
+The [five-number summary](https://en.wikipedia.org/wiki/Five-number_summary) gives some insight into the *shape* of a distribution, in that it can show skewness. The `skewness` function numerically quantifies this:
 
 ```{julia}
 skewness(whale)
 ```
 
-Symmetric data has $0$ skew.
+Perfectly symmetric data has $0$ skew.
 
 The `kurtosis` function numerically summarizes if a distribution has long or short tails compared to a benchmark distribution, the normal:
 
@@ -1073,11 +1140,12 @@ kurtosis(whale)
 ```
 
 
-However, the **shape of a distribution** is best seen graphically.
+These numeric summaries are helpful, but to best see **shape of a distribution** graphical summaries are suggested.
 
-A stem or stem-and-leaf plot is useful summary of a data set that can be computed easily by hand for modest sized data. Basically numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.
+A stem or stem-and-leaf plot is useful summary of a data set that can be computed easily by hand for modest-sized data. In short, numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.
 
-The basic stem plot is not part of the `StatsBase` package. This one, below, is modified from a RosettaCode [submission](https://rosettacode.org/wiki/Stem-and-leaf_plot#Julia). It is simplified by assuming non-negative data.
+A stem-and-leaf plot function is not part of the `StatsBase` package.^[Stem-and-leaf plots are very useful for organizing data by hand, but better graphics can be used to illustrate data and its distribution on the computer.] This one, below, is modified from a RosettaCode [submission](https://rosettacode.org/wiki/Stem-and-leaf_plot#Julia). It is simplified by assuming non-negative data. Essentially, it finds the right place to split a number into two values, a stem and a leaf. Then it displays each.
+
 
 ```{julia}
 using Printf
@@ -1105,27 +1173,117 @@ stemleaf(whale, 10) |> print
 
 We can identify `0|7` which is `0*100 + 70` or 70 as the "smallest" value. The *actual* smallest value is $74$, but the data is rounded for this graphic so that just two digits (the stem and leaf) can represent all the values. Similarly 290  is identified as the largest values (which is actually 292).
 
-For graphical summaries of data, we will utilize the `StatsPlots` package, which adds to the `Plots` package recipes for many statistical graphics.
+For graphical summaries of data, we will introduce the `StatsPlots` package, which adds to the `Plots` package recipes for many statistical graphics. In later chapters we will use a different plotting package, but for now, the `StatsPlots` package provides easy to use and understand methods to produce the desired graphics.
 
 ```{julia}
 using StatsPlots
-p1 = histogram(whale; normalize=true, legend=false)
-density!(p1,whale, linewidth=3)
-p2 = boxplot(whale, legend=false)
-dotplot!(p2, whale);
+```
+
+For a univariate data set, graphics are used to help gauge the center, spread, and shape of a distribution of values. Different graphics have their advantages. In the following,
+we illustrate the dot plot, the box plot, the histogram, the density plot, and the quantile-normal plot. There are basic recipes for each graphic that require little more than specifying which data to use, though we do adjust a few default values through keyword arguments, such as `legend`.
+
+
+A [dot plot](https://en.wikipedia.org/wiki/Dot_plot_(statistics)) shows the data on a number line, traditionally horizontally, and with circles (dots) representing each data point. For data with ties, like the `whale` data set, there are many techniques to disamgibuate the data in the graphic: the tied data may be stacked, using the $y$ direction; the data may be *jittered* in the $x$ direction, adding a small random to each value; the data may be *jittered* in the $y$ direction. In `StatsPlots`, with the `dotplot` recipe, values are jittered when plotted vertically or when plotted with just the $x$ values. Here we use the `dotplot(x, y)` method with `x` representing the data to display. For this, we manually jitter the `x` values and we make a vector of values, `y` all with the same value, in this case `1` as the `one` function makes this convenient:
+
+```{julia}
+jitter(x, scale=1/4) = x + randn(length(x)) * scale
+
+p1 = dotplot(jitter(whale), one.(whale); legend=false);
+```
+
+In @fig-dotplot-boxplot the graph appears on the left side.
+
+
+A dot plot shows all the data from which the reader can gauge the center, spread, and shape easily enough. For a small number of data points, such as with the `whale` data it is a very good graphic for assessing the distribution of values. However, for a large number of values, the graphic can get too crowded, and alternatives are useful.
+
+The [box plot](https://en.wikipedia.org/wiki/Box_plot) or box-and-whisker plot of Tukey is one such excellent alternative.
+
+The boxplot summarizes many aspects of a data set with basically just the five-number summary presented as a box with whiskers:
+
+* The *center* is shown by the middle line of the box set at the median
+
+* The *spread* is seen through the *IQR*, the length of the box, which is set at $Q_1$ and $Q_3$.
+
+* The *shape* (skewed or symmetric) can be gauged by how different the different quartiles are: the first quartile is from the smallest illustrated value to the box; the second the bottom half of the box; the third the top half of the box; and the fourth the top of the box to the largest value.
+
+* *Outliers* are illustrated as dots and identified by a rule: any value more the $1.5$ IQRs from $Q_3$ or less than $1.5$ IQRs from $Q_1$ are not included in the whisker, but instead are illustrated with a dot. The `whisker_range` argument can be set to adjust that multiplier $1.5$.
+
+* The *range* is seen through the whiskers or identified outliers.
+
+Box plots are excellent graphics for comparing several distributions, and usually appear vertically oriented in such usage, the default orientation. Here, with a single data set, we show how to use the `orientation` argument to specify a horizontal layout. For this boxplot, we also add in a dot plot with each dot colored by its respective quartile.
+
+```{julia}
+p2 = boxplot(whale; orientation=:horizontal, legend=false)
+
+Q1, Q2,Q3 = quantile(whale, (1/4, 1/2, 3/4))
+quantile_color(x) = x < Q1 ? "red" : x < Q2 ? "yellow" : x < Q3 ? "blue" : "pink"
+whale′ = jitter(sort(whale))
+dotplot!(p2, whale′, 1/2 .+ zero.(whale′), color=quantile_color.(whale′));
+```
+
+The right-hand graphic in @fig-dotplot-boxplot shows the boxplot. A careful comparison shows the interpolation used to identify the quartiles. This graphic has no identified outliers. A slight skew is seen, as the right half of the figure is longer than the left half, though this may be an artifact of sampling, and not a fact about the underlying population.
+
+::: {#fig-dotplot-boxplot layout-ncol=2}
+```{julia}
+#| echo: false
+p1
 ```
 
 ```{julia}
 #| echo: false
-#| label: fig-hist-density-boxplot-dotplot
-#| fig-cap: Various graphical summaries of the `whale` data, which show a slight skew.
-l = @layout [a b]
-plot(p1, p2, layout=l)
+p2
 ```
 
-The figures are shown in @fig-hist-density-boxplot-dotplot. The `histogram` has `normalize=true` passed to it to have total area of 1 allowing a density curve to be superimposed. The `Plots` packages uses the `!` convention to indicate that `density!` should use the current figure to layer on a density plot. The boxplot and dotplot are plotted side by side, to show how the boxplot summarizes the data through the quartiles, with the data split into quarters by the box and its middle line.
+The `whale` data summarized with a dot plot on the left and a box plot and accompanying dot plot on the right.
+:::
 
-A *quantile-normal* plot is a graphic to assess if a data set comes from a *normal distribution*, a reference bell shaped distribution. The basic graphic is a scatter plot of a quantile of the data set with a corresponding quantile of the reference distribution. If the data set has a roughly bell-shaped distribution with "typical" tails, then the dots will mostly fall on a straight line; if the data set is skewed one edge will deviate from the line; if the data set is symmetric, but has long tails these will shows a deviations in both edges of the line. The `qqnorm` function produces @fig-quantile-normal:
+
+A [histogram](https://en.wikipedia.org/wiki/Histogram) is a another graphic well suited for displaying large data sets. It presents an illustration of what values are seen and also how prevalent that size value is. It does this by selecting a number of "bins" over the range of the data and counting the number of values in that bin, similar to what happens in a stem-and-leaf plot. This number is then represented using a bar with the property that that *area* of the bar is *proportional* to the frequency of data being in that bin. This proportion may just represent the count (if all the bins have the same length), or may be scaled so the total area is $1$ (as these graphics suggest the shape of the underlying probability density function, which has total area $1$). The `histogram` function in `StatsPlots` offers still more means to scale the bars; adjustments specified through the `normalize` argument.
+
+
+```{julia}
+p1 = histogram(whale; bins = 5, legend=false)
+
+dotplot!(p1, jitter(whale), 1/5 .+ zero.(whale), markersize=10);
+```
+
+This graphic is illustrated in @fig-histogram-densityplot. To make it, we adjusted the default number of bins through the `bins` argument, and added a dotplot with somewhat larger dots, to illustrate the data being counted. The height of each bar should reflect the number of data points within the bin associated to the bar.
+
+
+Histograms are great for seeing the center of the data (the balancing point of the graphic), the spread, and the shape. However, when the are many bins, the graphic gets busy. The key information being conveyed is the general shape of the top of each bar, not the vertical lines producing the bar. The `stephist` function avoids these lines, though the density plot is a more widely used alternative.
+
+A density plot also illustrates the distribution of values in a data set along with how they cluster, however, it smooths out the binning process. Density plots are scaled to have area $1$, as they will be seen to suggest the shape of a probability density function. In @fig-histogram-densityplot we create a density plot overlaid on a histogram, which is normalized to have area $1$:
+
+```{julia}
+p2 = stephist(whale; bins=5, normalize=:pdf, alpha=0.75, legend=false)
+
+density!(p2, whale; linewidth=5);
+```
+
+::: {#fig-histogram-densityplot layout-ncol=2}
+```{julia}
+#| echo: false
+p1
+```
+
+```{julia}
+#| echo: false
+p2
+```
+
+The `whale` data summarized with a histogram on the left and a density plot on the right.
+:::
+
+
+A *quantile-normal* plot is a graphic to assess if a data set comes from a *normal distribution*, a reference bell-shaped distribution. The graphic is a *scatter plot* of a quantile of the data set with a corresponding quantile of the reference distribution.
+
+* If the data set has a roughly bell-shaped distribution with "typical" tails, then the dots will mostly fall on a straight line;
+
+* if the data set is skewed one edge will deviate from the line;
+
+* if the data set is symmetric, but has long tails these will show a deviations in both edges of the line.
+
+The `qqnorm` function produces @fig-quantile-normal:
 
 ```{julia}
 #| label: fig-quantile-normal

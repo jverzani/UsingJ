@@ -1,14 +1,14 @@
 # Categorical data {#ch-categorical-data}
 
-In the last chapter, the main variable was numeric. Here we consider a variable of a pair of categorical variables.
+In the last chapter, the main variable was numeric either a measurement taken over the levels of a factor or as a pair of numeric variables. In this chapter we consider univariate and bivariate categorical data.
 
-We use the following, by now standard, packages in this chapter:
+We will use the following, by now standard, packages in this chapter:
 
 ```{julia}
-using StatsBase, StatsPlots,
-    RDatasets, DataFrames, Chain, CategoricalArrays
+using StatsBase, StatsPlots
+using DataFrames, Chain, CategoricalArrays
+import RDatasets: dataset
 ```
-
 
 
 ## Univariate categorical data
@@ -24,20 +24,25 @@ levels(smokes)
 ```
 
 How frequent is each?  We would need to tabulate to answer that
-question. This can be done grouping and applying the `nrow` from `DataFrames`:
+question. This can be done by grouping and applying the `nrow` function from `DataFrames`:
 
 ```{julia}
 combine(groupby(survey, :Smoke), nrow)
 ```
 
-Similarly, we can split and apply with `SplitApplyCombine`:
+Similarly, we can split (with `group` from `SplitApplyCombine`) and apply `length`:
 
 ```{julia}
-using SplitApplyCombine
-group(r -> r.Smoke, copy.(eachrow(survey))) .|> length
+import SplitApplyCombine: group
+@chain survey begin
+    eachrow
+    copy
+    group(r -> r.Smoke, _)
+    map(length, _)
+end
 ```
 
-The above could use some tidying up to read quickly, but easily tabulates the same, and would be useful if the data were not in a data frame.
+The above easily tabulates the same, and would be useful if the data were not in a data frame.
 
 For tabulation, a separate package has benefits. We use the `FreqTables` package and its `freqtables` function. This returns a *named* vector:
 
@@ -47,9 +52,9 @@ using FreqTables
 tbl = freqtable(smokes)
 ```
 
-Named vectors are from `NamedArrays` and offer indexing by name, similar to a data frame.
+Named vectors are from the `NamedArrays` package and offer indexing by name, similar to a data frame.
 
-Either way (and there are others), this shows for this data set, "Never" is by far the most common response, and there is 1 missing response.
+Either way (and there are others), this shows for this data set, even in the 90s "Never" is by far the most common response for past smoking habits, and it shows there is 1 missing response.
 
 ----
 
@@ -58,10 +63,13 @@ Such tabulations can be visualized.
 A bar chart represents the above table using bars proportional to the counts. The `bar` function makes a bar chart for the labels in `x` and the given data. For this example, we have either have to add "missing" to the levels, or, as is done here, excise it from the data set
 
 ```{julia}
+#| label: fig-basic-bar-plot
+#| fig-cap: Basic barplot.
 bar(levels(smokes), tbl[1:end-1]; legend=false)
 ```
 
-Another common graphic is to use a dot, not a bar, to represent the value.
+Another common graphic is to use a dot, not a bar, to represent the value. Still another are pie charts, which are common in the business world, but not favorites within introductory statistics.
+
 
 ## Paired categorical data
 
@@ -81,9 +89,10 @@ With `unstack` we can do this within `DataFrames`:
 
 ```{julia}
 @chain survey begin
+	select([:Sex, :Smoke])
+    dropmissing
     groupby([:Sex, :Smoke])
     combine(nrow => :value)
-    dropmissing
     unstack(:Smoke, :value)
 end
 ```
@@ -131,7 +140,7 @@ Finding the row (or column) proportions as above finds the *conditional distribu
 
 ### Marginal distributions of two-way tables
 
-A *marginal* distribution from a two-way table is found by adding all the values in each row, or each column. With two-way tables generated from the full data, there are more direct ways to realize these, but from a two-way table, we just need to apply `sum` to each row or column. The `sum` function takes a `dims` argument to specify the dimension, which, in this case, is `2` for adding along the columns (the second dimension) and `1` for adding down the rows (the first dimension):
+A *marginal* distribution from a two-way table is found by adding all the values in each row, or each column. With two-way tables generated from the full data, there are more direct ways to realize these, but from a two-way table, we just need to apply `sum` to each row or column. The `sum` function takes a `dims` argument to specify the dimension, which, in this case, is `2` for adding along the columns (the second dimension) and `1` for adding down the rows (the first dimension):^[The `margins` argument and `dims` argument are a bit confusing, a `1` for `margins` means each row is normalized, a `1` for `dims` means add down a row. Which is similar, but `prop(tbl; margins=1)` could be realized through `tbl . / sum(tbl, dims=2)`.]
 
 ```{julia}
 sum(tbl, dims=1) # kinda like `freqtable(survey.Smoke)`
@@ -173,13 +182,17 @@ sum([sum(r[2:end]) for r in  eachrow(df)])
 Here we make a data frame with  80 cases:
 
 ```{julia}
-udf = stack(df, Not(:Grade), variable_name=:InstructionType)
-ddf = vcat([repeat(udf[i:i,:],j) for (i,j) in enumerate(udf.value)]...)
-select!(ddf, [:Grade, :InstructionType]) # drop :value columns
-first(ddf, 3)
+ddf = @chain df begin
+    stack(Not(:Grade), variable_name=:InstructionType)
+    transform(:value => ByRow(n -> 1:n); renamecols=false)
+    flatten(:value)
+    select(Not(:value))
+end
+
+describe(ddf)
 ```
 
-(It isn't the most efficient, but we repeat the data frame `udf[i:i,:]` `j` times, where `j` is the value of the `i`th row in `udf.value`. Accessing with `udf[o,:]` returns a `DataFrameRow`, which has no `repeat` method defined.)
+(It isn't the most efficient, but we utilize `flatten` to repeat the values easily created by the range operator, `1:n` above. As these values are not of interest, we subsequently drop them.)
 
 
 To see we could return to the original table, we first give the `InstructionType` the right ordering of the levels, then create a frequency table:
@@ -239,7 +252,8 @@ For the next plot, we use the `survey` data. There are some efforts needed to wr
 ```{julia}
 iscategorical(x) = isa(x, CategoricalArray) # predicate function
 tbl = @chain survey begin
-    combine(_, :Sex, findall(iscategorical, eachcol(_))[2:end] .=> ByRow(levelcode); renamecols=false)
+    combine(_, :Sex, findall(iscategorical, eachcol(_))[2:end] .=> ByRow(levelcode);
+            renamecols=false)
     dropmissing
 end
 

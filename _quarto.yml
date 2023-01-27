@@ -38,23 +38,23 @@ format:
     number-depth: 3
     toc-depth: 3
     link-external-newwindow: true
-    fig-width: 6
-    fig-height: 4
-  pdf:
-    pdf-engine: xelatex
-    fontfamily: libertinus # librecaslon
-    toc: true
-    number-section: true
-    color-links: true
-    classoption: [oneside]
-    keep-tex: true
-    tbl-cap-location: top
-    fig-cap-location: top
-    geometry:
-      - heightrounded
-    colorlinks: true
-    include-in-header: packages.tex
-    include-before-body: definitions.tex
+#    fig-width: 6
+#    fig-height: 4
+#  pdf:
+#    pdf-engine: xelatex
+#    fontfamily: libertinus # librecaslon
+#    toc: true
+#    number-section: true
+#    color-links: true
+#    classoption: [oneside]
+#    keep-tex: true
+#    tbl-cap-location: top
+#    fig-cap-location: top
+#    geometry:
+#      - heightrounded
+#    colorlinks: true
+#    include-in-header: packages.tex
+#    include-before-body: definitions.tex
 
 execute:
   warning: false

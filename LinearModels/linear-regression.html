@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.32">
+<meta name="generator" content="quarto-1.2.313">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -78,6 +83,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -88,6 +112,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../references.html" rel="next">
 <link href="../Inference/inference.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -147,7 +172,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <a href="../">Using Julia for Introductory Statistics</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/jverzani/UsingJ" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="../Using-Julia-for-Introductory-Statistics.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -163,92 +187,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Exploratory Data Analysis</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../EDA/univariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../EDA/tabular-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../EDA/bivariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../EDA/categorical-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../EDA/makie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The AlgebraOfGraphics</span></a>
+  <a href="../EDA/makie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The <code>AlgebraOfGraphics</code> package</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Inference</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Inference/distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Inference/inference.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Linear Models</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../LinearModels/linear-regression.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">The linear regression model</span></a>
   </div>
 </li>
-      </ul>
-  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#multiple-linear-regression" id="toc-multiple-linear-regression" class="nav-link active" data-scroll-target="#multiple-linear-regression"> <span class="header-section-number">9.1</span> Multiple linear regression</a>
+  <li><a href="#multiple-linear-regression" id="toc-multiple-linear-regression" class="nav-link active" data-scroll-target="#multiple-linear-regression"><span class="toc-section-number">9.1</span>  Multiple linear regression</a>
   <ul class="collapse">
-  <li><a href="#generic-methods-for-statistical-models" id="toc-generic-methods-for-statistical-models" class="nav-link" data-scroll-target="#generic-methods-for-statistical-models"> <span class="header-section-number">9.1.1</span> Generic methods for statistical models</a></li>
+  <li><a href="#generic-methods-for-statistical-models" id="toc-generic-methods-for-statistical-models" class="nav-link" data-scroll-target="#generic-methods-for-statistical-models"><span class="toc-section-number">9.1.1</span>  Generic methods for statistical models</a></li>
   </ul></li>
-  <li><a href="#categorical-covariates" id="toc-categorical-covariates" class="nav-link" data-scroll-target="#categorical-covariates"> <span class="header-section-number">9.2</span> Categorical covariates</a></li>
-  <li><a href="#interactions" id="toc-interactions" class="nav-link" data-scroll-target="#interactions"> <span class="header-section-number">9.3</span> Interactions</a></li>
-  <li><a href="#f-test" id="toc-f-test" class="nav-link" data-scroll-target="#f-test"> <span class="header-section-number">9.4</span> F test</a></li>
+  <li><a href="#categorical-covariates" id="toc-categorical-covariates" class="nav-link" data-scroll-target="#categorical-covariates"><span class="toc-section-number">9.2</span>  Categorical covariates</a></li>
+  <li><a href="#interactions" id="toc-interactions" class="nav-link" data-scroll-target="#interactions"><span class="toc-section-number">9.3</span>  Interactions</a></li>
+  <li><a href="#f-test" id="toc-f-test" class="nav-link" data-scroll-target="#f-test"><span class="toc-section-number">9.4</span>  F test</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jverzani/UsingJ/edit/master/LinearModels/linear-regression.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -265,6 +264,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -273,23 +273,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <p>We discuss the linear regression model in the following using linear algebra to quickly formulate the main results. For those unfamiliar with linear algebra, its use is only to illustrate various aspects that have pre-defined methods in <code>GLM</code>; no user-level linear algebra is necessary for computation.</p>
 <p>For this, we utilize the following packages:</p>
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Distributions</span>, <span class="bu">GLM</span>, <span class="bu">HypothesisTests</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CSV</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">RDatasets</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLMakie</span>, <span class="bu">AlgebraOfGraphics</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">AlgebraOfGraphics</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <section id="multiple-linear-regression" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="multiple-linear-regression"><span class="header-section-number">9.1</span> Multiple linear regression</h2>
 <p>The simple linear regression model related a covariate variable, <span class="math inline">\(x\)</span>, to a response variable <span class="math inline">\(Y\)</span> through a formulation:</p>
 <p><span class="math display">\[
-y_i = \beta_0 + \beta_1 \cdot x_i + e_i,
+Y_i = \beta_0 + \beta_1 \cdot x_i + e_i,
 \]</span></p>
 <p>where <span class="math inline">\(\beta_0, \beta_1\)</span> are the parameters for the model that describe the average value of the <span class="math inline">\(Y\)</span> variable for a given <span class="math inline">\(x\)</span> value and the random errors, <span class="math inline">\(e_i\)</span>, are <em>assumed</em> to be described to be a random sample from some distribution, usually <span class="math inline">\(Normal(0, \sigma)\)</span>. Some inferential results require this sample to be iid.</p>
 <p>The model for multiple regression is similar, though there are <span class="math inline">\(k = 0, 1\)</span>, or more covariates accounted for in the notation:</p>
 <p><span class="math display">\[
-y_i = \beta_0 + \beta_1 \cdot x_{1i} + \beta_2 \cdot x_{2i} + \cdots + \beta_k \cdot x_{ki} + e_i.
+Y_i = \beta_0 + \beta_1 \cdot x_{1i} + \beta_2 \cdot x_{2i} + \cdots + \beta_k \cdot x_{ki} + e_i.
 \]</span></p>
-<p>Following <span class="citation" data-cites="WackerlyMendenhallSchaeffer">[@WackerlyMendenhallSchaeffer]</span> we formulate the regression model using matrix algebra and quickly review their main results.</p>
-<p>If there are <span class="math inline">\(n\)</span> groups of data, then the main model matrix is the <span class="math inline">\(n\times k\)</span> matrix:</p>
+<p>Following <span class="citation" data-cites="WackerlyMendenhallSchaeffer">(<a href="../references.html#ref-WackerlyMendenhallSchaeffer" role="doc-biblioref">Wackerly et al. 2008</a>)</span> we formulate the regression model using matrix algebra and quickly review their main results.</p>
+<p>If there are <span class="math inline">\(n\)</span> groups of data, then the main model matrix is the <span class="math inline">\(n\times (k+1)\)</span> matrix:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <p><span class="math display">\[
 X =
 \begin{bmatrix}
@@ -303,21 +305,21 @@ X =
 <p><span class="math display">\[
 Y = [y_1, y_2, \cdots, y_n], \quad \beta = [\beta_0, \beta_1, \dots, \beta_k], \quad e= [e_1, e_2, \dots, e_n].
 \]</span></p>
-<p>The collection of equations can then be written as <span class="math inline">\(Y = X\beta + e\)</span>. The notation <span class="math inline">\(\hat{Y} = X\beta\)</span> is common, as the values <span class="math inline">\(X\beta\)</span> are used to <em>predict</em> the values of the response. The least squares problem to estimate the parameters is then to find <span class="math inline">\(\beta\)</span> to minimize:</p>
+<p>The collection of equations can then be written as <span class="math inline">\(Y = X\beta + e\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>The notation <span class="math inline">\(\hat{Y} = X\beta\)</span> is common, as the values <span class="math inline">\(X\beta\)</span> are used to <em>predict</em> the average values of the response. The least squares problem to estimate the parameters is then to find <span class="math inline">\(\beta\)</span> that minimizes:</p>
 <p><span class="math display">\[
 \lVert Y - \hat{Y} \rVert^2 = \lVert Y - X\beta \rVert^2.
 \]</span></p>
-<p>Using calculus, it can be seen that any minimizer, <span class="math inline">\(\hat{\beta}\)</span>, will satisfy <span class="math inline">\(X'X\hat{\beta}=X'Y\)</span>, with <span class="math inline">\(X'\)</span> denoting the transpose<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. When written out these are called the <em>normal equations</em>, which, <em>if</em> the matrix <span class="math inline">\(X\)</span> is non-degenerate (rank <span class="math inline">\(k+1\)</span> in this case), can be solved algebraically by</p>
+<p>Using calculus, it can be seen that any minimizer, <span class="math inline">\(\hat{\beta}\)</span>, will satisfy <span class="math inline">\(X'X\hat{\beta}=X'Y\)</span>, with <span class="math inline">\(X'\)</span> denoting the transpose<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. When written out these are called the <em>normal equations</em>, which, <em>when</em> the matrix <span class="math inline">\(X\)</span> is non-degenerate (rank <span class="math inline">\(k+1\)</span> in this case) can be solved algebraically by</p>
 <p><span class="math display">\[
 \hat{\beta} = (X'X)^{-1}X' Y.
 \]</span></p>
-<p>(Though this isn’t the formula used in practice where inverse taking is usually done in a roundabout, though more computationally efficient, manner.)</p>
-<p>We now assume the errors are an iid random sample from a distribution with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. The matrix of covariances <span class="math inline">\(COV(\beta_i, \beta_j)\)</span> is called the covariance matrix and denoted <span class="math inline">\(\Sigma_{\hat{\beta}\hat{\beta}}\)</span>. Under these assumptions, it can be shown to satisfy:</p>
+<p>We now assume the errors are an iid random sample from a distribution with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. The matrix of covariances, <span class="math inline">\(COV(\beta_i, \beta_j)\)</span>, is called the covariance matrix and denoted <span class="math inline">\(\Sigma_{\hat{\beta}\hat{\beta}}\)</span>. Under these assumptions, it can be shown to satisfy:</p>
 <p><span class="math display">\[
 \Sigma_{\hat{\beta}\hat{\beta}} = \sigma^2 (X'X)^{-1}.
 \]</span></p>
-<p>The parameter <span class="math inline">\(\sigma^2\)</span> can be estimated. We have the <em>residuals</em> are given in vector form by <span class="math inline">\(\hat{e} = Y - \hat{Y}\)</span>. But <span class="math inline">\(\hat{Y} = \hat{H}Y\)</span> where <span class="math inline">\(\hat{H} = X(X'X)^{-1}X'\)</span> is called the “hat” matrix and comes from <span class="math inline">\(\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y\)</span>.</p>
-<p>The hat matrix has the property of a <em>projection matrix</em> taking values in an <span class="math inline">\(n\)</span> dimensional space and projecting onto a subspace described by the columns of the <span class="math inline">\(X\)</span> matrix. This allows a geometric interpretation of the least-squares formulation.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>The parameter <span class="math inline">\(\sigma^2\)</span> can be estimated. We have the <em>residuals</em> are given in vector form by <span class="math inline">\(\hat{e} = Y - \hat{Y}\)</span>. Here <span class="math inline">\(\hat{Y} = \hat{H}Y\)</span> where <span class="math inline">\(\hat{H} = X(X'X)^{-1}X'\)</span> is called the “hat” matrix and comes from <span class="math inline">\(\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y\)</span>.</p>
+<p>The hat matrix has the property of a <em>projection matrix</em> taking values in an <span class="math inline">\(n\)</span> dimensional space and projecting onto a subspace described by the columns of the <span class="math inline">\(X\)</span> matrix. This allows a geometric interpretation of the least-squares formulation.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <p>The sum of squared residuals is:</p>
 <p><span class="math display">\[
 \sum (Y_i - \hat{Y_i})^2 = \lVert Y - \hat{Y} \rVert^2 = \lVert (1-\hat{H})Y\rVert^2 = Y'(I-\hat{H})Y,
@@ -330,9 +332,9 @@ s^2 = \frac{\lVert Y - \hat{Y} \rVert^2}{n-1-k} = \frac{\sum (Y_i - \hat{Y_i})^2
 <p>(When <span class="math inline">\(k=0\)</span>, this is the same as the sample standard deviation with <span class="math inline">\(\hat{Y_i}\)</span> simply <span class="math inline">\(\bar{Y}\)</span>.)</p>
 <p>More is known of the <span class="math inline">\(\hat{\beta}\)</span>, in particular the distribution of:</p>
 <p><span class="math display">\[
-\frac{(\hat{\beta}-\beta) \cdot (X'X) \cdot (\hat{\beta} - \beta)}{\sigma_2}
+\frac{(\hat{\beta}-\beta) \cdot (X'X) \cdot (\hat{\beta} - \beta)}{\sigma^2},
 \]</span></p>
-<p>Is <span class="math inline">\(Chisq(k+1)\)</span>and if the errors are from an iid random sample with population <span class="math inline">\(Normal(0, \sigma)\)</span>, then this is independent of <span class="math inline">\(s^2\)</span> and so the ratio is <span class="math inline">\(F\)</span> distributed, leading to the following for a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% <em>joint</em> confidence interval for <span class="math inline">\(\beta\)</span> being:</p>
+<p>is <span class="math inline">\(Chisq(k+1)\)</span> and, if the errors are from an iid random sample with population <span class="math inline">\(Normal(0, \sigma)\)</span>, is independent of <span class="math inline">\(s^2\)</span>. In which case, the ratio is <span class="math inline">\(F\)</span> distributed, leading to the following: a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% <em>joint</em> confidence interval for <span class="math inline">\(\beta\)</span> is found with:</p>
 <p><span class="math display">\[
 (\hat{\beta}-\beta) \cdot (X'X) \cdot (\hat{\beta}-\beta) \leq (1+k)s^2 F_{1-\alpha; 1 + k, n-1-k}.
 \]</span></p>
@@ -349,13 +351,13 @@ T = \frac{\hat{\beta}_i - \beta_i}{SE(\hat{\beta}_{ii})},
 R^2 = 1 - \frac{SSR}{SST},
 \]</span></p>
 <p>where <span class="math inline">\(SSR = \sum \hat{e}_i^2 = \sum (y_i - \hat{y}_i)^2\)</span> is the sum of the squared residuals and <span class="math inline">\(SST = \sum (y_i - \bar{y})^2\)</span> is the total sum of the squares. When the ratio <span class="math inline">\(SSR/SST\)</span> is close to <span class="math inline">\(1\)</span>, then the model (<span class="math inline">\(\hat{y}\)</span>) doesn’t explain much of the variation compared to the null model with all the <span class="math inline">\(\beta_i\)</span>’s, <span class="math inline">\(i \geq 1\)</span> being <span class="math inline">\(0\)</span> and the sample mean of the <span class="math inline">\(y\)</span>, <span class="math inline">\(\bar{y}\)</span>, used for prediction. Conversely, when the ratio is close to <span class="math inline">\(0\)</span>, then the model explains much of the variation. By subtracting this from <span class="math inline">\(1\)</span>, as is customary, we have the interpretation that <span class="math inline">\(R^2\)</span> explains <span class="math inline">\(R^2 \cdot 100\)</span>% of the variation in the <span class="math inline">\(y\)</span> values.</p>
-<p>The value of <span class="math inline">\(R^2\)</span> can be made equal to <span class="math inline">\(1\)</span> with enough variables; the <em>adjusted</em> <span class="math inline">\(R^2\)</span> value is a modification that weights <span class="math inline">\(SSR/SST\)</span> by <span class="math inline">\((n-1)/(n-k-1)\)</span> so more variables (bigger <span class="math inline">\(k\)</span>) will makes this smaller.</p>
+<p>The value of <span class="math inline">\(R^2\)</span> can be made equal to <span class="math inline">\(1\)</span> with enough variables; the <em>adjusted</em> <span class="math inline">\(R^2\)</span> value is a modification that weights <span class="math inline">\(SSR/SST\)</span> by <span class="math inline">\((n-1)/(n-k-1)\)</span> so using more variables (bigger <span class="math inline">\(k\)</span>) is penalized.</p>
 <section id="generic-methods-for-statistical-models" class="level3" data-number="9.1.1">
 <h3 data-number="9.1.1" class="anchored" data-anchor-id="generic-methods-for-statistical-models"><span class="header-section-number">9.1.1</span> Generic methods for statistical models</h3>
 <p>The <code>StatsBase</code> package defines methods for the above calculations and more. These are generic methods with similar usage for other models than the linear regression model discussed here. <a href="#tbl-stat-models-api">Table&nbsp;<span>9.1</span></a> lists several.</p>
 <div id="tbl-stat-models-api" class="anchored">
 <table class="table">
-<caption>Table 9.1: Generic methods for statistical models defined in <a href="https://juliastats.org/StatsBase.jl/stable/statmodels/"><code>StatsBase</code></a>. Those marked with a <span class="math inline">\(*\)</span> are defined on the <code>model</code> property of the <code>lm</code> output.</caption>
+<caption>Table&nbsp;9.1: Generic methods for statistical models defined in <a href="https://juliastats.org/StatsBase.jl/stable/statmodels/"><code>StatsBase</code></a>. Those marked with a <span class="math inline">\(*\)</span> are defined on the <code>model</code> property of the <code>lm</code> output.</caption>
 <colgroup>
 <col style="width: 25%">
 <col style="width: 75%">
@@ -369,7 +371,7 @@ R^2 = 1 - \frac{SSR}{SST},
 <tbody>
 <tr class="odd">
 <td><code>coef</code></td>
-<td>Least squares estimates for intercept, <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1, \dots, \hat{\beta}_k\)</span></td>
+<td>Least squares estimates for <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1, \dots, \hat{\beta}_k\)</span></td>
 </tr>
 <tr class="even">
 <td><code>coefnames</code></td>
@@ -424,12 +426,12 @@ R^2 = 1 - \frac{SSR}{SST},
 <td>Variance/Covariance matrix for the <span class="math inline">\(\hat{\beta}\)</span>s</td>
 </tr>
 <tr class="odd">
-<td><code>dispersion</code><span class="math inline">\(^*\)</span></td>
-<td>Estimate for <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\hat{\sigma} = \sqrt{SSR/(n-1-k)}\)</span></td>
-</tr>
-<tr class="even">
 <td><code>deviance</code></td>
 <td>Residual sum of squares, <span class="math inline">\(SSR\)</span></td>
+</tr>
+<tr class="even">
+<td><code>dispersion</code><span class="math inline">\(^*\)</span></td>
+<td>Estimate for <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\hat{\sigma} = \sqrt{SSR/(n-1-k)}\)</span> or <code>dispersion(res)/dof_residual(res)</code></td>
 </tr>
 <tr class="odd">
 <td><code>nulldeviance</code></td>
@@ -459,7 +461,7 @@ R^2 = 1 - \frac{SSR}{SST},
 </table>
 </div>
 <div id="exm-simple-linear-regression" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.1 (Example of simple linear regression) </strong></span>Consider some simulated data on dosage amount of Ivermectin and days to recovery of COVID-19 fit by a simple linear model:</p>
+<p><span class="theorem-title"><strong>Example 9.1 (Example of simple linear regression) </strong></span>Consider some fabricated data on dosage amount of Ivermectin and days to recovery of COVID-19 fit by a simple linear model:</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">200</span>, <span class="fl">400</span>, <span class="fl">400</span>, <span class="fl">600</span>, <span class="fl">800</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> [<span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">6</span>, <span class="fl">6</span>];</span>
@@ -528,10 +530,11 @@ x            0.00193182  0.00176594  1.09    0.3159  -0.00238928  0.00625292
  0.0017659398031727338</code></pre>
 </div>
 </div>
-<p>The <span class="math inline">\(T\)</span> statistic for <span class="math inline">\(H_0: \beta_1 = 0\)</span> is then</p>
+<p>The <span class="math inline">\(T\)</span>-statistic for <span class="math inline">\(H_0: \beta_1 = 0\)</span> is then</p>
 <div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>β̂₁, SE₁ <span class="op">=</span> <span class="fu">coef</span>(res)[<span class="fl">2</span>], <span class="fu">stderror</span>(res)[<span class="fl">2</span>]</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>T_obs <span class="op">=</span> (β̂₁ <span class="op">-</span> <span class="fl">0</span>) <span class="op">/</span> SE₁</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>β̂₁ <span class="op">=</span> <span class="fu">coef</span>(res)[<span class="fl">2</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>SE₁ <span class="op">=</span> <span class="fu">stderror</span>(res)[<span class="fl">2</span>]</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>T_obs <span class="op">=</span> (β̂₁ <span class="op">-</span> <span class="fl">0</span>) <span class="op">/</span> SE₁</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>1.0939320685492355</code></pre>
 </div>
@@ -543,7 +546,7 @@ x            0.00193182  0.00176594  1.09    0.3159  -0.00238928  0.00625292
 <pre><code>0.315945937293384</code></pre>
 </div>
 </div>
-<p>This computation is needed were there different assumed values than <span class="math inline">\(\beta_1 = 0\)</span> for the null.</p>
+<p>This computation is needed were there different assumed values than <span class="math inline">\(\beta_1 = 0\)</span> for the null, though this particular <span class="math inline">\(p\)</span>-value is included in the default display of <code>res</code>.</p>
 <p>The confidence intervals are of the form <span class="math inline">\(\hat{\beta}_i \pm t_{1-\alpha/2; n-k-1} \cdot SE(\hat{\beta}_i)\)</span>. We find one for the intercept term, <span class="math inline">\(\beta_0\)</span>:</p>
 <div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
@@ -580,15 +583,15 @@ x            0.00193182  0.00176594  1.09    0.3159  -0.00238928  0.00625292
 </div>
 <p>We can visualize (<a href="#fig-linear-regression-confidicence-interval">Figure&nbsp;<span>9.1</span></a>) with the following commands:</p>
 <div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> AlgebraOfGraphics.<span class="fu">data</span>((;x, y)) <span class="op">*</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">visual</span>(Scatter) <span class="op">+</span> <span class="fu">linear</span>(;interval<span class="op">=:</span>confidence)) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y)</span>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> (<span class="fu">visual</span>(Scatter) <span class="op">+</span> <span class="fu">linear</span>(; interval<span class="op">=:</span>confidence))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">data</span>((;x, y)) <span class="op">*</span> layers <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">+=</span> <span class="fu">data</span>((x<span class="op">=</span>[<span class="fl">500</span>, <span class="fl">500</span>], y<span class="op">=</span>ci)) <span class="op">*</span> <span class="fu">visual</span>(Lines) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y)</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <div id="fig-linear-regression-confidicence-interval" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="linear-regression_files/figure-html/fig-linear-regression-confidicence-interval-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure 9.1: Illlustration of linear regression model with confidence band drawn. The vertical line is computed directly for the value of <span class="math inline">\(x=500\)</span>.</figcaption><p></p>
+<p><img src="linear-regression_files/figure-html/fig-linear-regression-confidicence-interval-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9.1: Illlustration of linear regression model with confidence band drawn. The vertical line is computed directly for the value of <span class="math inline">\(x=500\)</span>.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -649,7 +652,7 @@ Sugars         4.20214      0.216049   19.45    &lt;1e-26    3.76983      4.6344
 ────────────────────────────────────────────────────────────────────────────────</code></pre>
 </div>
 </div>
-<p>The output shows what might have been anticipated: there appears to be no connection with <code>Sodium</code>, though were this data on dinner foods that might not be the case. The <span class="math inline">\(T\)</span>-test for <code>Sodium</code> is a test of whether the slope based on <code>Sodium</code> is <span class="math inline">\(0\)</span> – holding the other variables constant – and the large <span class="math inline">\(p\)</span>-value would lead us to accept that hypotheses.</p>
+<p>The output shows what might have been anticipated: there appears to be no connection between <code>Sodium</code> and <code>Calories</code>, though were this data on dinner foods that might not be the case. The <span class="math inline">\(T\)</span>-test displayed for <code>Sodium</code> is a test of whether the slope based on <code>Sodium</code> is <span class="math inline">\(0\)</span> – holding the other variables constant – and the large <span class="math inline">\(p\)</span>-value would lead us to accept that hypotheses.</p>
 <p>We drop this variable from the model and refit:</p>
 <div class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(Calories <span class="op">~</span> Protein <span class="op">+</span> Fat <span class="op">+</span> Carbo <span class="op">+</span> Sugars), cereal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -670,7 +673,7 @@ Sugars         4.21069    0.211619  19.90    &lt;1e-27    3.78739    4.634
 ─────────────────────────────────────────────────────────────────────────</code></pre>
 </div>
 </div>
-<p>How to interpret this? Each coefficient (save the intercept) measures the <em>predicted</em> change in <em>mean</em> number of calories for a <span class="math inline">\(1\)</span>-unit increase <em>holding</em> the other variables fixed. For example, it is suggested that adding 1 unit of protein additional would add nearly 4 calories per serving, on average.</p>
+<p>How to interpret this? Each coefficient (save the intercept) measures the <em>predicted</em> change in <em>mean</em> number of calories for a <span class="math inline">\(1\)</span>-unit increase <em>holding</em> the other variables fixed. For example, it is suggested that adding 1 additional unit of protein holding the other variables constant would add nearly 4 calories per serving, on average.</p>
 </div>
 <div id="exm-polynomial-regression" class="theorem example">
 <p><span class="theorem-title"><strong>Example 9.3 (Polynomial regression) </strong></span><a href="http://jse.amstat.org/v3n1/datasets.dickey.html">Dickey</a> provides an analysis of Galileo’s falling ball data. Galileo rolled a ball down an elevated ramp at certain distances, the ball then jumped down a certain distance that varied depending on the height of the ramp. The collected data is:</p>
@@ -719,13 +722,13 @@ x ^ 2          0.00818074    0.000665952  12.28    0.0003    0.00633176    0.010
 ────────────────────────────────────────────────────────────────────────────────────</code></pre>
 </div>
 </div>
-<p>The rules of <code>@formula</code> parse the above as adding a variable <code>x^2</code> to the model. Alternatively, the data frame could have been transformed to produce that variable. The output shows the test of <span class="math inline">\(\beta_2=0\)</span> would be rejected for reasonable values of <span class="math inline">\(\alpha\)</span>, as Galileo might have expected.</p>
+<p>The rules of <code>@formula</code> parse the above as adding a variable <code>x^2</code> to the model. Alternatively, the data frame could have been transformed to produce that variable. The output shows the test of <span class="math inline">\(\beta_2=0\)</span> would be rejected for reasonable values of <span class="math inline">\(\alpha\)</span>.</p>
 <div class="cell" data-execution_count="23">
 <div class="cell-output cell-output-display" data-execution_count="24">
 <div id="fig-galileo-linear" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="linear-regression_files/figure-html/fig-galileo-linear-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure 9.2: Scatter plot of falling-ball data of Galileo with a linear model fit. The curve suggests a quadratic model.</figcaption><p></p>
+<p><img src="linear-regression_files/figure-html/fig-galileo-linear-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9.2: Scatter plot of falling-ball data of Galileo with a linear model fit. The curve suggests a quadratic model.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -778,11 +781,12 @@ Details:
 </div>
 <p>Further, the two-sample <span class="math inline">\(T\)</span>-test (with equal variances assumed) can be performed through the regression model. After tidying the data, we fit a model:</p>
 <div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="op">=</span> [<span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">6</span>,<span class="fl">7</span>]</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="op">=</span> [<span class="fl">7</span>,<span class="fl">6</span>,<span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">7</span>]</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(group<span class="op">=</span>[<span class="st">"g1"</span>,<span class="st">"g2"</span>], value<span class="op">=</span>[y1, y2])</span>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="op">=</span> [<span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">7</span>]</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="op">=</span> [<span class="fl">7</span>, <span class="fl">6</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>]</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(group<span class="op">=</span>[<span class="st">"g1"</span>, <span class="st">"g2"</span>], value<span class="op">=</span>[y1, y2])</span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">flatten</span>(df, [<span class="op">:</span>value])</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(value <span class="op">~</span> group), d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(value <span class="op">~</span> group), d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>StatsModels.TableRegressionModel{LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}, Vector{Int64}}}}, Matrix{Float64}}
 
@@ -830,11 +834,11 @@ Details:
  0.0  0.0  0.0  0.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</code></pre>
 </div>
 </div>
-<p>The model can’t be <span class="math inline">\(y_i = \beta_0 + \beta_1 \cdot 1_{\text{g2}}(x_i) + \beta_2 \cdot 1_{\text{g1}}(x_i) + e_i\)</span> as there can’t be a unique solution (the model <span class="math inline">\(y_i = (\beta_0 + \beta_2) + \beta_2\cdot 1_{\text{g2}}(x_i)\)</span> would also fit). More mathematically, the model matrix, <span class="math inline">\(X\)</span>, would have 3 columns, but one of them could be expressed as a sum of the other 2. This would mean <span class="math inline">\(X\)</span> would not have full rank and the least-squares formula wouldn’t have the form it does.</p>
+<p>The model can’t be <span class="math inline">\(y_i = \beta_0 + \beta_1 \cdot 1_{\text{g2}}(x_i) + \beta_2 \cdot 1_{\text{g1}}(x_i) + e_i\)</span>, as there wouldn’t be a unique solution (the model <span class="math inline">\(y_i = (\beta_0 + \beta_2) + \beta_2\cdot 1_{\text{g2}}(x_i)\)</span> would also fit, so the parameters would not be identifiable). More mathematically, the model matrix, <span class="math inline">\(X\)</span>, would have 3 columns, but one of them could be expressed as a sum of the other 2. This would mean <span class="math inline">\(X\)</span> would not have full rank and the least-squares formula wouldn’t have the form it does.</p>
 <p>To fit a model with different contrasts, the <code>lm</code> function has a <code>contrast</code> keyword argument.</p>
 <p>The above formulation does not require the factor to have just 2 levels; if there are <span class="math inline">\(k\)</span> levels, then <span class="math inline">\(k-1\)</span> variables are formed in the model.</p>
 <div id="exm-regression-with-categorical-variables" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.4 (Categorical covariates example) </strong></span>Consider the <code>cereal</code> data set. The <code>Shelf</code> variable is numeric, but really it should be considered categorical for any study using a linear model, as differences between shelf 1 and 2 and shelf 2 and 3 should not be expected to be uniform (as they would were the values treated numerically). The following first ensures shelf is categorical, then fits a model on how the shelf placement impacts the number of calories:</p>
+<p><span class="theorem-title"><strong>Example 9.4 (Categorical covariates example) </strong></span>Consider the <code>cereal</code> data set. The <code>Shelf</code> variable is numeric, but really it should be considered categorical for any study using a linear model, as differences between shelf 1 and 2 and shelf 2 and 3 should not be expected to be uniform (as they would were the values treated numerically). The following first ensures <code>shelf</code> is categorical, then fits a model on how the shelf placement impacts the number of calories:</p>
 <div class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>cereal.shelf <span class="op">=</span> <span class="fu">categorical</span>(cereal.Shelf)</span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(Calories <span class="op">~</span> shelf), cereal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -853,7 +857,7 @@ shelf: 3      60.6692     16.9939  3.57    0.0007    26.6989    94.6394
 ───────────────────────────────────────────────────────────────────────</code></pre>
 </div>
 </div>
-<p>The <span class="math inline">\(p\)</span>-value for shelf 2 is consistent with there being no difference between shelf 1 and 2, but that of shelf 3 (counting from the floor) is significantly different from shelf 1 and would be interpreted as having 60 additional calories over shelf 1. (The lowest-shelf traditionally holds the least sold cereals, hence the most healthy in 1993 when this data was collected).</p>
+<p>The <span class="math inline">\(p\)</span>-value for shelf 2 is consistent with there being no difference between shelf 1 and 2, but that of shelf 3 (counting from the floor) is significantly different from shelf 1 and would be interpreted as having 60 additional calories over shelf 1. (Which fits the expectation that the lowest-shelf traditionally holds the least sold cereals, hence the most healthy in 1993 when this data was collected).</p>
 <p>We can check that the model matrix has <span class="math inline">\(2\)</span> variables a few ways: directly from the size (with first column being the intercept), and indirectly by the residual degrees of freedom:</p>
 <div class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(<span class="fu">modelmatrix</span>(res)), <span class="fu">nobs</span>(res) <span class="op">-</span> <span class="fu">dof_residual</span>(res) <span class="op">-</span> <span class="fl">1</span> <span class="co"># dof_residual = n - k - 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -920,8 +924,8 @@ Coefficients:
 <div class="cell-output cell-output-display" data-execution_count="36">
 <div id="fig-tooth-growth-violinplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="linear-regression_files/figure-html/fig-tooth-growth-violinplot-output-1.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure 9.3: ToothGrowth data set</figcaption><p></p>
+<p><img src="linear-regression_files/figure-html/fig-tooth-growth-violinplot-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9.3: ToothGrowth data set</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1007,10 +1011,10 @@ L(\beta, \sigma, x) &amp;= \prod_{i=1}^n \frac{1}{(2\pi\sigma^2)^{n/2}} e^{-\fra
 \]</span></p>
 <p>This occurs at</p>
 <p><span class="math display">\[
-\hat{\sigma} = \frac{m(\hat{\beta})}{n} = \frac{1}{n} SSR,
+\hat{\sigma^2} = \frac{m(\hat{\beta})}{n} = \frac{1}{n} SSR,
 \]</span></p>
 <p>where <span class="math inline">\(SSR\)</span> indicates the sum of the squared residuals, <span class="math inline">\(y_i - \hat{y}_i\)</span>. (This is a <em>biased</em> estimate, as the divisor does not account for the degrees of freedom.)</p>
-<p>The log-likelihood ratio statistic consider the two models: the restricted one under <span class="math inline">\(H_0\)</span> and the unrestricted one. This simplifies to</p>
+<p>The log-likelihood ratio statistic considers the two models: the restricted one under <span class="math inline">\(H_0\)</span> and the unrestricted one. This simplifies to</p>
 <p><span class="math display">\[
 \lambda = -2 \ln \frac{L_0}{L} = n \ln(\frac{SSR_0}{SSR}),
 \]</span></p>
@@ -1021,7 +1025,7 @@ F = \frac{n-k-1}{k-p} \cdot \frac{SSR_0 - SSR}{SSR} =
 \frac{(SSR_0 - SSR)/(k-p)}{SSR/(n-k-1)}.
 \]</span></p>
 <p>The distribution of <span class="math inline">\(SSR/(n-k-1)\)</span> is <span class="math inline">\(Chisq(n-k-1)\)</span>. However, under these assumptions and under the null hypothesis, by Cochran’s theorem <span class="math inline">\(SSR_0- SSR\)</span> is <em>independent</em> of <span class="math inline">\(SSR\)</span> and <span class="math inline">\((SSR_0-SSR)/(k-p)\)</span> is <span class="math inline">\(Chisq(k-p)\)</span>. That is <span class="math inline">\(F\)</span> has a <span class="math inline">\(FDist(n-k-1, k-p)\)</span> distribution. (Not asymptotically.)</p>
-<p>This is used by <code>ftest</code> to compare two <em>nested</em> models. Nested means the parameters in the reduced model are related to those in the full model; no new ones are introduced. More technically, the column space of the reduced model is embedded in that of the full model.</p>
+<p>This statistic is used by <code>ftest</code> to compare two <em>nested</em> models. Nested means the parameters in the reduced model are related to those in the full model; no new ones are introduced.</p>
 <div id="exm-vc-continued" class="theorem example">
 <p><span class="theorem-title"><strong>Example 9.6 </strong></span>Consider again the output of the last call to <code>ftest</code> which checked for an interaction between the <code>Supp</code> and <code>Dose</code> variables in the <code>ToothGrowth</code> data:</p>
 <div class="cell" data-execution_count="39">
@@ -1059,7 +1063,7 @@ F = \frac{n-k-1}{k-p} \cdot \frac{SSR_0 - SSR}{SSR} =
 <pre><code>54.0</code></pre>
 </div>
 </div>
-<p>The <code>ftest</code> can test more than rwo models. For example, suppose we test the null model with just an intercept, as in:</p>
+<p>The <code>ftest</code> can test more than two models. For example, suppose we test the null model with just an intercept, as in:</p>
 <div class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>resᵢ <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(Len <span class="op">~</span> <span class="fl">1</span>), ToothGrowth)</span>
 <span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(resᵢ.model, res₀.model, res.model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1077,7 +1081,7 @@ F = \frac{n-k-1}{k-p} \cdot \frac{SSR_0 - SSR}{SSR} =
 <p>The output here has two <span class="math inline">\(p\)</span>-values, the first testing if the additive model is statistically significant (with a very small <span class="math inline">\(p\)</span>-value), the second testing, as mentioned, if the model with interaction is statistically significant compared to the additive model.</p>
 </div>
 <div id="exm-faraway" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.7 </strong></span>We borrow an example from <span class="citation" data-cites="Faraway">[@Faraway]</span> to illustrate how the <span class="math inline">\(F\)</span>-test can be used to test a null hypothesis of <span class="math inline">\(H_0: \beta_i = \beta_j\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 9.7 </strong></span>We borrow an example from <span class="citation" data-cites="Faraway">(<a href="../references.html#ref-Faraway" role="doc-biblioref">Faraway 2004</a>)</span> to illustrate how the <span class="math inline">\(F\)</span>-test can be used to test a null hypothesis of <span class="math inline">\(H_0: \beta_i = \beta_j\)</span>.</p>
 <p>The dataset is in the <code>datasets</code> package of R:</p>
 <div class="cell" data-execution_count="44">
 <div class="sourceCode cell-code" id="cb77"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>savings <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"datasets"</span>, <span class="st">"LifeCycleSavings"</span>)</span>
@@ -1144,12 +1148,22 @@ DDPI          0.390965     0.196871      1.99    0.0530  -0.00531671   0.787247
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Faraway" class="csl-entry" role="doc-biblioentry">
+Faraway, J. J. (2004), <em>Linear models with r</em>, hapman &amp; Hall/CRC.
+</div>
+<div id="ref-WackerlyMendenhallSchaeffer" class="csl-entry" role="doc-biblioentry">
+Wackerly, D., Mendenhall, W., and Scheaffer, R. L. (2008), <em>Mathematical statistics with applications</em>, Cengage.
+</div>
+</div>
 </section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>In <code>Julia</code>, the <code>'</code> notation for a matrix denotes the adjoint of the matrix, which differs from the transpose for complex valued matrices.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>This geometric interpretation of projection gives insight into the presence of an <span class="math inline">\(F\)</span> statistic later in this discussion.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>A more general parameterization is to just use <span class="math inline">\(n-p\)</span> where <span class="math inline">\(p\)</span> is the <em>rank</em> of the model matrix. This parameterization covers models without an intercept.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Alternatively, the multivariate normal distribution can be used to write <span class="math inline">\(Y \sim Normal(X\beta, \sigma^2 I)\)</span>, where <span class="math inline">\(I\)</span> is the identity matrix. Matrices, as used here, compactly represent multiple equations and through matrix algebra allow symbolic rearrangements. Needed for this discussion are the notions of matrix addition, which requires similar shaped matrices; matrix multiplication, which requires a matching of the number of columns of one matrix with the number of rows of the other; matrix inverses, which require square-shaped matrices and allow the solving of <span class="math inline">\(Ax=b\)</span> formally with <span class="math inline">\(x=A^{-1}b\)</span>, though in practice more computationally efficient means are used; matrix transposes, which interchange rows for columns; and a vector norm, which is a generalization of the distance formula.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>In <code>Julia</code>, the <code>'</code> notation for a matrix denotes the adjoint of the matrix, which differs from the transpose for complex valued matrices.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This geometric interpretation of projection gives insight into the presence of an <span class="math inline">\(F\)</span> statistic later in this discussion. The <em>normal</em> equations are so named, as the imply the residual vector, <span class="math inline">\(Y - \hat{Y}\)</span> is perpendicular (also known as normal) to the columns, as vectors, of <span class="math inline">\(X\)</span>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -1195,7 +1209,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -1223,31 +1254,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1255,7 +1305,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
-    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external)');
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
@@ -1272,6 +1322,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

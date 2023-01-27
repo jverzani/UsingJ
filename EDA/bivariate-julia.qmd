@@ -1,13 +1,25 @@
 # Bivariate data
 
-We now consider two variables measured for the same observation, or bivariate data. There are three basic interpretations depending on the type of data.
+We now consider two variables measured for the same observation, or bivariate data. The  combinations of numeric data or categorical data lead to different means to describe and visualize the sets of data.
 
-In the following, we use the widely used `iris` data set which has measurements of sepal and petal width and lengths for 3 species of irises.
+We load our basic suite of packages:
+```{julia}
+using StatsBase, StatsPlots
+using DataFrames, CategoricalArrays, Chain
+using RDatasets
+```
 
 ```{julia}
-using StatsBase, StatsPlots,
-    RDatasets, DataFrames, Chain, CategoricalArrays
+#| echo: false
+#| output: false
+dpi = 96
+fig_size_2 = dpi .* (6, 2)
+nothing
+```
 
+In the following, we use the widely used `iris` data set which has numeric measurements of sepal and petal width and lengths for 3 species of irises.
+
+```{julia}
 iris = dataset("datasets", "iris")
 first(iris, 3)
 ```
@@ -18,142 +30,140 @@ There are 50 cases per species:
 combine(groupby(iris, :Species), nrow)
 ```
 
-## Independent samples
+## Multiple samples
 
-First we graphically explore one measurement, `PetalWidth`, for the 3 different species. A typical question might be, is the average petal width the same across the three species? Other comparative measures might include the variability or the shape of the distribution.
+A common scenario is when data for a measurement is collected across multiple levels of a factor to see if there is something about that factor that has an effect on the measurement. As measurements typically have fluctuations, this "effect" must be understood relative to some understanding of the underlying variability. To gather that, a probability model might be used. For now, we content ourselves with common graphical comparisons, which can be used to distinguish large effects.
 
-A common comparison is when data for a measurement is collected across multiple levels of a factor to see if there is something about that factor that has an effect on the measurement. As measurements typically have fluctuations, this "effect" must be understood relative to some understanding of the underlying variability. To gather that, a probability model might be used. For now, we content ourselves with common graphical comparisons, which can be used to distinguish large effects.
-
-The data storage in `iris` is tidy data, each row is an observation, the `PetalWidth` is the variable. The graphics are done by splitting and then applying the graphic to the different groups of data. For this task, the `StatsPlots` package is useful.^[For the `Makie` plotting package, the `AlgebraOfGraphics` package is a powerful alternative to `StatsPlots` and reminiscent of R's `ggplot` system. We will illustrate its use in a later chapter.]
+First we graphically explore one measurement, `PetalWidth`, for the 3 different species. A typical question might be, is the average petal width the same across the three species?
 
 
-### Dot plots
+The data storage in `iris` is tidy data, each row is an observation, the `PetalWidth` is the variable. Were the data in a long format with a variable for each level of the factor, the `stack` command would prove useful to tidy the data.
 
-A dot plot is a useful graphic to show the distribution of values on a number line when the data is sufficiently spread out so as not to overlap too much, though there are strategies to jitter values or stack values. A basic dot plot in `StatsPlots` is a scatter plot, where we specify the $x$ and $y$ positions of the data to be plotted. In this case, we create $y$ values:
-
-
+The graphics are created by splitting the data along the levels of the factor and then applying the graphic to the univariate data for each group. For this task, the `StatsPlots` package is useful.^[For the `Makie` plotting package, the `AlgebraOfGraphics` package is a powerful alternative to `StatsPlots` and reminiscent of R's `ggplot` system. We will illustrate its use in a later chapter.]
 
 
-```{julia}
-#| label: fig-simple-dotplot
-#| fig-cap: Simple dotplot with no separation by species
-xs = iris.PetalWidth
-ys = [rand() for _ in xs] # jitter the data
-dotplot(xs, ys; legend=false)
-```
+### Grouped dot plots
 
-We can also create plots by each species:
+A dot plot is a useful graphic to show the distribution of values on a number line when the data is sufficiently spread out so as not to overlap too much. The basic graphic is $1$-dimensional, adding a second dimension for the grouping variable allows easy comparisons.
+
+Here we discuss dot plots for different levels of a factor. In the `iris` data set, to create plots by each species (@fig-grouped-dotplot), allowing a comparison of the distribution of the $x$ variable over different levels of a factor. The following illustrates the steps done, but we will see next that such effort is unneeded as the `StatsPlots` recipes wrap up this data manipulation, in this case with a method for `dotplot`.
 
 ```{julia}
-#| label: fig-dotplot-split-by-hand
-#| fig-cap: A dot plot with each species presented a different $y$ value
 byspecies = groupby(iris, :Species)
-p = plot()
+p1 = StatsPlots.plot()
 for (i, k) in enumerate(keys(byspecies)) # iterate over keys
     species = k.Species
     xs = byspecies[k].PetalWidth
-    ys = i .+ ones(length(xs))
-    dotplot!(p, xs, ys; label=species)
+    ys = i .+ one.(xs)
+    dotplot!(p1, xs, ys; label=species)
 end
-p
+p1;
 ```
 
-The identification of the species after grouping is a bit awkward, but the idea is we split the data, then create a dot plot for each level of the grouping variable, `:Species`. This is more easily done by passing `:Species` as the $y$ value, in which case the categorical variable is used for grouping. Here we use the convenient `@df` macro which looks up the values for each symbol within the data frame specified.
+The identification of the species after grouping is a bit awkward, but the idea is we split the data, then create a dot plot for each level of the grouping variable, `:Species`.
+
+This is more easily done by passing `:Species` as the $y$ value to `dotplot`, in which case the categorical variable is used for grouping.
 
 ```{julia}
-p1 = @df iris dotplot(:PetalWidth, :Species; legend=false);
+p2 = @df iris dotplot(:PetalWidth, :Species; legend=false);
 ```
+
+The `@df` macro was used as a convenience. This replaces the symbols in the expression with the corresponding column in the specified data frame.
+
+
+```{julia}
+#| echo: false
+#| label: fig-grouped-dotplot
+#| fig-cap: Grouped dot plots allow an easy comparison of the distribution of a variable over the levels of a categorical variable. These two use the same data set, but were produced different ways. The left-most was done "by hand" and uses a legend to distinguish the species. The right-most was produced by `dotplot` with labels used to mark the species.
+plot(p1, p2; layout = @layout [a b])
+```
+
+Putting the categorical variable first, presents a graphic (@fig-grouped-dotplot-jitter) which uses jittering to disambiguate equal measurements in a species:
+
+```{julia}
+#| label: fig-grouped-dotplot-jitter
+#| fig-cap: the categorial variable's position determines the layout chosen for the grouped dot plot. In this figure, the categorical variable was in the `x` position, and the numeric data was jittered left and right.
+@df iris dotplot(:Species, :PetalWidth; legend=false)
+```
+
+
 
 Regardless of how the graphic is produced, there appears to be a difference in the centers based on the species, as would be expected -- different species have different sizes.
 
-Putting the categorical variable first, presents a graphic which uses jittering to disambiguate equal measurements in a species:
+
+
+
+### Boxplots across groups
+
+Grouped boxplots are made in a similar manner to the last example using `boxplot` (@fig-boxplots); we use the categorical variable indicating grouping in the `x` position:
 
 ```{julia}
-p2 = @df iris dotplot(:Species, :PetalWidth; legend=false);
-```
-
-```{julia}
-#| echo: false
-#| label: fig-dotplot-both
-#| fig-cap: The left graphic shows a dot plot with groups split by species presented horizonatally. The right one a dot plot with groups split by species presented verticall. Jittering is used by defaut to disambiguate ties. The $x$ axis represents categories, it is not a numeric scale.
-plot(p1, p2, layout=(@layout [a b]))
-```
-
-
-
-
-### Boxplots
-
-Boxplots are made in a similar manner to the last example using `boxplot`.
-
-```{julia}
-#| label: fig-boxplot-with-dotplot
-#| fig-cap: Boxplots of `PetalWidth` displayed vertically, one for each species level.
-p1 = @df iris boxplot(:Species, :PetalWidth; legend=false)
-@df iris dotplot!(p1, :Species, :PetalWidth; legend=false)
-```
-
-The boxplot shows the quartiles. From this graphic the difference in the medians (the middle line) for the different species is quite apparent. The IQR is the height of the box, we can also see a difference in variation over the species, with "setosa" being less variable than "virginica."
-
-### Density plots
-
-A violin plot is like the boxplot, only it is wider where more data is concentrated, and smaller where less is. The `violin` plot creates these:
-
-```{julia}
-#| label: fig-violinplot-with-dotplot
-#| fig-cap: Violin plots of `PetalWidth` displayed vertically, one for each species level.
-p2 = @df iris violin(:Species, :PetalWidth; legend=false)
-@df iris dotplot!(p2, :Species, :PetalWidth; legend=false)
-```
-
-```{julia}
-#| echo: false
-#| label: fig-boxplot-violinplot
-#| fig-cap: Illustration of boxplot (with dotplot overlay) and violin plot.
-plot(p1, p2, layout=(@layout [a b]))
-```
-
-
-The shape of the edges follows from a *density estimate*. A density plot, like a histogram, shows the distribution of values in a way that the center of the distribution is judged by either the balance point (the mean) or the value that splits the area (the median). The spread (IQR) is judged by the range of the middle half of the area.
-
-The `density` function makes a density plot.
-
-As seen below, the grouping variable is a named, not positional argument. In  @fig-density-grouped-density the left plot is done without grouping, the right one with grouping by species. The left plot shows a *multi-modal* distribution, which suggests, as we already have seen, that there is a mixture of populations in the data. There appear to be two modes, with a hint of a third. The separation between the "setosa" species and the other two is greater than the separation between the two others.
-
-```{julia}
-#| echo: false
-#| label: fig-density-grouped-density
-#| fig-cap: Density plots of `PetalWidth` and `PetalWidth` by `Species`. The left graphic suggests multiple modes, which are revealed in the right graphic.
-p1 = @df iris density(:PetalWidth; legend=false)
-p2 = @df iris density(:PetalWidth, group=:Species)
-plot(p1, p2, layout=(@layout [a b]))
+#| label: fig-boxplots
+#| fig-cap: a basic boxplot comparing petal width across the different species.
+@df iris boxplot(:Species, :PetalWidth; legend=false)
 ```
 
 ::: {.callout-note}
 ##### Ode to the boxplots
 
-The box plot is a great graphic for comparing values across the levels of some factor. Each boxplot shows the center (the median), the range (the IQR), the shape (well basic symmetry about the median), the outlying values (with its identying rule of 1.5 IQRs beyond $Q_1$ and $Q_3$. The only drawback is boxplots can't show multi modal data. But if the factor is the cause of that, then the collection of boxplots is great for comparison, as in @fig-boxplot-violinplot.
+The box plot is a great graphic for comparing values across the levels of some factor. Each boxplot shows the center (the median), the range (the IQR), the shape (well basic symmetry about the median), the outlying values (with its identying rule of 1.5 IQRs beyond $Q_1$ and $Q_3$. The only drawback is boxplots can't show multi modal data. But if the factor is the cause of that, then the collection of boxplots is great for comparison.
 
 :::
 
 
 
+
+### Violin and density plots
+
+A violin plot is like the boxplot, only it is wider where more data is concentrated, and smaller where less is. It uses a sideways density plot to summarize the data, whereas a boxplot only uses the five-number summary. The `violin` function creates these (@fig-boxplot-violinplot):
+
+```{julia}
+#| label: fig-boxplot-violinplot
+#| fig-cap: Illustration of a violin plot with a dotplot overlay for the petal width across the different species.
+p2 = @df iris violin(:Species, :PetalWidth; legend=false)
+@df iris dotplot!(p2, :Species, :PetalWidth; legend=false)
+```
+
+
+As illustrated for univariate data, the `density` function makes a density plot. There is an option for grouped data.
+
+As seen below, the grouping variable is a named, not positional argument. In  @fig-density-grouped-density the left plot is done without grouping, the right one with grouping by species. The left plot shows a *multi-modal* distribution, which suggests, as we already have seen, that there is a mixture of populations in the data. There appear to be two modes, with a hint of a third. The separation between the "setosa" species and the other two is greater than the separation between the two others.
+
+```{julia}
+p1 = @df iris density(:PetalWidth; legend=false)
+p2 = @df iris density(:PetalWidth, group=:Species);
+```
+
+```{julia}
+#| echo: false
+#| label: fig-density-grouped-density
+#| fig-cap: Density plots of `PetalWidth` and `PetalWidth` by `Species`. The left graphic suggests multiple modes, which are revealed in the right graphic.
+plot(p1, p2, layout=(@layout [a b]))#, size=fig_size_2)
+```
+
+
 ### Quantile comparisons
 
-A "quantile-quantile plot" plots pairs of quantiles from two data sets as a scatter plot to gauge is the shape of the two distributions is similar. If it is, the data will fall roughly on a straight line. The quantile-normal plot is identical with one of the distributions being the reference normal distribution.
+A "quantile-quantile plot" plots pairs of quantiles from two data sets as a scatter plot to help gauge if the shape of the two distributions is similar. If it is, the data will fall roughly on a straight line. The previously discussed quantile-normal plot is identical, with the specialization that one of the distributions is the reference normal distribution.
 
-We use this plot to check if the distribution for two species is roughly the same. To do so we extract the `PetalWidth` values for the different levels of `:Species`. A direct way might be indexing: `iris[iris.Species .== "versicolor", :PetalWidth]` or with `subset`: `subset(iris, :Species => ByRow(==("versicolor"))).PetalWidth`. In the following we group by `:Species` then for each group apply a $z$-score to `:PetalWidth`. From here, we can compare the 1st and 2nd and then the 2nd and 3rd group with `qqplot` in @fig-qqplot-petalwidth. There is not strong reason to expect big differences in shape.
+We use this plot to check if the *shape* of the distribution for two different species is roughly the same. To do so, we extract the `PetalWidth` values for the different levels of `:Species`. A direct way might be indexing: `iris[iris.Species .== "versicolor", :PetalWidth]` or with `subset`: `subset(iris, :Species => ByRow(==("versicolor"))).PetalWidth`. In the following we group by `:Species` then for each group apply a $z$-score to `:PetalWidth`. From here, we can compare the 1st and 2nd and then the 2nd and 3rd group with `qqplot` in @fig-qqplot-petalwidth. There is not a strong reason to expect big differences in shape.
 
 
 ```{julia}
+jitter(x, scale = 0.25) = x + scale * randn(length(x))
+gps = [select(gp, :PetalWidth => zscore∘jitter => :PetalWidth)
+       for gp in groupby(iris, :Species)]
+
+
+p1 = qqplot(gps[1].PetalWidth, gps[2].PetalWidth)
+p2 = qqplot(gps[2].PetalWidth, gps[3].PetalWidth);
+```
+
+```{julia}
+#| echo: false
 #| label: fig-qqplot-petalwidth
 #| fig-cap: A `qqplot` of the petal width from the versicolor and virginica species. The graphic suggests similar-shaped distributions. The data is jittered to disambiguate identical values.
-gps = [select(gp, :PetalWidth => zscore => :PetalWidth) for gp in groupby(iris, :Species)]
-jitter(x, λ = 0.25) = x + λ * randn(length(x))
-
-p1 = qqplot(jitter(gps[1].PetalWidth), jitter(gps[2].PetalWidth))
-p2 = qqplot(jitter(gps[2].PetalWidth), jitter(gps[3].PetalWidth))
-plot(p1, p2, layout = (@layout [a b]))
+plot(p1, p2, layout = (@layout [a b]))#, size=fig_size_2)
 ```
 
 ## Paired data
@@ -170,7 +180,7 @@ x_{21}, & x_{22}, \dots, x_{2n_2}\\
 x_{m1}, & x_{m2}, \dots, x_{mn_m}.
 \end{align*}
 
-Now we turn our attention to data of two measured variables for a given observation. These two variables must have the same number of values, this being equal to the number of observations. Moreover, it need not be the case that the two measurements should be "independent," indeed, the measurements are from the same case, so, for example with the iris data, if a plant has large petal width it will likely also have large petal length.
+Now we turn our attention to data of two measured variables for a given observation. These two variables must have the same number of values, this being equal to the number of observations. Moreover, it need not be the case that the two measurements should be "independent," indeed, the measurements are from the same case, so, for example with the iris data, if a plant has a large petal width it will likely also have a large petal length.
 
 We might express the data mathematically as:
 
@@ -209,6 +219,18 @@ cor(l, w)
 
 The correlation will be seen to be measure of linear associativity. When it is close to 1 or -1, the variability in the data is well described by a line; when close to 0, not so.
 
+The correlation can be computed from a matrix for each pair of columns. This is done here for illustration:
+
+```{julia}
+@chain iris begin
+    subset(:Species => ByRow(==("setosa")))
+    select(_, names(_, Real))
+    Matrix
+    cor
+end
+```
+
+
 The Spearman correlation is the correlation of the data *after* ranking. It is a measure of monotonicity in the data. There are different ranking algorithms in `StatsBase`, the Spearman correlation uses `tiedrank`. It can be computed with this or with `corspearman`, as shown:
 
 ```{julia}
@@ -221,20 +243,21 @@ The primary graphic to assess the relationship between the two, presumably, depe
 #| label: fig-scatterplot-l-w
 #| fig-cap: Scatter plot of petal length and petal width for the *setosa* data. The dashed lines show the "center" of the data, $(\bar{x}, \bar{y})$.
 scatter(l, w; legend=false, xlab="PetalLength", ylab="PetalWidth")
+
 vline!([mean(l)], linestyle=:dash)
 hline!([mean(w)], linestyle=:dash)
 ```
 
-@fig-scatterplot-l-w shows the length and width data in a scatter plot. The dashed lines are centered at the means of the respective variables. If the mean is the center of a single variable, then $(\bar{x}, \bar{y})$ may be thought of as the center of the paired data. Thinking of the dashed lines meeting at the origin, four quadrants are formed. The correlation can be viewed as a measure of how much the data sits in opposite quadrants. In the figure, there seems to be more data in quadrants I and III then II and IV, which sugests a *positive* correlation, as confirmed numerically.
+@fig-scatterplot-l-w shows the length and width data in a scatter plot. Jittering would be helpful to show all the data, as it has been discretized and many points are overplotte. The dashed lines are centered at the means of the respective variables. If the mean is the center of a single variable, then $(\bar{x}, \bar{y})$ may be thought of as the center of the paired data. Thinking of the dashed lines meeting at the origin, four quadrants are formed. The correlation can be viewed as a measure of how much the data sits in opposite quadrants. In the figure, there seems to be more data in quadrants I and III then II and IV, which sugests a *positive* correlation, as confirmed numerically.
 
-By writing the correlation in terms of  $z$-scores, the product in that formula is *positive* if the point is in quadrant I or III and negative if in II or IV. So a big positive number suggests data is concentrated in quadrants I and III or that there is a strong association. The scaling by the standard deviations, leaves the mathematical constraint that the correlation is between $-1$ and $1$.
+By writing the correlation in terms of  $z$-scores, the product in that formula is *positive* if the point is in quadrant I or III and negative if in II or IV. So, for example, a big positive number suggests data is concentrated in quadrants I and III or that there is a strong association between the variables. The scaling by the standard deviations, leaves the mathematical constraint that the correlation is between $-1$ and $1$.
 
 
 
 ::: {.callout-note}
 ##### Correlation is not causation
 
-The expression "correlation is not causation" is a common one, due to efforts by the tobacco industry to give plausible alternatives to the statistical association of cigarette smoking and health problems such as lung cancer. Indeed, in some instances correlation between two variables can be related to a lurking or confounding variable. An example might be coffee consumption is positively associated heart disease, yet is not necessarily the cause, as smoking is associated with both variables and may be the cause.
+The expression "correlation is not causation" is a common one, due to efforts by the tobacco industry to give plausible alternatives to the statistical association of cigarette smoking and health problems such as lung cancer. Indeed, in some instances correlation between two variables can be related to a lurking or confounding variable. An example might be coffee consumption is positively associated with heart disease, yet is not necessarily the cause, as smoking is associated with both variables and may be the cause.
 
 
 :::
@@ -242,18 +265,16 @@ The expression "correlation is not causation" is a common one, due to efforts by
 
 ### Trend lines
 
-We mentioned that the Pearson correlation is a measure of a linear association and the Spearman rank correlation a measure of monotonic association. We now discuss some basic *trend lines* that highlight the association in paired data.
+We mentioned that the Pearson correlation is a measure of a linear association and the Spearman rank correlation a measure of monotonic association. We now discuss some basic *trend lines* that highlight the association in paired data, where there is response variable.
 
-We use the language *explanatory* variable to describe the $x$ variable, and *response* variable to describe the $y$ variable, the idea that $x$ might be experimentally controlled and $y$ a measured response. The "line" is an explanation of how the $y$ values vary *on average* as the $x$ values vary.
+We use the language *explanatory* variable to describe the $x$ variable, and *response* variable to describe the $y$ variable, with the understanding that $x$ might be experimentally controlled and $y$ a random measured response. The "line" is an explanation of how the $y$ values vary *on average* as the $x$ values vary by the experimenter.
 
 
-There are many choices for how to identify a trend line, though we will show one such way that is the most common one used. To set it in a mathematical setting, a line can be parameterized by two values, $y = \beta_0 + \beta_1 x$. Use the value $\hat{y}_i = \beta_0 + \beta_1 x_i$, which is the $y$ value of the point on the line corresponding to $x_i$. The residual amount is usually defined by $e_i = y_i - \hat{y}_i$. That is the vertical distance from the data point to the line. See @fig-two-models for a visualization. One could argue that the distance to the line might be better than the vertical distance, but this choice leads to a very useful mathematical characterization.
+There are many choices for how to identify a trend line, though we will show one such way that is the most commonly used. To set it in a mathematical setting, a line can be parameterized by two values, $y = \beta_0 + \beta_1 x$. Use the value $\hat{y}_i = \beta_0 + \beta_1 x_i$, which is the $y$ value of the point on the line corresponding to $x_i$. The residual amount is usually defined by $e_i = y_i - \hat{y}_i$. That is the vertical distance from the data point to the line. See @fig-two-models for a visualization. One could argue that the distance to the line might be better than the vertical distance, but this choice leads to a very useful mathematical characterization.
 
 
 ```{julia}
 #| echo: false
-#| label: fig-two-models
-#| fig-cap: Two lines as possible fits to the data with the sum of squared residuals reported.
 x = [1,2,3,4,5]; xbar = 3
 y = [2,1,4,3,5]; ybar = 3
 p1 = scatter(x, y; legend=false)
@@ -274,23 +295,30 @@ end
 
 d22 = sum((yi - f2(xi))^2 for (xi,yi) in zip(x, y))
 title!(p2, "sum eᵢ²= $d22")
-
-
-plot(p1, p2; layout=(@layout [a b]))
-
+nothing
 ```
 
 
-Let $f(x)$ be some function, then a measure of the distance of the data to the line might be the sum $\sum_i f(e_i)$. For exmaple, using $f(x) = |x|$, we have:
+```{julia}
+#| echo: false
+#| label: fig-two-models
+#| fig-cap: Two different lines fit to the data. For each the residuals are computed, squared, then summed. The least-squares regression line is *the* line that makes this quantity minimal for a given data set.
+plot(p1, p2; layout=@layout [a b])
+```
+
+
+Let $f(x)$ be some function, then a measure of the distance of the data to the line might be the sum $\sum_i f(e_i)$. For example, using $f(x) = |x|$, we have through `findmin`:
 
 ```{julia}
 F(x) = abs(x)
 
-resid_sum(x, y, F, b0, b1) = sum(F, yi - (b0 + b1*xi) for (xi,yi) in zip(x,y))
+resid_sum(x, y, F, b0, b1) =
+    sum(F, yi - (b0 + b1*xi) for (xi,yi) in zip(x,y))
 j(b0, b1) = resid_sum(l, w, F, b0, b1)
 
 xs = ys = -2 : 1/100 : 2
 _, k = findmin(j.(xs, ys'))
+
 (b0 = xs[first(k.I)], b1 = ys[last(k.I)])
 ```
 
@@ -303,16 +331,18 @@ Using a different $F$ changes the answer:
 ```{julia}
 F(x) = x^2
 
-resid_sum(x, y, f, b0, b1) = sum(f, yi - (b0 + b1*xi) for (xi,yi) in zip(x,y))
+resid_sum(x, y, f, b0, b1) =
+    sum(f, yi - (b0 + b1*xi) for (xi,yi) in zip(x,y))
 j(b0, b1) = resid_sum(l, w, F, b0, b1)
 
 xs = ys = -2 : 1/100 : 2
 _, k = findmin(j.(xs, ys'))
+
 (b0 = xs[first(k.I)], b1 = ys[last(k.I)])
 ```
 
 
-When $F(x) = x^2$, that is we seek to minimize the sum of the squared residuals, there is a mathematical formulation that can be solved to identify values for the constants. This is known as the *method of least squares*. There is a mathematical framework that this fits within that uses linear algebra.
+When $F(x) = x^2$, that is we seek to minimize the sum of the squared residuals, there is a mathematical formulation that can be solved to identify values for the constants. This is known as the *method of least squares*. There is a mathematical framework that this problem fits within that uses linear algebra.
 
 Consider the $n$ linear equations of the form $y_i = \beta_0 + \beta_1 x_i$. Written in a column form these are:
 
@@ -328,7 +358,7 @@ There are 2 unknowns, $\beta_0$ and $\beta_1$. *Were* there two equations ($n=2$
 ```{julia}
 using SymPy
 @syms x[1:2] y[1:2] β[0:1]
-eqns = [ones(2) x] * β .~ y
+eqns = [one.(x) x] * β .~ y
 ```
 
 ```{julia}
@@ -338,7 +368,7 @@ solve(eqns, β)
 Mathematically for the *linear problem*, this last line is equivalent to solving the equation $A\beta=y$ where $A$ is a *matrix* with one column of 1s and the other of $x$:
 
 ```{julia}
-A = [ones(Sym, length(x)) x]
+A = [one.(x) x]
 ```
 
 ```{julia}
@@ -346,53 +376,64 @@ A \ y
 ```
 
 
-However, it is expected that there are more than 2 data points, so the line will in general be *overdetermined*. The linear algebra problem implemented in the `\` operation used above solves the same least squares problem. So for our problem, we can get the coefficients via:
+However, it is expected that there are more than 2 data points, so the line will in general be *overdetermined*. Symbolically, for really small $n$, this can be solved symbolically:
 
 ```{julia}
-A = [ones(length(l)) l]
-A \ w
+@syms x[1:3] y[1:3] β[0:1]
+A = [one.(x) x]
+solve(sum(e^2 for e in A*β - y), β)
 ```
 
-Algebraically, the above yields these values for the $\beta$s in terms of the data, $(x_i, y_i)$:
+The symbolic output isn't pretty, but,  with some calculus skills, the above approach algebraically yields these values for the $\beta$s in terms of the data, $(x_i, y_i)$, for any $n \geq 2$:
 
 $$
 \quad \hat{\beta}_1 = cor(x,y) \cdot \frac{s_y}{s_x}, \quad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}.
 $$
 
+Numerically, the linear algebra problem implemented in the `\` operation used above solves the same least squares problem. So for our problem, we can get the coefficients via:
 
-That is, for this line:
+```{julia}
+A = [one.(l) l]
+A \ w
+```
+
+
+For this identified line:
 
 * the slope ($\hat{\beta}_1$) is proportional to the correlation coefficient, the proportion being the ratio of the standard deviation in the response variable and standard deviation of the explanatory variable.
+
 * the point $(\bar{x}, \bar{y})$ is on the line.
 
-The underlying machinery of linear algebra is given a different interface along with generalizations in the `GLM` package which implements the *linear* model through its `lm` function. We also add the `StatsModels` package, but this is included with `GLM`.
+* the coefficients can be computed efficiently through linear algebra
+
+The underlying machinery of linear algebra is given a different interface along with generalizations in the `GLM` [@GLM] package which implements the *linear* model through its `lm` function. We also add the [`StatsModels`](https://github.com/JuliaStats/StatsModels.jl) package, but this is included with `GLM`.
 
 The statistical model to fit is specified through a formula defined using an interface from `StatsModels`.  In this case the model is basically that `w` linearly depends on `l` and is written `w ~ l`, modeling the width of the petal in terms of the length.
 
 
 ```{julia}
 using StatsModels, GLM
-res = lm(@formula(y ~ x), (y=w, x=l))
+res = fit(LinearModel, @formula(y ~ x), (y=w, x=l))
 ```
 
+The formula is written as a *macro*, so the variables do not need to be symbols, as they are not immediately evaluated because the macro transforms them first. Macros are processed *before* the values are known. Formulas are templates, the data specification in `lm` fills in that template. In the above, a standard formula for regression is specified, the data specification assigns `y` to `w` and `x` to `l`.
 
-The formula specifies a pattern in a certain manner, the additional
-arguments indicate how the pattern refers to the data. We *could* use
-a simple named tuple here, but a data frame is typical, as used here:
+The combination of the generic `fit` method with the `LinearModel` type is implemented in the `lm` function, used hereafter.
+
+In the following, we use names from the data frame created by `subset` in the formula.
 
 ```{julia}
-lm(@formula(PetalWidth ~ PetalLength), subset(iris, :Species => ByRow(==("setosa"))))
+d = subset(iris, :Species => ByRow(==("setosa")))
+lm(@formula(PetalWidth ~ PetalLength), d)
 ```
-
-(The formula is written as a *macro*, so the variables do not need to be symbols, as they are not immediately evaluated because the macro transforms them first.)
 
 
 The output has more detail to be explained later. For now, we only need to know that the method `coef` will extract the coefficients (in the first column) as a vector of length 2, which we assign to the values `bhat0` and `bhat1` below:
 
 ```{julia}
-scatter(jitter(l), jitter(w))  # spread out values
-bhat0, bhat1 = coef(res)       # coef(res) returns the coefficients
-plot!(x -> bhat0 + bhat1 * x)
+scatter(jitter(l), jitter(w); legend=false)  # spread out values
+bhat0, bhat1 = coef(res)                     # the coefficients
+plot!(x -> bhat0 + bhat1 * x)                # `predict` does this generically
 ```
 
 ::: {.callout-note}
@@ -410,7 +451,7 @@ The estimate is the `mean` of `l`.
 
 ### Local regression
 
-The method of least squares used above is called "regression." It was popularized by Galton [@GALTON_10.2307/2841583] and the phrase "regression to the mean" which will be explained later. The method of local regression (LOESS, with SS meaning scatterplot smoothing) essentially fits a regression line (or a degree $d$ polynomial) to parts of the data then stitches them together. The result is a curve that summarizes any trend in the data between the response variable and the explanatory variable. @fig-loess-explanation shows some *locally* fit regression lines on the left, and on the right an identified `loess` line to show that the loess line here mostly follows the local regression models. The "loess" line was added to with these commands from the `Loess` package, which are wrapped up into a function to call later:
+The method of least squares used above is called "regression." It was popularized by Galton [@GALTON_10.2307/2841583] along with the phrase "regression to the mean." The method of local regression (LOESS, with SS meaning scatterplot smoothing) essentially fits a regression line (or a degree $d$ polynomial) to parts of the data then stitches them together. The result is a curve that summarizes any trend in the data between the response variable and the explanatory variable. @fig-loess-explanation shows some *locally* fit regression lines on the left, and on the right an identified `loess` line to show that the loess line here mostly follows the local regression models. The "loess" line was added to with these commands from the `Loess` package, which are wrapped up into a function to call later:
 
 ```{julia}
 import Loess   # import so as not to conflict with other loaded packages
@@ -443,9 +484,9 @@ for i ∈ 10:5:50
 end
 
 p2 = deepcopy(p1) # copy of scatter plot with local regression lines
-loess_line!(p2, l′, w′; linewidth=5, color=:red)
+loess_line!(p2, l′, w′; degree=2, linewidth=5, color=:red)
 
-plot(p1, p2; layout=(@layout [a b]))
+plot(p1, p2; layout=(@layout [a b]))#, size=fig_size_2)
 ```
 
 
@@ -453,15 +494,15 @@ plot(p1, p2; layout=(@layout [a b]))
 
 ### Robust linear models
 
-The formula for the slope of the simple regression coefficient depends on $s_y/s_x$. The standard deviation may be influenced greatly by 1 outlying value. That is, they are not very resistant to outliers. A theory or *Robust Linear Models* has been developed which are useful in allowing a relaxation on the standard distributional assumptions, relaxations that accommodate data with more outliers. The `RobustModels` package implements a number of such models, of which we illustrate just `MEstimator{TukeyLoss}` without comment as to the implemented algorithm.
+The formula for the slope of the simple regression coefficient depends on $s_y/s_x$. The sample standard deviations may be influenced greatly by as few as one outlying value. That is, they are not very resistant to outliers. A theory of *robust linear models* has been developed which are useful in allowing a relaxation on the standard distributional assumptions, relaxations that accommodate data with more outliers. The `RobustModels` package implements a number of such models, of which we illustrate just `MEstimator{TukeyLoss}` without comment as to the implemented algorithm.
 
-One way to view data sets that benefit from robust models is to envision a process where the measured response values are given by the value on a regression line *plus* some "normally" distributed error **plus** some "contaminated" error which interoduces outliers.
+One way to view data sets that benefit from robust models is to envision a process where the measured response values are given by the value on a regression line *plus* some "normally" distributed error **plus** some "contaminated" error which introduces outliers.
 
 To simulate that in our length and width data, we simply add in a contaminant to some of the terms below which appear in @fig-robust-regression in the upper-right corner. That figure shows the least-squares regression line is influenced by the 3 contaminated points, but that robust regression line is not.
 
 ```{julia}
 #| label: fig-robust-regression
-#| fig-cap: The 3 data points in the upper right of this graphic are "contaminated" data. Their outlying nature has unde influence on the least-squares regression line ("lm") pulling it up towards the points. The robust regression line ("rlm") is not so influenced.
+#| fig-cap: The three data points in the upper right of this graphic are "contaminated" data. Their outlying nature has undue influence on the least-squares regression line ("lm") pulling it up towards the points. The robust regression line ("rlm") is not so influenced.
 
 w′ = jitter(w)
 l′ = jitter(l)
@@ -469,22 +510,23 @@ idx = sortperm(l′)
 w′, l′ = w′[idx], l′[idx]
 
 sigma_e = dispersion(res.model) # sqrt(deviance(res)/dof_residual(res))
-inds = [45, 48, 50]             # some indices,
+inds = [45, 48, 50]             # some indices
 
 w′[inds] = w'[inds] .+ 5*sigma_e  # contaminate 3 values
+color = fill("blue", 50); color[inds] .= "red"
 
-scatter(l′, w′; legend=:topleft)
+scatter(l′, w′; legend=:topleft, color=color)
 
 fm = @formula(w ~ l)
 res = lm(fm, (w=w′, l=l′))
+
+us = range(minimum(l′), maximum(l′), 100)
+plot!(us, GLM.predict(res, (l=us,)); linewidth=4, label="lm")
 
 import RobustModels
 estimator = RobustModels.MEstimator{RobustModels.TukeyLoss}()
 res_robust = RobustModels.rlm(fm, (w=w′, l=l′), estimator)
 
-
-us = range(minimum(l′), maximum(l′), 100)
-plot!(us, GLM.predict(res, (l=us,)); linewidth=4, label="lm")
 plot!(us, RobustModels.predict(res_robust, (l=us,)); linewidth=4, label="rlm")
 ```
 
@@ -502,18 +544,18 @@ The explanatory "variable", in general, may consist of 0, 1, or more variables. 
 
 > response = predicted + error
 
-For our purposes, the "predicted" part comes from some parameterized function of the covariates and forms the structural model for the data. On average, it is assumed the errors are $0$, but that an individual error introduces some randomness.
+For our purposes, the "predicted" part comes from some parameterized function of the covariates and forms the structural model for the data. *On average*, it is assumed the errors are $0$, but that an individual error introduces some randomness.
 
 The parameters in the model are fitted by some process (such as `lm`) leaving the related decomposition
 
 > response = fitted + residual
 
-In `GLM` the generic `fit` method is used to fit a model; `lm(...)` is just a shortcut to `fit(LinearModel, ...)`.
+In `GLM` and other packages within the `Julia` ecosystem, the aptly named generic `fit` method is used to fit a model.
 
 The "fitted" and "residual" values are based on the data and are known quantities; the "predicted" and "error" are postulated and may be unknowable. It is common to use the identified model as estimates for  predicted values.
 
 In the above examples, the `predict` method was used to do just that.
-The syntax for `predict` may have seemed more complicated than needed, but the model may have many covariates, so the specification needs a means to identify them. A `Tables` compatible specification of the data used in the prediction is used, in the above that was a named tuple.^[A named tuple of vectors to specify a data set uses a struct-of-arrays; a vector of named tuples uses an array-of-structs approach.]
+The syntax for `predict` may have seemed more complicated than needed, but the model may have many covariates, so the specification needs a means to identify them. A `Tables` compatible specification of the data used in the prediction is used, in the above that was a named tuple.
 
 The modeling environment of `Julia` has these generic methods for the parts of a model:
 
@@ -546,21 +588,23 @@ mse = deviance(res) / dof_residual(res) # sense of scale
 sqrt(mse)
 ```
 
-For the simple linear regression model, the value $\sum e_i^2$ is minimized by the choice of the estimates for the $\beta$s. This value is called the SSE, or sum of squared errors. It can be found from the residuals *or* the generic method `deviance`:
+For the simple linear regression model, the value $\sum e_i^2$ is minimized by the choice of the estimates for the $\beta$s. This value is called the SSE, or sum of squared errors (or the SSR, sum of squared residuals). It can be found from the residuals *or* the generic method `deviance`:
 
 ```{julia}
 sum(ei^2 for ei in residuals(res)), deviance(res)
 ```
 
-The deviance gives a sense of scale, but does not reflect the size of the data set, $n$. The residual *degrees of freedom* of a model is $n-k$ where $k$ is the number of estimated parameters. In the simple linear regression this is 2, which we verify:
+The deviance gives a sense of scale, but does not reflect the size of the data set, $n$. The residual *degrees of freedom* of a model is $n-k -1$ where $k$ is the number of variables. Assuming an intercept, in  simple linear regression $k=1$
 
 ```{julia}
-n = length(l)
-n - 2, dof_residual(res)
+n = length(l) # or nobs(res)
+n - 1 - 1, dof_residual(res)
 ```
 
+(More generally, this is $n$ minus the number of columns in the model matrix, which for this model is one for the intercept and one for the $x$ values.)
 
-The *mean squared error* (MSE) is the ratio of the SSE and the degrees of freedom, or $(\sum e_i^2)/(n-k)$. This is like a sample variance for the error terms, the square root of it, *like* the standard deviation, a also measure of variability.
+
+The *mean squared error* (MSE) is the ratio of the SSE and the degrees of freedom, or $(\sum e_i^2)/(n-k-1)$. This is like a sample variance for the error terms, the square root of it, *like* the standard deviation, a also measure of variability.
 
 The residuals can be used to graphically assess the ability of the fitted model used to describe the data. There are a few standard graphics:^[These are graphics that R uses with linear models.]
 
@@ -570,17 +614,23 @@ The residuals can be used to graphically assess the ability of the fitted model 
 * Residuals versus leverage. As regression can be sensitive to influential outliers. This is assessed with Cook's distance which measures the change if point is used to fit the data compared to if it is not.
 
 
-The support for these graphics in `Julia` is not the same as in R, say. We first define several helper functions:
+The support for these graphics in `Julia` is not as developed as in `R`, say. As such, we create some simple functions for generating this plots.
+
+We first define several helper functions:
 
 ```{julia}
 using LinearAlgebra: diag
 hat(res) = (X = modelmatrix(res); X * inv(crossmodelmatrix(res)) * X')
 hatvalues(res) = diag(hat(res))
-rstandard(res) = [ei/sqrt(1-hi) for (ei, hi) in zip(residuals(res), hatvalues(res))] / dispersion(res)
+function rstandard(res)
+    es = [ei/sqrt(1-hi) for (ei, hi) in zip(residuals(res), hatvalues(res))]
+    s = dispersion(res)
+    es / s
+end
 ```
 
 
-The `hat` function computes a matrix that arises in the regression model, its diagonal entries are returned by `hatvalues`. These are used to scale the residuals to produce the *standardized residuals*, computed by `rstandard`. The generic `leverage` is intended to compute what `hatvalues` does, but it currently doesn't have a method defined in `GLM`.
+The `hat` function computes a matrix that arises in the regression model, its diagonal entries are returned by `hatvalues`. These are used to scale the residuals to produce the *standardized residuals*, computed by `rstandard`. The generic `leverage`, defined in `StatsBase`, is intended to compute what `hatvalues` does, but it currently doesn't have a method defined in `GLM`.
 
 The 4 basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In @fig-diagnostic-plots the 4 graphics are shown for the "setosa" species data with PetalWidth modeled by PetalLength.
 
@@ -670,11 +720,11 @@ p1 = @df animals scatter(:Body, :Brain; legend=false,
 p2 = @df animals scatter(:logBody, :logBrain; legend=false,
 	                     title="log(Brain) by log(body)",
 						 xlab="log(Body)", ylab="log(Brain)")
-plot(p1, p2; layout = (@layout [a b]))
+plot(p1, p2; layout = (@layout [a b]))#, size=fig_size_2)
 ```
 
 
-There is an *automated* group of transformations called  *power transformations* and are implemented in the `BoxCoxTrans` package. Its `transform` function identifies an appropriate monotonic transformation. We can see the results of the transformations of both variables here along with a regression line and a robust regression line:
+There is an *automated* group of transformations called  *power transformations*; these are implemented in the `BoxCoxTrans` package. Its `transform` function identifies an appropriate monotonic transformation. We can see the results of the transformations of both variables here along with a regression line and a robust regression line:
 
 ```{julia}
 #| label: fig-box-cox-animals
@@ -683,8 +733,8 @@ import BoxCoxTrans
 transform!(animals, [:Brain,:Body] .=> BoxCoxTrans.transform .=> [:bcBrain, :bcBody])
 
 p = @df animals scatter(:bcBody, :bcBrain; label=nothing,
-	title = "Animals, Box-Cox transformed",
-	xlab = "box-cox Body", ylab = "box-cox Brain")
+	                    title = "Animals, Box-Cox transformed",
+	                    xlab = "box-cox Body", ylab = "box-cox Brain")
 
 fm = @formula(bcBrain ~ bcBody)
 res = lm(fm,  animals)
@@ -705,7 +755,7 @@ The `group` argument to `scatter` instructs the coloring of the markers to vary 
 
 ```{julia}
 p_scatter = @df iris scatter(:PetalWidth, :PetalLength; group=:Species,
-      legend=false, alpha=0.33)
+      legend=false, alpha=0.33);
 ```
 
 
@@ -723,7 +773,7 @@ plot!(p_scatter, us, vs; title="iris data");
 
 The three clusters can influence the regression line fit to the scatter plot, that is `species` can be an influence, as would be expected. There are different ways for this expectation to be incorporated.
 
-First, suppose we simply adjust the fitted lines up or down for each cluster. That is, there is some additive effect for each type of species. As a example of something we discuss at length later, we can fit this model by including `Species` as an additive term:
+First, suppose we simply adjust the fitted lines up or down for each cluster. That is, there is some additive effect for each type of species. As a example of something we discuss at more length later, we can fit this model by including `Species` as an additive term:
 
 ```{julia}
 m2 = lm(@formula(PetalLength ~ PetalWidth + Species), iris)
@@ -780,5 +830,5 @@ end
 #| fig-cap: Three scatterplots of petal width by petal length in the `iris` data set. The right-hand figure includes the regression line fit to all the data. The middle one fits regression lines identified through an additive model that includes the species. The slopes are parallel, but the lines have an additive shift. The right figure shows a multiplicative model wherein the slopes and intercepts for each species are chosen.
 
 plot(p_scatter, p_scatter2, p_scatter3;
-     layout = (@layout [a b c]))
+     layout = (@layout [a b c]))#, size=fig_size_2)
 ```

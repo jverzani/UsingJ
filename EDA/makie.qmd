@@ -1,31 +1,31 @@
-# The AlgebraOfGraphics
+# The `AlgebraOfGraphics` package
 
-The `StatsPlots` package has been used to illustrate the standard graphics of exploratory statistics. That package leverages `Plots`, a `Julia` interface to multiple plotting backends. The `GR` one renders the images seen. There are a few alternatives, and the `Makie` plotting system along with the `AlgebraOfGraphics` package makes a very compelling alternative.
+The `StatsPlots` package has been used to illustrate the standard graphics of exploratory statistics. That package leverages `Plots`, a `Julia` interface to multiple plotting backends. The `GR` one renders the images seen. There are a few alternatives. The `Makie` [@DanischKrumbiegel2021] plotting system along with the `AlgebraOfGraphics` [@AoG] package makes a very compelling one.
 
-The `AlgebraOfGraphics` packages offers a *declarative* style to create statistical graphics. An example from the [documentation](https://aog.makie.org/stable/philosophy/) shows the code to do the following "declare the dataset; declare the analysis; declare the arguments used; declare the grouping and the respective visual attribute; draw the visualization." This is all done through a series of composable commands, illustrated by example below. The Pumas project has a much more extensive [tutorial](https://tutorials.pumas.ai/html/PlottingInJulia/).
+The `AlgebraOfGraphics` packages offers a *declarative* style to create statistical graphics. An example from the [documentation](https://aog.makie.org/stable/philosophy/) shows the code to do the following "declare the dataset; declare the analysis; declare the arguments used; declare the grouping and the respective visual attribute; draw the visualization." This is all done through a series of composable commands, illustrated by example below. The Pumas project has a much more extensive [tutorial](https://tutorials.pumas.ai/html/PlottingInJulia/) than is presented here.
 
-We will see that it is very easy to visualize multiple variables through an appropriate choice of graphic, and further choices of coloring, faceting, or other means to demarcate different factors.
+We will see that it is very easy to visualize multiple variables through an appropriate choice of graphic or transformation, with further choices of coloring, faceting, or other means to demarcate different factors. The "declarative" style shines here, as the user simply specifies a variable, and the package converts this, as needed, to a color or shape \dots .
 
-We begin by loading the packages. The `GLMakie` backend is used here, there are alternatives for web-based graphics and Cairo-based graphics.
+We begin by loading the packages. The `CairoMakie` backend is used here, `GLMakie`is good for interactive usage at the command line, `WGLMakie` is for web-based graphics, all are part of the same `Makie` plotting ecosystem.
 
 ```{julia}
-using StatsBase, DataFrames, RDatasets
-using GLMakie, AlgebraOfGraphics
+using StatsBase, DataFrames, CategoricalArrays, RDatasets
+using CairoMakie, AlgebraOfGraphics
 set_aog_theme!()
 ```
 
 We use the color theme of `aog`, as declared in the last command.
 The packages are compute-intensive and can take a while to load.
 
-Following the package [tutorial](docs.juliahub.com/AlgebraOfGraphics/) we load the [Palmer penguins](https://github.com/allisonhorst/palmerpenguins) data set of Allison Horst. This includes data collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER, a member of the Long Term Ecological Research Network. The data can be downloaded from the GitHub site, but it is also wrapped into a `Julia` package:
+Following the package [tutorial](docs.juliahub.com/AlgebraOfGraphics/), we load the [Palmer penguins](https://github.com/allisonhorst/palmerpenguins) data set of Allison Horst. This includes data collected and made available by Dr. Kristen Gorman and the Palmer Station, Antarctica LTER, a member of the Long Term Ecological Research Network. The data can be downloaded from the GitHub site, but it is also wrapped into a `Julia` package:
 
 ```{julia}
 using PalmerPenguins
 penguins = dropmissing(DataFrame(PalmerPenguins.load()))
-irst(penguins, 3)
+first(penguins, 3)
 ```
 
-This data set has several correlated numeric variables on bill length, bill depth, flipper_length, and 	body_mass_g; and several categorical variables, such as species, island, and sex. A more complete data set can be downloaded from the GitHub site.
+This data set has several correlated numeric variables on bill length, bill depth, flipper length, and 	body mass; and several categorical variables, such as species, island, and sex. An even more complete data set can be downloaded from the GitHub site.
 
 
 ## Univariate graphical summaries
@@ -42,44 +42,65 @@ p = data(penguins) *
     mapping(:species, :bill_length_mm => "Bill length (mm)", color=:species);
 ```
 
-The `data(penguins)` command sets up the data. Here a data frame is passed, but this can be any `Tables` compatible structure, such as a struct of arrays: `data( (;species=penguins.species, :bill_length+mm = penguins.bill_length_mm) )`.
+This illustrates many of the idioms used in the `AlgebraOfGraphics`.
 
-The `visual(BoxPlot)` command declares the visualization to be used to view the data. In this case `BoxPlot` is the type associated with the `Makie.boxplot` function.
+The `data(penguins)` command sets up the data. Here a data frame is passed, but this can be any `Tables` compatible structure, such as a struct of arrays such as `data((;x, y))` for some pair of variables `x` and `y`.
 
-The `mapping` uses *position* to identify the `x`, `y`, and (at times) `z` values for the graphic.
-The `y` variable uses a mini language nearly identical to the `DataFrames` mini language  (only `ByRow` is assumed) to rename the variable, for labeling purposes. This could have also been done in the original data, `penguins`.
-For a box plot an indicator of the groups goes in the `x` position. The `color=:species` uses a mapping between the levels of the `:Species` variable and color ramp to give each a distinct color. Omitting this will produce a monotone graphic with the chosen theme.
+The `mapping` call takes values in the data to positions and attributes of the graphic. It uses *position* to identify the `x`, `y`, and (at
+times) `z` values for the graphic.  The `y` variable specification above
+illustrates a mini language nearly identical to the `DataFrames` mini
+language.  For a box plot, an indicator of the groups goes in the `x`
+position, the data values in the `y` position. The `color=:species`
+argument uses a mapping between the levels of the `:species` variable
+and color ramp to give the graphic a distinct color for each species.
+Omitting this argument produces a monotone graphic with the
+chosen theme.
 
-Both `mapping` and `visual` can be used to set attributes; `visual` is used to set attributes for each element independent of the data; `mapping` is used to have attributes depend on a value of a variable, like `color` is used above. The attributes for `visual` are those for the underlying plotting function. For `visual(BoxPlot)`, these can be seen at the help page for `boxplot`, displayed with the command `?boxplot`.
 
-The object `p` can be rendered to the screen with `draw` resulting in @fig-basic-boxplot-penguin. (Just `draw(p)` will render the graphic, the `figure` keyword arguments takes a named tuple, in this case the figure size is set. Similarly `axis` values can be modified in this manner.)
+The `visual(BoxPlot)` command declares the visualization or
+transformation to be used to view the data.  The `visual` function
+expects a *type* indicating the plot type to use and optional keyword
+argument. In this case `BoxPlot` is the type associated with the
+`Makie.boxplot` function. At times this type must be qualified, such
+as with `Text`, for annotations.
+
+Both the `mapping` and `visual` calls can be used to set attributes:
+
+* `visual` is used to set attributes for each element independent of the data. For example, a box plot has the argument `orientation` which is not data dependent, so is adjusted within the `visual` call.
+* `mapping` is used to have attributes depend on values of a variable, like `color` is used above.
+
+The attributes are those for the underlying plotting function. For `visual(BoxPlot)`, these can be seen at the help page for `boxplot`, displayed with the command `?boxplot`.
+
+The `mapping` calls shows two uses of the mini language for data manipulation. The basic form is `source => function => target` and works very much like the DataFrames mini language does for `select` or `transform`, but unlike those, the function is *always* applied by row. This makes some transformations, such as $z$-scores not possible within this call -- transformations requiring the entire column need to be done within the values passed to `data`. The abbreviated forms are just `source`, as used with the `color=:species` argument; `source => function`; and `source => target`, such as `:bill_length_mm => "bill length (mm)"` used to rename the variable for labeling purposes. When the source involves more than one column selector, tuples should be used to group them. A few functions are provided to bypass the usual mapping of the data. (For example, `color` maps levels of a factor to a color ramp behind the scenes.) Among these are `nonnumeric` to pass a numeric variable to a value expecting a categorical variables and `verbatim` to avoid this mapping. The latter, `=> verbatim`, will be necessary to add when annotating a figure.
+
+The object `p` can be rendered to the screen with the `draw` method resulting in @fig-basic-boxplot-penguin. Just `draw(p)` will render the graphic, the following also shows how the `figure` keyword argument can be used to set attributes using a named tuple, in this case the figure size. Similarly `axis` values can be modified in this manner.
 
 ```{julia}
 #| label: fig-basic-boxplot-penguin
-#| fig-cap: Boxplots of bill length for the 3 penguin species in `penguins`.
+#| fig-cap: Boxplots of bill length for the three penguin species in `penguins`.
 draw(p; figure=(resolution=(600,400),) )
 ```
 
-This is the basic pattern where different choices are combined, or merged, with the `*` operation. In the following, we make use of a slightly augmented data set, which we call `d` for reuse:
+This is the basic pattern where different choices are combined, or merged, with the `*` operation. The pieces can be re-purposed. In the following, we make use of this data:
 
 ```{julia}
-d = data(select(penguins, :, :bill_length_mm => ones ∘ length => :one));
+d = data(penguins);
 ```
 
 Box plots are very effective for quickly comparing distributions of a
 numeric variable across the levels of some factor. The calling syntax
 preferences that style, where both an `x` and `y` value are specified
 to `mapping`. To create a box plot of a *single* variable, without
-grouping, the graphic takes a bit more to construct. In the above we
-created an artificial variable in `d` called `one`. This is used to do
-a simple graphic (upper left graphic in @fig-layout-example):
+grouping, the graphic takes a bit more to construct. In the following
+we create a single valued `x` variable to produce the upper left
+graphic in @fig-layout-example:
 
 ```{julia}
 p1 = d * visual(BoxPlot) *
-    mapping(:one, :bill_length_mm => "Bill length (mm)");
+    mapping(1 => one, :bill_length_mm => "Bill length (mm)");
 ```
 
-The mini language is used above for labeling, but it too could be used to create a a variable with one value: `mapping(:bill_length_mm => one, :bill_length_mm)` would also work to create a single boxplot, in this case centered at $1$.
+The mini language is used above two different ways: with a function to create the single value for `x` (`AlgebraOfGraphics` will treat this to a factor, so `one` isn't needed, just some single-valued function) *and* with a target for labeling the `y` variable. As mentioned, such transformation can also have be done within the data frame passed to `data`.
 
 To add another layer, in this case a scatter plot, we can *add* the plotting objects:
 
@@ -89,19 +110,21 @@ p2b = d * visual(Scatter) * mapping(:species, :bill_length_mm)
 p2 = p2a + p2b;
 ```
 
+The `Scatter` transformation plots pairs of points in a Cartesian plane.
+
 Combinations with `+` add a layer; those with `*` merge layers.  The
 *algebra* name also refers to algebraically desirable short cuts. For
 example, we repeat `d` and the `mapping` for each `p2a` and `p2b`,
 but these can be used just once by *distributing* them:
 
 ```{julia}
-m = mapping(:species, :bill_length_mm, color=:species);
+m = mapping(:species, :bill_length_mm => "bill length (mm)", color=:species);
 p3 =  d * ( visual(BoxPlot) + visual(Scatter) ) * m;
 ```
 
 Both `p2` and `p3` are shown in the lower row of @fig-layout-example. There is just one slight difference, the dots representing the data in `p2` are not colored, as the mapping did not instruct that in forming `p2b`.
 
-Specifying a violin plot requires just a slight modification to the above: we change the `BoxPlot` visual to `Violin`. Violin plots have an argument `side` that allows both sides of the violin to reflect an extra grouping variable. We use `:sex`, as it has only two levels. With this, each side of the violin plot reflects grouping by the `:sex` factor, the legend is used to lookup with level of the factor is represented.
+Specifying a violin plot requires just a slight modification to the above: we change the `BoxPlot` visual to `Violin`. Violin plots have an argument `side` that allows both sides of the violin to reflect an extra grouping variable. We use the `:sex` variable in the following, as it has only two levels. With this, each side of the violin plot reflects grouping by the `:sex` factor, the legend is used to lookup which level of the factor is represented.
 
 ```{julia}
 p4 = d * visual(Violin) * mapping(:species, :bill_length_mm, color=:species, side=:sex);
@@ -110,12 +133,12 @@ p4 = d * visual(Violin) * mapping(:species, :bill_length_mm, color=:species, sid
 The `visual(Violin)` call wraps the function `Makie.violin` whose documentation contains additional possible arguments beyond `side`.
 
 
-The `AlgebraOfGraphics` package builds in `Makie` which has a layout system, which leverages matrix notation to specify cell position. The `draw!` method accepts a figure object as a first argument. In @fig-layout-example we layout 2 rows and 2 columns of figures. It is constructed as follows:
+The `AlgebraOfGraphics` package builds on the `Makie` package and can use its layout system. Makie's layout system leverages matrix notation to specify cell position. The `draw!` method accepts a figure object as a first argument. In @fig-layout-example we layout 2 rows and 2 columns of figures, as follows:
 
 
 ```{julia}
 #| label: fig-layout-example
-#| fig-cap: Figure showing 4 different graphics displayed. In this case, a single boxplot; a violin plot;  a boxplot with scatter; and a similar one with the data and mapping easily resused for each visual.
+#| fig-cap: Figure showing four different graphics displayed. In this case, a single boxplot; a violin plot;  a boxplot with scatter; and a similar one with the data and mapping easily reused for each visual.
 f = Figure()
 draw!(f[1,1], p1)
 draw!(f[1,2], p4)
@@ -124,9 +147,86 @@ draw!(f[2,2], p3)
 f
 ```
 
+### Dot plot
+
+The boxplot does an excellent job of summarizing a data set with a few indicators making it quite useful when there are many data points. A dot plot is useful when there are a limited number of values and advantageous as the graphic shows all the data.
+
+A dot plot (@fig-dotplot-variations) can be constructed easily enough by ensuring, in this case, the `y` variable is non-numeric:
+
+```{julia}
+#| echo: false
+#| output: false
+using Random
+Random.seed!(12234);
+nothing
+```
+
+```{julia}
+huddle = penguins[sample(1:size(penguins,1), 50),:] # a sample
+
+p1 = data(huddle) * visual(Scatter) *
+    mapping(:bill_length_mm=>"Bill length (mm)", :species => nonnumeric);
+```
+
+(In this example, `species` is categorical, so the extra `=> nonnumeric` is unnecessary.)
+
+
+Compare the above to a boxplot of the same sampled data:
+
+```{julia}
+p2 = data(huddle) * visual(BoxPlot) *
+    mapping(:species, :bill_length_mm => "Bill length (mm)"; color=:species);
+```
+
+The boxplot makes it easy to compare medians across the levels of the `species` factor to gauge graphically if there is a differentiated effect on the response.
+
+The following is an enhanced dot plot which emphasizes a comparison of center by adding a line and sorting so that this line only moves to the right as the eye travels up the levels of the factor. The code is a modification of some
+from [@Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia].
+
+```{julia}
+"`dotplot`: show values for each group as dotplot sorted by some center"
+function _arrange_dotplot_data(df, value::Symbol, group::Symbol, center=mean;
+                              jitter=true)
+    transform!(df, value => Array, group => CategoricalArray;
+               renamecols=false) # set up types
+
+    sumry = combine(groupby(df, group), value => center => value)
+    sort!(sumry, value)
+    ordered_levels = string.(sumry[!, group])
+    levels!(sumry[!, group], ordered_levels) # relevel, used in plotting
+    levels!(df[!, group], ordered_levels)
+    jitter && (df = combine(groupby(df, group),
+                            value => (x -> x .+ std(x)/100), renamecols=false))
+
+
+    df, sumry
+end
+
+
+df, sumry = _arrange_dotplot_data(huddle, :bill_length_mm, :species, median)
+mm = mapping(:bill_length_mm => "Bill length (mm)", :species)
+p3 = data(df) * mm *
+    visual(Scatter; marker='○', markersize=12)  # use a character for a marker
+p3 += data(sumry) * mm * visual(Lines);         # add summary line
+```
+
+All these figures appear in @fig-dotplot-variations.
+
+
+```{julia}
+#| echo: false
+#| label: fig-dotplot-variations
+#| fig-cap: A basic dot plot, a comparable box plot, and an enhanced dot plot. For small data sets, the dot plot can show comparisons of spread and center quite well; reordering based on the center emphasizes the differentiated effect on the response of the grouping variable.
+F = Figure()
+draw!(F[1,1], p1)
+draw!(F[1,2], p2)
+draw!(F[2,1], p3)
+F
+```
+
 ### Faceting
 
-The package also supports *faceting* where different panels share the same scales for each cross comparison. Faceting is specified through the keyword `layout` or either (or both) of `row` and `col` keywords. The `layout` keyword uses levels of the variable name it is passed and arranges the plots over these levels. The `col` will make columns for each level of the specified variable, whereas `row` will create rows for each level of the specified variables.
+The package also supports *faceting* where different panels share the same scales allowing easy cross comparison. Faceting is specified through the keyword `layout` or either (or both) of `row` and `col` keywords. The `layout` keyword uses levels of the variable name it is passed and arranges the plots over these levels. A `col` declaration will make columns for each level of the specified variable, whereas a `row` declaration will create rows for each level of the specified variables. By default both the `x` and `y` axes are *linked*. These linkings can be decoupled when `draw`ing by passing in values to the `facet` argument, along the lines of: `draw(p, facet=(; linkxaxes=:none, linkyaxes=:none))`.
 
 ### Histograms
 
@@ -152,7 +252,7 @@ See @fig-histogram-densityplot-example for the graphics.
 ### Density plot
 
 
-The `histogram` function has options for overriding the default bin selection and has several options for scaling the figure through its `normalization` argument. We use this in the next graphic which layers a density plot over a scaled histogram using the `:pdf` scaling. The `density` transformation is qualified with the module name to prevent a conflict with one in `Makie`^[The `Makie` density could be accessed through `visual(Density)` without module qualification. The `density` function in `AlgebraOfGraphics` has a nice transparency feature which makes its use desirable.].
+The `histogram` function has options for overriding the default bin selection and has several options for scaling the figure through its `normalization` argument. We use this in the next graphic which layers a density plot over a scaled histogram using the `:pdf` scaling. The `density` transformation is qualified with the module name to prevent a conflict with one in `Makie`^[The `Makie` density function could be accessed through `visual(Density)` without module qualification. The `density` function in `AlgebraOfGraphics` has a nice transparency feature which makes its use desirable.].
 
 ```{julia}
 layers = histogram(normalization=:pdf) + AlgebraOfGraphics.density()
@@ -189,7 +289,7 @@ f
 
 The `QQNorm` and `QQPlot` visuals are used to make quantile-quantile plots; `QQNorm` expects a mapping to `:x` (first position) whereas `QQPlot` expects mappings to `:x` and `:y` (the first two positions).
 
-The following will give a visual check if bill length is normally distributed, which seems to indicate slightly shorter tails than expected
+The following will give a visual check if bill length is normally distributed, the graphic indicates slightly shorter tails than expected
 
 ```{julia}
 p1 = data(penguins) * visual(QQNorm, qqline=:fit) *
@@ -218,6 +318,35 @@ draw(p2; figure=((resolution=(600, 400),)))
 
 Quantile-quantile plots. The left graphic uses a reference normal distribution (through `QQNorm`), the right one uses `QQPlot` to compare the distribution of two variables after grouping by `species`.
 :::
+
+## Line plots
+
+A scatter plot shows $x$ and $y$ pairs as points, a line plot connects these points. There are numerous ways to draw lines with the `AlgebraOfGraphics` including: `visual(Lines)`, for connect-the-dots lines; `visual(LinesFill)`, for shading; `visual(HLines)` and `visual(VLines)`, for horizontal and vertical lines; `visual(Rangebars)` to draw vertical or horizontal line segments.
+
+The graph of a function can be drawn using `Lines`, as in this example, where we add in different range bars to emphasize the role that the two parameters play in this function's graph:
+
+```{julia}
+ϕ(x; μ=0, σ=1) = 1/sqrt(2*pi*σ^2) * exp(-(1/(2σ)) * (x - μ)^2)
+
+xs = range(-3, 3, length=251)
+ys = ϕ.(xs)
+c = data((x=xs, y=ys)) * visual(Lines) * mapping(:x, :y)
+
+c += data(DataFrame(x=0, hi=ϕ(0), lo=0)) * visual(Rangebars) *
+    mapping(:x, :hi, :lo)
+
+c += data(DataFrame(xmin=0, xmax=1, y=ϕ(1))) * visual(Rangebars, direction=:x) *
+    mapping(:y, :xmin, :xmax)
+
+c += data((x=[1/10, 1/2], y=[0, ϕ(1)], label=["μ", "σ"])) *
+    visual(Makie.Text) *
+    mapping(:x, :y, text = :label => verbatim)
+draw(c)
+```
+
+The `Rangebars` visual has a `direction` argument, used above to make a horizontal range bar.
+
+The annotation has two subtleties: the qualification of `Makie.Text` is needed, as there is a `Text` type in base `Julia`. More idiosyncratically, the use of `verbatim` in `mapping` is needed to avoid an attempt to map the labels to a glyph, such as a pre-defined marker.
 
 
 ## Bivariate relationships
@@ -320,15 +449,13 @@ p3 = d * frequency() *
     mapping(:species, color=:island, stack=:island);
 ```
 
-A third category can be introduce using `layout`, `col`, or `row`  (lower-right graphic of @fig-barplot-example):
+A third category can be introduced using `layout`, `col`, or `row`  (lower-right graphic of @fig-barplot-example):
 
 ```{julia}
 p4 = d * frequency() *
     mapping(:species, color=:island, stack=:island) *
     mapping(row=:sex);
 ```
-
-
 
 ```{julia}
 #| echo: false

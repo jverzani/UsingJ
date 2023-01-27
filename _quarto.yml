@@ -1,38 +1,37 @@
+version: "0.0.1"
+
 project:
   type: book
 
 book:
   title: "Using Julia for Introductory Statistics"
   author: "John Verzani"
-  bibliography: references.bib
   date: now
-  number-sections: true
   search: true
   repo-url: https://github.com/jverzani/UsingJ
   repo-branch: master
   repo-actions: [edit, issue]
-  downloads: pdf
+#  downloads: pdf
   page-footer:
     right: |
       © Copyright 2023, John Verzani. All rights reserved.
   chapters:
     - index.qmd
-    - part: "Exploratory Data Analysis"
-      chapters:
-        - EDA/univariate-julia.qmd
-        - EDA/tabular-data-julia.qmd
-        - EDA/bivariate-julia.qmd
-        - EDA/categorical-data-julia.qmd
-        - EDA/makie.qmd
-    - part: "Inference"
-      chapters:
-        - Inference/distributions.qmd
-        - Inference/inference.qmd
-    - part: "Linear Models"
-      chapters:
-        - LinearModels/linear-regression.qmd
-#        - LinearModels/anova.qmd
+    - EDA/univariate-julia.qmd
+    - EDA/tabular-data-julia.qmd
+    - EDA/bivariate-julia.qmd
+    - EDA/categorical-data-julia.qmd
+    - EDA/makie.qmd
+    - Inference/distributions.qmd
+    - Inference/inference.qmd
+    - LinearModels/linear-regression.qmd
+    - references.qmd
 #        - LinearModels/glm.qmd
+
+bibliography: references.bib
+csl: the-american-statistician.csl
+
+
 format:
   html:
     theme: spacelab
@@ -41,10 +40,12 @@ format:
     link-external-newwindow: true
     fig-width: 6
     fig-height: 4
-  pdf: # need to skip over unicode missing errors...
+  pdf:
     pdf-engine: xelatex
     fontfamily: libertinus # librecaslon
-    documentclass: book
+    toc: true
+    number-section: true
+    color-links: true
     classoption: [oneside]
     keep-tex: true
     tbl-cap-location: top
@@ -54,8 +55,6 @@ format:
     colorlinks: true
     include-in-header: packages.tex
     include-before-body: definitions.tex
-    fig-width: 4
-    fig-height: 3
 
 execute:
   warning: false

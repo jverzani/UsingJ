@@ -2,17 +2,17 @@
 
 A goal of statistics is to use data to characterize the process that generated the data.
 
-Suppose $x_1, x_2, \dots, x_n$ is sample. If we assume these are realizations from some iid random sample $X_1, X_2, \dots, X_n$ from some population then when $n$ is *large* we expect the shape of the population to be well described.
-
-We load some useful packages for this chapter:
+To discuss, we first load some useful packages:
 
 ```{julia}
 using StatsBase, Distributions
 using DataFrames
-using AlgebraOfGraphics, GLMakie
+using AlgebraOfGraphics, CairoMakie
 ```
 
 ## Larger data sets
+
+Suppose $x_1, x_2, \dots, x_n$ is sample. If we assume these are realizations from some iid random sample $X_1, X_2, \dots, X_n$ from some population then when $n$ is *large* we expect the shape of the population to be well described.
 
 The density plots in @fig-densityplots-population-density show a population, a random sample of a certain size from that population, and an density plot found from the random sample. As the sample size gets larger, the density plot resembles more the underlying population.
 
@@ -88,7 +88,7 @@ $$
 F_n(a) = \frac{\#\{i: x_i \leq a\}}{n}.
 $$
 
-That is, the proportion of the sample data less than or equal to $a$. This estimates the cdf of the population. The `ecdf` function from `StatsBase` returns a function. For example, we have for population given as a mixture of normal distributions:
+That is, the proportion of the sample data less than or equal to $a$. This estimates the cdf of the population. The `ecdf` function from `StatsBase` returns a function. For example, we have for this population given as a mixture of normal distributions:
 
 ```{julia}
 Y = MixtureModel(Normal[
@@ -119,7 +119,7 @@ draw(p)
 
 ## Confidence intervals
 
-When there is a much smaller sample size, one can still *infer* things about the underlying population **if** additional assumptions on the population are made. In general, the stronger the assumptions, the more can be said.
+When there is a much smaller sample size, one can still *infer* things about the underlying population **if** additional assumptions on the population are made. In general, the stronger the assumptions, the more that can be said.
 
 
 ### Confidence interval for a population mean
@@ -132,7 +132,7 @@ For example, suppose you have a data set with $n$ elements, $x_1, x_2, \dots, x_
 
 With these assumptions the basic facts of probability allow statements about $\mu$ based on the data set.
 
-We have that the statistic:
+We know the statistic:
 
 $$
 Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} = \frac{\bar{X} - \mu}{SD(\bar{X})}
@@ -151,7 +151,7 @@ By the symmetry of the normal distribution, we have $z_{\alpha/2} = - z_{1-\alph
 Rearranging this, we have with  probability $1 - \alpha$ the following inequality occurs:
 
 $$
-\bar{X} + z_{1-\alpha/2}\cdot SD(\bar{X}) < \mu < \bar{X} + z_{1-\alpha/2}\cdot SD(\bar{X})
+\bar{X} - z_{1-\alpha/2}\cdot SD(\bar{X}) < \mu < \bar{X} + z_{1-\alpha/2}\cdot SD(\bar{X})
 $$
 
 Now, the data set is just one possible realization of these random variables, which may or may not be unusual, we can't say. However, we can say the process that produced this data set will produce values where $(1-\alpha)\cdot 100$% of the time
@@ -161,35 +161,38 @@ $$
 $$
 
 
-Since a data set is a single realization, and probability speaks to the frequency of many realizations, we can't say for our lone data set that there is a $(1-\alpha)\cdot 100$% chance this occurs, rather the language adopted is to say the interval $(\bar{x} - z_{\alpha/2}\cdot \sigma/\sqrt{n}, \bar{x} + z_{1-\alpha/2}\cdot \sigma/\sqrt{n})$ is a $(1-\alpha)\cdot 100$% *confidence interval* for an unknown parameter $\mu$.
+Since a data set is a single realization, and probability speaks to the frequency of many realizations, we can't say for our lone data set that there is a $(1-\alpha)\cdot 100$% chance this occurs, rather the language adopted is to say the interval $(\bar{x} - z_{1-\alpha/2}\cdot \sigma/\sqrt{n}, \bar{x} + z_{1-\alpha/2}\cdot \sigma/\sqrt{n})$ is a $(1-\alpha)\cdot 100$% *confidence interval* for an unknown parameter $\mu$.
 
 
-> For a data set drawn from iid random sample with a  $Normal(\mu,\sigma)$ population a $(1-\alpha)\cdot 100$% confidence interval is given by $\bar{x} \pm z_{\alpha/2}\cdot \sigma/\sqrt{n}$, where $z_{\alpha/2}$ satisfies $P(-z_{\alpha/2} < Z < z_{\alpha/2})$, $Z$ being a standard normal random variable.
+> For a data set drawn from iid random sample with a  $Normal(\mu,\sigma)$ population a $(1-\alpha)\cdot 100$% confidence interval is given by $\bar{x} \pm z_{1-\alpha/2}\cdot \sigma/\sqrt{n}$, where $z_{1-\alpha/2}=-z_{\alpha/2}$ satisfies $P(z_{\alpha/2} < Z < z_{1-\alpha/2})$, $Z$ being a standard normal random variable.
 
-@fig-ci-works illustrates confidence intervals based on several independent random samples. Occasionally -- controlled by $\alpha$ -- the intervals do not cover the true population mean.
+@fig-ci-works illustrates confidence intervals based on several independent random samples. Occasionally -- with a probability controlled by $\alpha$ -- the intervals do not cover the true population mean.
 
 
 ```{julia}
 #| echo: false
 #| label: fig-ci-works
-#| fig-cap: 50 simulated confidence intervals. The true mean is $\mu=0$, the confidence level is $0.90$. On average, 10 out of 100 of these confidence intervals will not cover the mean. For this simulation, we expect 5 to be colored red, but this may vary, as each is random.
+#| fig-cap: 50 simulated confidence intervals. The true mean is $\mu=0$, the confidence level is $0.90$. On average, 10 out of 100 of these confidence intervals will not cover the mean. For this simulation, we expect 5 or so to miss, but the exact count may differ, as each is random.
 alpha = 0.10
-za = quantile(Normal(0,1), 1-alpha/2)
+μ, σ = 0, 1
 n = 6
-d = DataFrame((i=[i,i], xs = rand(Normal(0,1), n)) for i in 1:50)
-d = combine(d, :, :xs => ByRow(mean) => :xbar)
-d = combine(d, :, :xs => ByRow(std) => :s)
-d = combine(d, :, :s => ByRow(s -> s/sqrt(n)) => :se)
-d = combine(d, :, [:xbar, :se] => ByRow((x,se) -> (x -za*se > 0)|| (x + za*se < 0)) => :miss)
-d = combine(d, :, [:xbar, :se] => ByRow((x,se) -> [x - za*se, x + za * se]) => :CI)
-p = data((x = [0,0], y=[0,50])) * visual(Lines; color=:black) * mapping(:x, :y)
-for i in 1:50
-    p = p + data((CI=d[i,:CI], i=d[i,:i], miss=repeat(d[i:i,:miss],2))) *
-        visual(Lines; color=d[i,:miss] ? :red : :blue) *
-        mapping(:CI, :i)
-end
+Z = Normal(μ, σ)
+za = quantile(Z, 1-alpha/2)
+
+
+df = DataFrame(x=[(z=rand(Z, n); (x̄=mean(z),se=std(Z)/sqrt(n))) for _ in 1:50])
+transform!(df, :x => AsTable, :x => eachindex => :i)
+transform!(df, [:x̄, :se] => ByRow((x, se) -> (lo = x - za*se, hi = x + za*se ))
+           => AsTable)
+transform!(df, [:lo, :hi] => ByRow((lo,hi) -> ifelse(lo > μ || hi < μ, :miss, :covers))
+           => :color)
+
+p = data(df) * visual(Rangebars, direction=:x) * mapping(:i, :lo, :hi, color=:color)
+p += data(DataFrame(x=μ, lo=minimum(df.i), hi=maximum(df.i))) *
+    visual(Rangebars) * mapping(:x, :lo, :hi)
 draw(p)
 ```
+
 
 ::: {#exm-Example}
 ##### Confidence interval for the mean
@@ -230,17 +233,17 @@ $$
 Under the assumptions above (iid sample, normal population), the standard error is $S/\sqrt{n}$ and the distribution of $T$ is the $T$-distribution with $n-1$ degrees of freedom.
 
 
-> For a data set of size $n$ drawn from an iid random sample with a  $Normal(\mu,\sigma)$ population a $(1-\alpha)\cdot 100$% confidence interval is given by $\bar{x} \pm t_{1-\alpha/2}\cdot s$, where $t_{\alpha/2} = -t_{1-\alpha/2}$ satisfies $P(t_{\alpha/2} < T_{n-1} < t_{1-\alpha/2})$, $T_{n-1}$ being $T$ distributed with $n-1$ degrees of freedom.
+> For a data set of size $n$ drawn from an iid random sample with a  $Normal(\mu,\sigma)$ population a $(1-\alpha)\cdot 100$% confidence interval is given by $\bar{x} \pm t_{1-\alpha/2}\cdot s/\sqrt{n}$, where $t_{\alpha/2} = -t_{1-\alpha/2}$ satisfies $1-\alpha = P(t_{\alpha/2} < T_{n-1} < t_{1-\alpha/2})$, $T_{n-1}$ being $T$ distributed with $n-1$ degrees of freedom.
 
 
 
 
 ::: {#exm-t-test}
-##### Confidence interval for the mean, no assumption on $\sigma$.
+##### Confidence interval for the mean, no assumption on $\sigma$
 
 Returning to the coffee-dispenser technician, a cappuccino dispenser has two sources of variance for the amount poured -- the coffee and the foam. This is harder to engineer precisely, so is assumed unknown in the calibration process. Suppose the technician again took $6$ samples to gauge the value of $\mu$.
 
-With no assumptions on the value of $\mu$ *or* $\sigma$. A $95$% confidence interval would be computed by:
+With no assumptions on the value of $\mu$ *or* $\sigma$. A $95$% confidence interval for $\mu$ would be computed by:
 
 ```{julia}
 xs = [7.9,  7.2,  7.1,  7.0,  7.0,  7.1]
@@ -253,14 +256,15 @@ SE = s / sqrt(n)
 ```
 
 
-These computations -- and many others -- are carried out by functions in the `HypothesisTests` package. Here we see this problem:
+These computations -- and many others -- are carried out by functions in the `HypothesisTests` package. For example, we could have computed the values above through:
 
 ```{julia}
 using HypothesisTests
 confint(OneSampleTTest(xs))
 ```
 
-Of some note, while in general the extra assumption of a known standard deviation will lead to smaller confidence intervals, that is not guaranteed, as seen in this data set.
+
+Of some note, while often the extra assumption of a known standard deviation will lead to smaller confidence intervals, that is not guaranteed, as seen in this data set.
 
 :::
 
@@ -308,11 +312,11 @@ $$
 T = \frac{(\bar{X} - \bar{Y}) - (\mu_1 - \mu_2)}{SE(\bar{X} - \bar{Y})} = \frac{\text{observed}-\text{expected}}{SE}.
 $$
 
-The distribution of $T$ and the formula for $SE$ depends on assumptions made.
+The distribution of $T$ and the formula for $SE$ depends on assumptions made:
 
 * If both $\sigma_1$ and $\sigma_2$ are assumed known, $SE(\bar{X} - \bar{Y}) = SD(\bar{X} - \bar{Y})$, and $T$ has a normal distribution.
 * If it is *assumed* $\sigma = \sigma_1 = \sigma_2$, but if no value is assumed, then the data can be pooled to estimate $\sigma$, the common standard deviation, to get $SE(\bar{X} - \bar{Y}) = s_p\sqrt{1/n_1 + 1/n_2}$ and $T$ has a $T$ distribution with $n_1 + n_2 - 2$ degrees of freedom. The pooled standard deviation is the square root of $(s_1^2(n_1-1) + s_2^2(n_2-1))/(n_1+n_2-2)$.
-* If it is **not** *assumed* $\sigma = \sigma_1 = \sigma_2$ (though it secretly could be), then the standard error is $\sqrt{s_1^2/n_1 + s_2^2/n_2}$. The distribution of $T$ is *approximately* $T$-distributed with an effective degrees of freedom given by the Welch-Satterhwaite formula, which is always between than the smaller of $n_1-1$ and $n_2-1$ and $n_1 + n_2 - 2$.
+* If it is **not** *assumed* $\sigma = \sigma_1 = \sigma_2$ (though it secretly could be), then the standard error is $\sqrt{s_1^2/n_1 + s_2^2/n_2}$. The distribution of $T$ is *approximately* $T$-distributed with an effective degrees of freedom given by the [Welch-Satterhwaite](https://en.wikipedia.org/wiki/Welch%E2%80%93Satterthwaite_equation) equation, which is always between than the smaller of $n_1-1$ and $n_2-1$ and $n_1 + n_2 - 2$.
 
 :::{#exm-two-sample-t-test}
 ##### Confidence interval for the difference of means
@@ -340,7 +344,7 @@ That $0$ is in this interval gives evidence that the two means are equal. The sa
 mean(xs), mean(ys)
 ```
 
-Perhaps were more data available, a difference would be seen, as the variablity is generally smaller for larger sample sizes.
+But the variability is such, the confidence interval makes it conceivable that the population means are the same. Perhaps were more data available, a difference would be seen, as the variablity is generally smaller for larger sample sizes.
 
 
 If the machines are from different vendors, or dispense different beverages, perhaps the assumption of equal variances is not appropriate. The `UnequalVarianceTTest` method is available for this comparison. The calling pattern is identical:
@@ -349,6 +353,7 @@ If the machines are from different vendors, or dispense different beverages, per
 confint(UnequalVarianceTTest(xs, ys); level=0.90)
 ```
 
+The default for such tests in other languages, such as `R`, is to *not* assume equal variances.
 
 :::
 
@@ -356,6 +361,7 @@ confint(UnequalVarianceTTest(xs, ys); level=0.90)
 
 | Method | Description |
 |--------|-------------|
+| OneSampleZTest | Inference on population mean for one sample, known population standard deviation |
 | OneSampleTTest | Inference on population mean for one sample, unknown population standard deviation |
 | EqualVarianceTTest | Inference on difference of population means for independent samples assuming equal population standard deviations  |
 | UnequalVarianceTTest | Inference on difference of population means for independent samples *not* assuming equal population standard deviations  |
@@ -366,9 +372,9 @@ confint(UnequalVarianceTTest(xs, ys); level=0.90)
 
 ### Confidence interval for a proportion
 
-A very common use of confidence intervals is found in the reporting of polls, particularly political polls, where it may be typical to see a statement such as "Candidate A is ahead of her opponent in the polls by 5 percentatge points with a *margin of error* of 5 percent" or "The favorability rating of  President B is 54% with a 5 percent margin of error." These are descriptions of confidence intervals, though both leave the confidence level unspecified. When unspecified, it can usually be inferred from the margin of error, as will be seen.
+A very common use of confidence intervals is found in the reporting of polls, particularly political polls, where it may be typical to see a statement such as "Candidate A is ahead of her opponent in the polls by 5 percentatge points with a *margin of error* of 5 percent" or "The favorability rating of  President B is 54% with a 5 percent margin of error." These are descriptions of confidence intervals, though both leave the confidence level unspecified. When unspecified, it can usually be roughly inferred from the margin of error, as will be seen.
 
-A model for a poll where a person chose one of two options is to use a Bernoulli random variable, $X_i$, to describe the response. The number of $1$s in a fixed number of $n$ respondents can give a proportion. **If** one can assume the $X_i$ are iid random samples from a $Bernoulli(p)$ population, then the number of $1$s can be viewed as a realization of a $Binomial(n,p)$ distribution. That is, this statistic will have a known distribution.
+A model for a poll where a person chose one of two options is to use a Bernoulli random variable, $X_i$, to describe the response. The number of $1$s in a fixed number of $n$ respondents can give a proportion. *If* one can assume the $X_i$ are iid random samples from a $Bernoulli(p)$ population, then the number of $1$s can be viewed as a realization of a $Binomial(n,p)$ distribution. That is, this statistic will have a known distribution.
 
 Before pursuing, let's note that the assumption implies a few things about the sampling process carried out by the pollster:
 
@@ -376,11 +382,11 @@ Before pursuing, let's note that the assumption implies a few things about the s
 
 * The *independent* assumption technically requires sampling *with replacement*, where a person could be asked $0$, $1$, *or more* times the question. But *practically* if $N$ is much greater than $n$ this isn't necessary and *sampling without replacement* can be used.
 
-* The *identically distributed* requires the sampling to be representative. For example, if it is a state wide population, a sample concentrated on one possibly partisan district would not be expected to be identically distributed from the population.
+* The *identically distributed* assumption requires the sampling to be representative. For example, if it is a state-wide population, a sample concentrated on one, possibly partisan, district would not be expected to be identically distributed from the population. Such sampling would sure introduce *bias*.
 
 Assuming, a survey is *reasonably* described by a $Binomial(n,p)$ distribution, the `BinomialTest` can be used to identify a confidence interval for a given confidence level.
 
-The `BinomialTest` function can take either two numbers `x` and `n` representing the number of $1$s in $n$ sample, or a vector of `true`s and `false`s with `true` being a a "$1$".
+The `BinomialTest` function can take either two numbers `x` and `n` representing the number of $1$s in $n$ sample, or a vector of `true`s and `false`s with `true` being a "$1$".
 
 :::  {#exm-Binomial-test}
 ##### A political poll
@@ -398,22 +404,22 @@ ci = confint(BinomialTest(A, n); level = 0.95)
 
 As $0.50$ is in this interval, there is no suggestion candidate A can't win. (And indeed, they did in this case). The report on this poll would be the sample proportion and a margin of error. The margin of error is the width of the interval divided by two:
 
-```{
+```{julia}
 (last(ci) - first(ci)) * 1/2
 ```
 
-A bit under 3 percentage points. A rough guide is 3 percentage points is around 1000 people polled, a larger margin of error (MOE) is fewer people polled, a smaller one is more than 1000 polled.
+A bit under 3 percentage points. A rough guide is 3 percentage points is around 1,000 people polled, a larger margin of error (MOE) is fewer people polled, a smaller one is more than 1,000 polled. Why is expanded on in a bit.
 
-The `BinomialTest` has several different ways to compute the margin of error, or the confidence interval. These are passed to the `method` argument of `confint` as symbols. The default is `:clopper_pearson` which is based on the binomial distribution. The value `:wald` uses a normal approximation to the binomial, which may be very inaccurate when $p$ is close to $0$ or $1$. There are others.
+The `BinomialTest` has several different ways to compute the margin of error, or the confidence interval. These are passed to the `method` argument of `confint` as symbols. The default is `:clopper_pearson` which is based on the binomial distribution. The value `:wald` uses a normal approximation to the binomial, which may be very inaccurate when $p$ is close to $0$ or $1$. There are others (cf. `?confint(:BinomialTest)`).
 
 The default one can be understood through the `quantile` function, and is *essentially* given through:
 
 ```{julia}
 alpha = 0.05
-quantile.(Binomial(n, A/n), [alpha/2, 1 - alpha/2]),  ci .*n
+quantile.(Binomial(n, A/n), [alpha/2, 1 - alpha/2]),  ci .* n
 ```
 
-The normal approximation has an explicit formula for the margin of error, based on the standard deviation of the binomial distribution:
+For confidence intervals calculated through the normal approximation, an explicit formula for the margin of error, based on the standard deviation of the binomial distribution, is available:
 
 $$
 MOE = z_{1-\alpha/2} \cdot \sqrt{p(1-p)/n} =  z_{1-\alpha/2} SE(\hat{p}).
@@ -426,13 +432,13 @@ ci = confint(BinomialTest(A, n); level = 0.95, method=:wald)
 z_a = quantile(Normal(0,1), 1-alpha/2)
 phat = A/n
 SE = sqrt(phat * (1-phat)/n)
-z_a * SE, (last(ci) - first(ci))/2
+z_a * SE, (last(ci) - first(ci))/2  # compare to that computed with :wald
 ```
 
-The latter allows one to estimate the sample size, $n$, needed to achieve a certain margin of error, though an estimate for $p$ is useful, taking $p=1/2$ gives a conservative number as $p(1-p)$ is largest for that value. For example, to see what a 3% margin of error with a 95% confidence level would need in terms of a sample, we have, solving for $n$:
+This formula allows one to estimate the sample size, $n$, needed to achieve a certain margin of error, though an estimate for $p$ can be used, taking $p=1/2$ gives a conservative number as $p(1-p)$ is largest for that value. For example, to see what a 3% margin of error with a 95% confidence level would need in terms of a sample, we have, solving for $n$:
 
 $$
-n = p(1-p)\cdot \left(\frac{z_{\alpha/2}}{MOE}\right)^2 \leq \frac{1}{4}\left(\frac{z_{\alpha/2}}{MOE}\right)^2.
+n = p(1-p)\cdot \left(\frac{z_{1-\alpha/2}}{MOE}\right)^2 \leq \frac{1}{4}\left(\frac{z_{1-\alpha/2}}{MOE}\right)^2.
 $$
 
 ```{julia}
@@ -442,7 +448,7 @@ z_a = quantile(Normal(0,1), 1-alpha/2)
 1/2 * (1- 1/2) * (z_a / MOE)^2
 ```
 
-A bit more than 1000 in this case ensures that the MOE will be no more than $0.03$; it could be less if $p$ is far from $1/2$.
+A bit more than 1000 in this case ensures that the MOE will be no more than $0.03$; it could be much less if it was expected that $p$ is far from $1/2$.
 
 :::
 
@@ -457,7 +463,7 @@ $$
 has a standard normal distribution if the $n$ values are both large enough. This allows a confidence interval for $p_1 - p_2$ to be given by:
 
 $$
-z_{\alpha/2} \cdot SE(\hat{p}_1 - \hat{p}_2) < p_1 - p_2 < z_{1-\alpha/2} \cdot SE(\hat{p}_1 - \hat{p}_2),
+(\hat{p}_1 - \hat{p}_2) - z_{1-\alpha/2} \cdot SE(\hat{p}_1 - \hat{p}_2) < p_1 - p_2 < (\hat{p}_1 - \hat{p}_2) + z_{1-\alpha/2} \cdot SE(\hat{p}_1 - \hat{p}_2),
 $$
 
 where $SE(\hat{p}_1 - \hat{p}_2) = \sqrt{\hat{p}_1(1-\hat{p}_1)/n_1 + \hat{p}_2(1-\hat{p_2})/n_2}$.
@@ -506,17 +512,16 @@ We can give a $90$% CI by:
 
 ```{julia}
 xs = [1.2, -5.2, -8.4, 3.1, -2.1, 3.8]
-n, s2 = length(xs), var(xs)
+n, s² = length(xs), var(xs)
 alpha = 0.10
 cl, cr = quantile.(Chisq(n-1), [alpha/2, 1 - alpha/2])
-(sqrt((n-1)*s2/cr), sqrt((n-1)*s2/cl))
+(sqrt((n-1)*s²/cr), sqrt((n-1)*s²/cl))
 ```
 
 
 ### Confidence interval for comparing population standard deviations
 
-The comparison of two sample standard deviations is of interest, as seen in the two-sample $T$ confidence interval, where different formulas are available should there be an assumption of equality. For two *independent* normally distributed iid random samples, the $F$-statistic can be used to construct a confidence interval, as a scaled ratio of the sample standard deviations will have a certain $F$ distribution.
-The `VarianceFTest` constructor does not have a `confint` method, though it does compute needed pieces, so we define our own method using:
+The comparison of two sample standard deviations is of interest, as seen in the two-sample $T$ confidence interval, where different formulas are available should there be an assumption of equality. For two *independent* normally distributed iid random samples, the $F$-statistic can be used to construct a confidence interval, as a scaled ratio of the sample standard deviations will have a certain $F$ distribution. So for a given $\alpha$, the following happens with probability $1-\alpha$:
 
 $$
 F_{\alpha/2; n_1-1, n_2-1} < (S_1^2/\sigma_1^2) / (S_2^2/\sigma_2^2) < F_{1 -\alpha/2; n_1-1, n_2-1}
@@ -529,12 +534,14 @@ $$
 \frac{S_1^2/S_2^2}{F_{\alpha/2; n_1-1, n_2-1}}.
 $$
 
-We can create a `confint` method as follows:
+
+For a single sample, this is used to construct a confidence interval for the ratio of variances (or standard deviations). The `VarianceFTest` computes the necessary pieces, *but*
+the `VarianceFTest` type does not have a `confint` method. In the following we *extend* the `confint` generic using the above for objects created by `VarianceFTest`:
 
 ```{julia}
 function HypothesisTests.confint(F::VarianceFTest; level=0.95)
     alpha = 1 - level
-    dof1,dof2 = F.df_x, F.df_y
+    dof1, dof2 = F.df_x, F.df_y
     fl, fr = quantile.(FDist(dof1, dof2), (alpha/2, 1-alpha/2))
     F.F ./ (fr, fl)
 end
@@ -543,8 +550,8 @@ end
 To use this, for example, suppose we have two samples:
 
 ```
-xs: 1.2, -5.2, -8.4, 3.1, -2.1, 3.8
-ys: -1.7, -1.8, -3.3, -6.3, 8.4, -0.1, 2.5, -3.8
+xs:  1.2, -5.2, -8.4,  3.1, -2.1,  3.8
+ys: -1.7, -1.8, -3.3, -6.3,  8.4, -0.1, 2.5, -3.8
 ```
 
 Then a $90$% confidence interval for $\sigma^2_1/\sigma^2_2$ is given by:
@@ -555,10 +562,11 @@ ys =  [-1.7, -1.8, -3.3, -6.3, 8.4, -0.1, 2.5, -3.8]
 confint(VarianceFTest(xs, ys); level=0.90)
 ```
 
+That this includes `1` suggest no reason to think the two population variances differ.
 
 ### Likelihood ratio confidence intervals
 
-The confidence intervals so far are based on pivotal quantities with known sampling distributions. An alternative is to use the likelihood function, $L(\theta | x) = f(x | \theta)$, where the latter is the joint pdf of the data for a given parameter or parameters. The idea of maximizing the likelihood is to choose the values for $\theta$ which maximize the probability of seeing the observed data.
+The confidence intervals so far are based on pivotal quantities with known sampling distributions. A more generally applicable alternative is to use the likelihood function, $L(\theta | x) = f(x | \theta)$, where the latter is the joint pdf of the data for a given parameter or parameters. The idea of maximizing the likelihood is to choose the values for $\theta$ which maximize the probability of seeing the observed data and estimating $\theta$ with those values.
 
 The *maximum likelihood estimate* is an alternative manner to estimate a parameter. Here we apply the method to data that would otherwise be amenable to a a $T$-test. First we generate some random data:
 
@@ -567,10 +575,10 @@ The *maximum likelihood estimate* is an alternative manner to estimate a paramet
 n = 8
 D = Normal(μ, σ)
 ys = rand(D, n)
-permutedims(ys) # save space
+ys |> show
 ```
 
-The likelihood function  below uses an assumption on on the data. Below it is normally distributed with unknown mean and standard deviation ($y_i \sim Normal(\mu, \sigma)$), which just happens to match how the random data was generated, but typically is an assumption about the data. We write the log-likelihood function so it takes two values the unknown parameters and the data:
+The likelihood function  below uses an assumption on on the data, in particular that it is normally distributed with unknown mean and standard deviation ($y_i \sim Normal(\mu, \sigma)$). This just happens to match how the random data was generated, but typically is an assumption about the data. We write the log-likelihood function so it takes two values the unknown parameters and the data:
 
 ```{julia}
 function loglik(θ, data)
@@ -586,15 +594,15 @@ function loglik(θ, data)
 end
 ```
 
-We use `logpdf` to compute the logarithm of the probability density function.
+Above, we use `logpdf` to compute the logarithm of the probability density function, as an alternative to `log(pdf(D, yᵢ))`.
 
-To to maximize the data. We will use the `ProfileLikelihood` package to do this problem, which relies on the `Optim` package to perform the optimization:
+To maximize the data, we will use the `ProfileLikelihood` package, which relies on the `Optim` package to perform the optimization:
 
 ```{julia}
 using ProfileLikelihood, Optim, OptimizationOptimJL
 ```
 
-The optimization needs an initial guess, $\theta_0$, and we give names to our parameters, as we set up a "problem" below:
+The optimization needs an initial guess, $\theta_0$, defined below. We also specify names to the parameters, when we set up a "problem" below:
 
 ```{julia}
 θ₀ = [5.0, 2.0]
@@ -605,13 +613,13 @@ prob = LikelihoodProblem(loglik, θ₀;
                          syms = nms)
 ```
 
-This problem is solved by `mle`, which needs an optimization algorithm. We use the `NelderMead` one, which is easier, as we don't need to set up means to take a gradient:
+This problem is solved by `mle`, which needs an optimization algorithm. We use the `NelderMead` one, which is easier to specify, as we don't need to set up means to take a gradient:
 
 ```{julia}
 sol = mle(prob, Optim.NelderMead())
 ```
 
-As seen, the `sol` object outputs the estimate for $\mu$. We can compare to `mean(ys)` and `std(ys)`; the mean agrees (the standard deviation has a different divisor, so is systematically different):
+As seen above, the `sol` object outputs the estimate for $\mu$. We can compare to `mean(ys)` and `std(ys)`; the mean agrees (the standard deviation has a different divisor, so is systematically different, but could be aligned given the sample size):
 
 ```{julia}
 mean(ys), std(ys)
@@ -633,30 +641,31 @@ We can compare the confidence interval identified for $\mu$ to that identified t
 confint(OneSampleTTest(ys), level = 0.95)
 ```
 
-The two differ -- they use different sampling distributions and methods, though simulations will show both manners create CIs capturing the true mean at the rate of the confidence level.
+The two differ -- they use different sampling distributions and methods -- though simulations will show both manners create CIs capturing the true mean at the rate of the confidence level.
 
-The above example does not showcase the advantage of the maximimum likelihood methods, but hints at a systematic way to find confidence intervals, which for some cases is optimal, and is more generally applicable then finding some pivotal quantity (e.g. the $T$-statistic under a normal population assumption).
+The above example does not showcase the advantage of the maximimum likelihood methods, but hints at a systematic way to find confidence intervals, which for some cases is optimal, and is more systematic then finding some pivotal quantity (e.g. the $T$-statistic under a normal population assumption).
 
 
 
 ## Hypothesis tests
 
-A confidence interval is a means to estimate a population parameter. However, sometimes a different language is sought. For example, we might hear a newer product is *better* than an old one, or amongst two different treatments there is a *difference*. The language of hypothesis tests allows this flexibility. The basic setup is similar to a courtroom trial in the United States -- as seen on TV:
+A confidence interval is a means to estimate a population parameter with an appreciation for the variability involved in random sampling. However, sometimes a different language is sought. For example, we might hear a newer product is *better* than an old one, or amongst two different treatments there is a *difference*. These aren't comments about the specific value. The language of hypothesis tests affords the flexibility to incorporate this language.
+
+The basic setup is similar to a courtroom trial in the United States -- as seen on TV:
 
 * a defendant is judged by a jury with an *assumption of innocence*
 * presentation of evidence is given
-* the jury weighs the evidence
-* If it is a civil trial a *prepoderence of evidence* is enough for the jury to say the defendent is guilty (not innocent); if a criminal trial the standard if the evidence is "beyond a reasonable doubt" then the defendent is deemed not innocent. Otherwise the defendant is said to be "not guilty," though really it should be that they weren't "proven" to be guilty.
+* the jury weighs the evidence *assuming* the defendant is innocent.
+* If it is a civil trial a *preponderence of evidence* is enough for the jury to say the defendent is guilty (not innocent); if a criminal trial the standard if the evidence is "beyond a reasonable doubt" then the defendent is deemed not innocent. Otherwise the defendant is said to be "not guilty," though really it should be that they weren't "proven" to be guilty.
 
 In a hypothesis or significance test for parameters, the setup is similar:
 
 * a null hypothesis of "no difference" is assumed; an alternative hypothesis is specified.
 * data is collected
-* a test statistic is used to summarize the data
-* a probability is computed that accounts for the assumption of the null hypothesis and the data, computing the probability that the random values would be as or more extreme than seen in the data *assuming* the null hypothesis is true
+* a test statistic is used to summarize the data. Then  a probability is computed that accounts for the assumption of the null hypothesis and the data, computing the probability that the random values would be as or more *extreme* than observed in the data *assuming* the null hypothesis is true
 * if that probability is small, then one might conclude the null hypothesis is incorrect; otherwise there is no evidence to say it isn't correct, small would depend on the context of application.
 
-To illustrate, suppose a company claims their new product is more effective than the current standard. Further suppose this effectiveness can be measured by a single number, though there is randomness to any single measurement. Over time the old product is known to have a mean of $70$ in this measurement.
+To illustrate hypothesis tests, suppose a company claims their new product is *more effective* than the current standard. Further, suppose this effectiveness can be measured by a single number, though there is randomness to any single measurement. Over time the old product is known to have a mean of $70$ in this measurement.
 
 Then the null and *alternative* hypotheses would be:
 
@@ -664,7 +673,7 @@ $$
 H_0: \mu = 70 \quad H_A: \mu > 70,
 $$
 
-where a bigger number is considered better. The null is an assumption of "no change", the alternative points in the direction of the claim (better, in this case).
+where a bigger number is considered better. The null is an assumption of "no change," the alternative points in the direction of the claim (better, in this case).
 
 
 To test this, data would be collected. Suppose in this case 8 measurements of the new product were taken with these values:
@@ -680,9 +689,9 @@ xs = [73.0, 66.1, 76.7, 68.0, 60.8, 81.8, 73.5, 75.2]
 mean(xs)
 ```
 
-This is more than 70, but the skeptic says half the time a sample mean would be more than 70 if the null hypothesis were true. Is it really indicative of "better?" For that question, a sense of how extreme this observed values is under an assumption of the null hypotheses is used.
+This is more than 70, but the skeptic says half the time a sample mean would be more than 70 if the null hypothesis *were* true. Is it really indicative of "better?" For that question, a sense of how extreme this observed value is under an assumption of the null hypotheses is used.
 
-To test this, we characterize the probability a sample mean would be even more than our observed one, were we to repeat this sampling many times:
+To test this, we characterize the probability a sample mean would be even more than our observed one, **were** we to repeat this sampling many times:
 
 > The $p$-value is the probability the test statistic is as or *more extreme* than the observed value under the null hypothesis.
 
@@ -690,7 +699,7 @@ To test this, we characterize the probability a sample mean would be even more t
 For this problem the $p$-value is the probability the sample mean is `mean(xs)` or more assuming the *null hypothesis*. Centering by $\mu$ and scaling by the standard error, this is:
 
 $$
-P(\frac{\bar{X} - \mu}{SE(\bar{X})} > \frac{\bar{x} - \mu}{s/\sqrt{n}} \mid H_0)
+P(\frac{\bar{X} - \mu}{SE(\bar{X})} > \frac{\bar{x} - \mu}{s/\sqrt{n}} \mid H_0).
 $$
 
 That is, large values of $\bar{X}$ are not enough to be considered statistically significant, rather large values measured in terms of the number of standard errors are.
@@ -707,9 +716,9 @@ p_value = 1 - cdf(TDist(n-1), obs)  # 1 - P(T ≤ obs) = P(T > obs)
 
 Is this $p$-value suggestive that the null hypothesis is not a valid explanation of the variation seen in the data?
 
-(The `ccdf` function, complementary cumulative distribution function, could also be used to more directly find the $p$-value.)
 
-The jury has guidance, depending on the type of trial, here there is also guidance in terms of a stated *significance level*. This is done in advance, but is typically just $\alpha = 0.05$. So if the $p$-value is less than $\alpha$ the null hypothesis is suggested to be incorrect; if not there is no evidence to conclude the null hypothesis is incorrect. Since here the $p$-value is much greater than $\alpha$, we would say there is no evidence to *reject* the null hypothesis.
+
+The jury has guidance, depending on the type of trial, here there is also guidance in terms of a stated *significance level*. This is done in advance, but is typically just $\alpha = 0.05$. So if the $p$-value is less than $\alpha$ the null hypothesis is suggested to be incorrect; if not there is no evidence to conclude the null hypothesis is incorrect. Since here the $p$-value is much greater than $\alpha = 0.05$, we would say there is no evidence to *reject* the null hypothesis.
 
 The mechanics here are standard and encapsulated in the `OneSampleTTest` constructor. The `pvalue` method allows the specification of the type of "tail". In this case, as the alternative hypothesis is $H_A: \mu > 70$, the tail is `:right`:
 
@@ -725,26 +734,31 @@ pvalue(OneSampleTTest(xs, 70))
 
 #### Design of structures in HypothesisTests
 
-The `OneSampleTTest` method creates a structure, also called `OneSampleTTest`. It is illustrative of the other tests in the `HypothesisTests` package. This structure does not keep the data, only sufficient statistics of the data to generate the various summaries. In this case, these are `n`, `xbar` ($\bar{x}$), `df` ($n-1)$, `stderr` ($SE$), `t` (`(mean(xs)-mu)/stderr`), and `μ0` (the null hypothesis). The design is the default show method summarizes most of what may be  of interest, specialized methods, like `confint` and `pvalue` allow customization and access to the specific values. The default `show`  method for this test is:
+The `HypothesisTests` package was first published in 2015 and uses a calling style where the main functions match the underlying types.
+In particular, the `OneSampleTTest` method creates a structure, also called `OneSampleTTest`. It is illustrative of the other tests in the `HypothesisTests` package. This structure does not keep the data, only sufficient statistics of the data to generate the various summaries. In this case, these are `n`, `xbar` ($\bar{x}$), `df` ($n-1)$, `stderr` ($SE$), `t` (`(mean(xs)-mu)/stderr`), and `μ0` (the null hypothesis). The design is the default show method summarizes most of what may be  of interest, specialized methods, like `confint` and `pvalue` allow customization and access to the specific values. The default `show`  method for this test is:
 
 ```{julia}
 OneSampleTTest(xs)
 ```
 
-A default value for the null was chosen (`0`), a default level for the confidence interval (`0.95`), and a default choice of tail was made for the computed $p$-value.
+A default value for the null was chosen (`h_0`), a default level for the confidence interval (`0.95`), and a default choice of tail was made for the computed $p$-value.
 
 
 #### Equivalence between hypothesis tests and confidence intervals
 
-For many tests, such as the one-sample $T$-test, there is an equivalence between a significance test and a confidence interval, which is no surprise given the same $T$-statistic is employed by both.
+For many tests, such as the one-sample $T$-test, there is an equivalence between a two-sided significance test with significance level $\alpha$ and a $(1-\alpha)\cdot 100$% confidence interval -- no surprise given the same $T$-statistic is employed by both.
 
-For example, consider a two-tailed significance test of $H_0: \mu=\mu_0$ with a two-sided alternative. Let $\alpha$ be the level of significance: we reject if the $p$-value is less than $\alpha$. An iid random sample is summarized by the observed value of the $T$-statistic, $(\bar{x} - \mu_0)/(s/\sqrt{n})$. Let $t^* = t\_{1-\alpha/2}$ be the quantile, then if the $p$-value is less than $\alpha$, we must have the observed value in absolute value is greater than $t^*$. That is
+For example, consider a two-sided significance test of $H_0: \mu=\mu_0$. Let $\alpha$ be the level of significance: we "reject" the null hypothesis if the $p$-value is less than $\alpha$. An iid random sample is summarized by the observed value of the $T$-statistic, $(\bar{x} - \mu_0)/(s/\sqrt{n})$. Let $t^* = t_{1-\alpha/2}$ be the quantile, then if the $p$-value is less than $\alpha$, we must have the observed value in absolute value is greater than $t^*$. That is
 
 $$
 | \frac{\bar{x} - \mu_0}{s/\sqrt{n}}| > t^*.
 $$
 
-Algebraically, this implies that either $\mu_0 < \bar{x} - t^* s/\sqrt{n}$ or $\mu_0 > \bar{x} + t^* s/\sqrt{n}$. That is, the value of $\mu_0$ is not in the $(1-\alpha)\cdot 100$% CI based on the sample. That is, rejecting the null hypothesis is equivalent to $\mu_0$ not being in the corresponding confidence interval. The reverse is also true: any $\mu_0$ not in the $(1-\alpha)\cdot 100$% CI would have a two-tailed test of $H_0: \mu=\mu_)$ rejected at the $\alpha$ significance level.
+Algebraically, this implies that either $\mu_0 < \bar{x} - t^* s/\sqrt{n}$ or $\mu_0 > \bar{x} + t^* s/\sqrt{n}$. That is, the value of $\mu_0$ is not in the $(1-\alpha)\cdot 100$% CI based on the sample.
+
+> Rejecting the null hypothesis $H_0: \mu=\mu_0$ is equivalent to $\mu_0$ not being in the corresponding confidence interval.
+
+The reverse is also true: any $\mu_0$ not in the $(1-\alpha)\cdot 100$% CI would have a two-tailed test of $H_0: \mu=\mu_)$ rejected at the $\alpha$ significance level.
 
 
 
@@ -770,7 +784,7 @@ ps = [pvalue(OneSampleTTest(rand(Z, n))) for _ in 1:N]
 sum(ps .< 0.01)/N, sum(ps .< 0.05)/N, sum(ps .< 0.10)/N
 ```
 
-The proportions in the 5000 samples roughly match the threshold specified ($\alpha = 0.01, 0.05, 0.10$).
+The proportions in the 5000 samples roughly match the threshold specified ($\alpha = 0.01$, $0.05$, $0.10$).
 
 There are some cases where a *conservative* sampling distribution is used. (For example, with a two sample test of means with no assumption of equal variances, a conservative degrees of freedom is sometimes suggested.) Conservative means that "rejecting" the null (or finding $p$ value less than $\alpha$) will occur on average less than $\alpha\cdot 100$ percent of the time.
 
@@ -784,7 +798,9 @@ $$
 H_0: \mu=0, \quad H_A: \mu=1.
 $$
 
-When a small $p$ value is found, the language of "rejecting" the null hypothesis is used, whereas for large $p$ values, "accept" is used. If we "reject" when the $p$-value is less than $\alpha$, then the probability of making a mistake when the *null hypothesis* is true is $\alpha$. This is called a *Type-I error*. In the above, as the alternative is a fixed value of the parameter, we could also compute the probability of "accepting" when the *alternative* hypothesis is true. When this error occurs, a *Type-II error* happens.
+That is the alternative is fully specified, unlike, say, $H_A: \mu > 0$.
+
+When a small $p$ value is found, the language of "rejecting" the null hypothesis is used, whereas for large $p$ values, "accept" is used. If we "reject" when the $p$-value is less than $\alpha$, then the probability of making a mistake when the *null hypothesis* is *actually* true is $\alpha$. This is called a *Type-I error*. In the above, as the alternative is a fixed value of the parameter, we could also compute the probability of "accepting" when the *alternative* hypothesis is *actually* true. When this error occurs, a *Type-II error* happens.
 
 For example, a sample of size $n=4$ from a $Normal(\mu, 1)$ distribution would have a standard error of $1/\sqrt{4} = 1/2$. Without thinking too much, were the sample mean  close to $0$ we would accept the null, were it bigger than $1$ we would reject the null. Precisely, if we set $\alpha = 0.05$, then we can compute under the null hypothesis a critical value for which if $\bar{x}$ is less we "accept" and if more we "reject":
 
@@ -796,16 +812,18 @@ SD = sigma / sqrt(n)
 zc = quantile(Normal(0, SD), 1 - alpha)
 ```
 
-This is computed under the null hypothesis. In this case, we can compute under the alternative hypothesis, as it is fully specified. The probability of "accepting" when the alternative is true is called $\beta$. For this we have:
+This is computed under the null hypothesis. In this case, we can compute under the alternative hypothesis, as it is fully specified, the probability of "accepting" when the alternative is true. This probability is traditional called $\beta$ and depends on the exact specification of the alternative. For this specific one we have:
 
 ```{julia}
 mu_a = 1
 cdf(Normal(mu_a,  SD), zc)
 ```
 
-@fig-power-figure shows the sampling distribution under the null hypothesis centered at $0,$ and the sampling distribution under the alternative hypothesis, centered at $1$. The shaded area representing $\beta$ is much bigger than $\alpha$.
+The left graphic in @fig-power-figure shows the sampling distribution under the null hypothesis centered at $0,$ and the sampling distribution under the alternative hypothesis, centered at $1$. The shaded area representing $\beta$ is much bigger than $\alpha$.
 
-The value for $\beta$ is pretty large, over a third, so with such a small sample, it is difficult to detect a difference of $1 = \mu_A - \mu_0$. The basic expectation is: the smaller the difference, the larger the sample is needed to have "$\beta$"  be small. The *power* is $1-\beta$. It may be specified ahead of time, as in: what size $n$ is needed to have power $0.80$ with a difference of means being $1$.
+The value for $\beta$ is pretty large, over a third, so with such a small sample, it is difficult to detect a difference of $1 = \mu_A - \mu_0$. The basic expectation is: the smaller the difference, the larger the sample is needed to have "$\beta$"  be small.
+
+The *power* is $1-\beta$. It may be specified ahead of time, as in: what size $n$ is needed to have power $0.80$ with a difference of means being $1$.
 
 To solve this, we would need to solve
 
@@ -934,7 +952,7 @@ The `PowerAnalyses` package carries out several different power computations. Fo
 import PowerAnalyses
 ```
 
-For example, to identify the sample size needed for a left-tailed test with $\alpha = 0.05,$ $\beta = 0.20,$ and the effect size is small ($0.30$) we have:
+For example, to identify the sample size needed for a right-tailed test with $\alpha = 0.05,$ $\beta = 0.20,$ and the effect size is small ($0.30$) we have:
 
 ```{julia}
 effect_size = 0.3
@@ -948,14 +966,16 @@ PowerAnalyses.get_n(T; alpha=alpha, es=effect_size, power=power)
 We see a smaller $n$ is needed to have the same power with a larger effect size.
 
 ```{julia}
-# XXX needs new version of PowerAnalyses
 effect_size = 0.8
 PowerAnalyses.get_n(T; alpha=alpha, es=effect_size, power=power)
 ```
 
 
 
-There are other power computations provided, but this one illustrates a key point: with large enough sample sizes, any effect size can be discerned. That is the difference is *statistically significant*. However, that does not mean it is *practically significant*. An example from the [NIH](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3444174) describes a "Physicians Health Study of aspirin to prevent myocardial infarction. In more than $22,000$ subjects over an average of $5$ years, aspirin was associated with a reduction in MI (although not in overall cardiovascular mortality) that was highly statistically significant: $p < .00001$. The study was terminated early due to the conclusive evidence, and aspirin was recommended for general prevention. However, the effect size was ... extremely  small. As a result of that study, many people were advised to take aspirin who would not experience benefit yet were also at risk for adverse effects. Further studies found even smaller effects, and the recommendation to use aspirin has since been modified.
+There are other power computations provided in the package, but this one illustrates a key point: with large enough sample sizes, any effect size can be discerned. That is the difference is *statistically significant*. However, that does not mean it is *practically significant*.
+
+
+An example from the [NIH](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3444174) describes a "Physicians Health Study of aspirin to prevent myocardial infarction. In more than $22,000$ subjects over an average of $5$ years, aspirin was associated with a reduction in MI (although not in overall cardiovascular mortality) that was highly statistically significant: $p < .00001$. The study was terminated early due to the conclusive evidence, and aspirin was recommended for general prevention. However, the effect size was ... *extremely  small*. As a result of that study, many people were advised to take aspirin who would not experience benefit yet were also at risk for adverse effects. Further studies found even smaller effects, and the recommendation to use aspirin has since been modified.
 
 
 ### One sample Z test
@@ -982,7 +1002,7 @@ Z = OneSampleZTest(xs, 7.5)
 pvalue(Z, tail=:left)
 ```
 
-(The statistician may say, if the mean is $7.5$ and the standard deviation is $0.5$, then anything more than 1 standard deviation from the mean will overflow an $8$oz cup. But they know that the normal distribution is only a generalization and that the values are always within $0.5$ oz of the calibration mean.)
+(The statistician may say, if the mean is $7.5$ and the standard deviation is $0.5$, then anything more than 1 standard deviation from the mean will overflow an $8$oz cup. But the technicians know that the normal distribution is only a generalization and that the values are *always* within $0.5$ oz of the calibration mean.)
 
 
 
@@ -1007,7 +1027,7 @@ A test of survey data where one of two answers are possible can be carried  out 
 For example, suppose it is known that in any given semester, 50% of matriculating students will have a lower semester GPA than their cumulative GPA. A researcher tests if college transfer students are different with $p$ representing the population proportion whose lower semester GPA will be worse than their cumulative one. The test is:
 
 $$
-H_0: p = 0.50, \quad, H_A: p > 0.50
+H_0: p = 0.50, \quad H_A: p > 0.50
 $$
 
 They collect data and find of 500 transfer students identified, 290 had lower GPAs than their accumulated GPA. Is this data statistically significant?
@@ -1019,7 +1039,7 @@ B = BinomialTest(x, n, p)
 pvalue(B, tail=:right)
 ```
 
-This is an example of "transfer shock," which overtime tends to go away for most transfer students.
+This is an example of "transfer shock," which over time is known to go away for most transfer students.
 
 ### Two-sample test of center
 
@@ -1092,7 +1112,7 @@ SE = sqrt(phat*(1-phat) * (1/n1 + 1/n2))
 Z_obs = (phat1 - phat2)/SE
 ```
 
-This is a two-tailed test, so the $p$-value incorporates potential test statistics more than `Z_obs` or *less than* `-Z_obs`. (The minus sign comes, as `Z_obs` is positive.) Since the sampling distribution is a symmetric standard normal we have:
+This is a two-tailed test, so the $p$-value incorporates potential test statistics more than `Z_obs` or *less than* `-Z_obs`. (The minus sign comes, as `Z_obs` is positive.) Since the sampling distribution is a symmetric (standard normal) we have:
 
 ```{julia}
 p_value = 2 * (1 - cdf(Normal(0,1), Z_obs))
@@ -1103,7 +1123,7 @@ This being larger than $\alpha = 0.05$, suggests no reason to reject the null hy
 
 ### Test of variances
 
-The question of two indpendent samples having equal variances can be tested through an $F$-test and is implemented in `VarianceFTest`.
+The question of two, independent, *normally distributed*, samples having equal variances can be tested through an $F$-test and is implemented in `VarianceFTest`.
 
 For example, consider a test for equal variances over two levels of some treatment with hypotheses:
 
@@ -1111,13 +1131,13 @@ $$
 H_0: \sigma_1 = \sigma_2, \quad H_A: \sigma_1 \neq \sigma_2
 $$
 
-The $F$ test considers the ratio $\sigma_1^2/\sigma_2^2$, so this may also have been specified in terms of that.
+The $F$ test considers the ratio $\sigma_1^2/\sigma_2^2$, so these hypotheses may also have been specified in terms of ratios.
 
-Two independent samples were collected from normally distributed populations, giving:
+Suppose two independent samples were collected from normally distributed populations, giving:
 
 ```
-xs: -2.1, -1.8, 1.3, -0.9, 1.7, -2.0, -1.6, 3.8, -0.8, 5.5
-ys: 7.6, 6.4, 7.2, 16.1, 6.6, 10.7, 11.0, 9.4
+xs: -2.1, -1.8, 1.3,  -0.9, 1.7,  -2.0, -1.6, 3.8, -0.8, 5.5
+ys:  7.6,  6.4, 7.2,  16.1, 6.6,  10.7, 11.0, 9.4
 ```
 
 We enter the data and then pass this to the test:
@@ -1132,9 +1152,68 @@ pvalue(F, tail=:both)
 ::: {.callout-note}
 ##### Robustness of the F test
 
-The $F$-test of variance, unlike, say, tests for the population mean, are sensitive to departures from the assumption of a normally distributed population. For this case, this was first noticed by Pearson (cf. [@Box_non_normality_10.1093/biomet/40.3-4.318]). The `LeveneTest` constructor implements Levene's test for comparing two *or* more variances for equality.
+The $F$-test of variance, unlike, say, tests for the population mean, are sensitive to departures from the assumption of a normally distributed population. For this case, this was first noticed by Pearson (cf. [@Box_non_normality_10.1093/biomet/40.3-4.318]). The more robust `LeveneTest` constructor implements Levene's test for comparing two *or* more variances for equality.
 
 :::
+
+### Test of correlation
+
+Suppose $(X_1, Y_1), (X_2, Y_2), \dots, (X_n, Y_n)$ are *jointly* normally distributed. The Pearson correlation coefficient was given by:
+
+$$
+r = \frac{1}{n-1} \sigma \left(\frac{X_i-\bar{X}}{s_X}\right) \cdot \left(\frac{Y_i - \bar{Y}}{s_Y}\right).
+$$
+
+The exact sampling [distribution function of $r$](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student's_t-distribution) is known and involves the parameter $\rho$, the population correlation.
+Under the null hypothesis $\rho=0$, the distribution is a $T$-distribution with $n-2$ degrees of freedom. This allows the testing of $0$ correlation, which under this assumption is a test of independence.
+
+For example, to test if these two normally distributed pairs of numbers are independent:
+
+```
+x: -1.41  -0.8  -1.28  0.68   0.16  -1.28
+y: -0.34  -0.24  0.29  0.83  -0.77  -0.66
+```
+
+we have:
+
+```{julia}
+x = [-1.41,  -0.8, -1.28, 0.68, 0.16, -1.28]
+y = [-0.34, -0.24, 0.29, 0.83, -0.77, -0.66]
+n = length(x)
+
+r_obs = cor(x, y)
+
+2 * ccdf(TDist(n-2), abs(r_obs))
+```
+
+https://www.politico.com/news/2023/01/25/george-santos-199-expenses-00079334
+
+
+For testing other values, the Fischer approximation proves useful, namely that
+
+$$
+F(r) = \frac{1}{2}\ln\left(\frac{1 +r}{1-r}\right) = \tanh^{-1}(r)
+$$
+
+has an *approximate* normal distribution with mean $F(\rho)$ and standard error $1/\sqrt{n-3}$.
+
+This can be used to generate confidence intervals, leading to a $(1-\alpha)\cdot 100$% CI for $\rho$ expressed through $\tanh^{-1}(r) - z_{1-\alpha/2} SE < \tanh^{-1}(\rho) < \tanh^{-1}(r) + z_{1-\alpha/2} SE$.
+
+For the previous data, a $95$% percent confidence interval for $\rho$ could be constructed with:
+
+```{julia}
+r = cor(x, y)
+n = length(x)
+alpha = 0.05
+za = quantile(Normal(0, 1), 1 - alpha/2)
+SE = 1/sqrt(n-3)
+MOE = za * SE
+lo′, hi′ = atanh(r) .+ (-MOE, MOE)
+lo, hi = tanh(lo′), tanh(hi′)
+```
+
+This is very wide, as the sample size is small, leading to an $SE$ value over $1/2$.
+
 
 ### Goodness of fit test
 
@@ -1181,7 +1260,7 @@ H_0: \log(p_i) = \alpha + \beta \cdot i, \quad H_A: \text{not so}
 $$
 
 
-The values for $\alpha$ and $\beta$ are estimated from the data. They use $\alpha \approx -2.1873, \beta \approx -0.0838$. (Their method is not quite the same, but close to, fitting a linear model to $\log(\hat{p}_i) = \alpha + \beta i$.)
+The values for $\alpha$ and $\beta$ are estimated from the data. Haberman used $\alpha \approx -2.1873, \beta \approx -0.0838$. (Their method is not quite the same, but close to, fitting a linear model to $\log(\hat{p}_i) = \alpha + \beta i$.)
 
 Using this we can get the $\chi^2$ statistic as follows, with the data read from the article:
 
@@ -1194,20 +1273,20 @@ ps /= sum(ps) # make sum to exactly 1
 χ².stat
 ```
 
-We don't show the $p$ value, as we need to consider an adjusted degrees of freedom. There are $s=2$ parameters estimated from the data, so the degrees of freedom of this test statistic is $18 - 2 - 1 = 15$. The $p$-value is found by computing the area to the *right* of the observed value, giving:
+We don't show the $p$ value -- yet -- as we need to consider an adjusted degrees of freedom. There are $s=2$ parameters estimated from the data, so the degrees of freedom of this test statistic is $18 - 2 - 1 = 15$. The $p$-value is found by computing the area to the *right* of the observed value, giving:
 
 ```{julia}
 1 - cdf(Chisq(18 - 2 - 1), χ².stat)
 ```
 
-This data set was used to illustrate the power-divergence statistic, which has a varying parameter $\lambda$. The Chi-squared test is $\lambda = 1$; a maximum-likelihood test is $\lambda=0$; a value of $\lambda=2/3$ is recommended by Cressie and Read as a robust general purpose value. We can test these, as follows:
+This data set was used by  [@CressieRead_10.2307_2345686] to illustrate the power-divergence statistic, which has a varying parameter $\lambda$. The Chi-squared test is $\lambda = 1$; a maximum-likelihood test is $\lambda=0$; a value of $\lambda=2/3$ is recommended by Cressie and Read as a robust general purpose value. We can test these, as follows:
 
 ```{julia}
 Dict(l => 1 - cdf(Chisq(18 - 2 - 1), PowerDivergenceTest(xs; lambda=l, theta0=ps).stat)
      for l in [0, 2/3, 1, 5])
 ```
 
-The value of $\lambda=5$ was used to show that larger values increase the size of the test statistic for this data, making the $p$-values smaller under the asymptotic distribution. The value for $i=13$ of $(X_i/E_i)$ is nearly $2$;  powers over $1$ make this one term dominate the value of the statistic.
+The value of $\lambda=5$ was used to show that larger values increase the size of the test statistic for this data, making the $p$-values smaller under the asymptotic distribution. The value (of $(X_i/E_i)$) for $i=13$  is nearly $2$;  powers over $1$ make this one term dominate the value of the statistic. Something similar happens for powers much less than $1$.
 
 
 :::
@@ -1216,9 +1295,11 @@ The value of $\lambda=5$ was used to show that larger values increase the size o
 ::: {#exm-chisq-two-way}
 ##### Two-way tables
 
-Let $X$ and $Y$ be two categorical variables summarizing a set of observations. Their counts could be summarized in a two-way table, say, with the $X$ levels across the top, and the $Y$ levels down the side. If there is no relationship between $X$ and $Y$ we would expect the proportions in each row to be *roughly* the same for each level of $X$. If $X$ depends on $Y$, this would be expected. Put differently, if $X$ and $Y$ are not related, the expected count in cell row $i$ column $j$ would be $n \cdot p_{ij}$ *or* $(n \cdot P(Y=i)) * P(X=j)$, the latter first finds the expected number in the $i$th level of $Y$ times the probability of the $j$ level of $X$. That is, under an assumption of no association, the *marginal* probabilities should determine the cell probabilities.
+Let $X$ and $Y$ be two categorical variables summarizing a set of observations. Their counts could be summarized in a two-way table, say, with the $X$ levels across the top, and the $Y$ levels down the side. If there is no relationship between $X$ and $Y$ we would expect the proportions in each row to be *roughly* the same for each level of $X$. If $X$ depends on $Y$, this would be expected.
 
-Let there be $c$ levels of $X$ and $r$ levels of $Y$. Viewing the table in a flat manner, there are $k=rc$ different cells. If a multinomial model described the table, then the Chi-squared distribution would asymptotically describe the $\chi^2$ statistic's sampling distribution. However, as there are $s = (r-1) + (c-1)$ parameters that would need estimating ($r-1$ for the $Y$ probabilities as all $r$ must add to $1$, for example). So the degrees of freedom would be $k-s-1 = rc - (r-1 + c-1) - 1 = (r-1)(c-1)$.
+Put differently, if $X$ and $Y$ are not related, the expected count in cell row $i$ column $j$ would be $n \cdot p_{ij}$ *or* $(n \cdot P(Y=i)) \cdot P(X=j)$, the latter first finds the expected number in the $i$th level of $Y$ times the probability of the $j$ level of $X$. That is, under an assumption of no association, the *marginal* probabilities should determine the cell probabilities.
+
+Let there be $c$ levels of $X$ and $r$ levels of $Y$. Viewing the table in a flat manner, there are $k=rc$ different cells. If a multinomial model described the table, then the Chi-squared distribution would asymptotically describe the $\chi^2$ statistic's sampling distribution. However, as there are $s = (r-1) + (c-1)$ parameters that would need estimating ($r-1$ for the $Y$ probabilities as all $r$ must add to $1$, for example), the degrees of freedom would be $k-s-1 = rc - (r-1 + c-1) - 1 = (r-1)(c-1)$.
 
 
 Suppose, a survey of many individuals was taken including questions on COVID-19 contraction and primary form of mitigation with the following data:
@@ -1233,7 +1314,7 @@ Ivermectin        20    40
 none              20   300
 ```
 
-We enter this two-way table in aa a matrix, and the call `ChisqTest` to do the analysis:
+We enter this two-way table in as a matrix, and then call `ChisqTest` to do the analysis:
 
 ```{julia}
 cnts = [10 500;
@@ -1255,7 +1336,7 @@ The small $p$-value for this made-up data suggests an association between primar
 The methodology for two-way tables can be used for a two-sample test of proportions. Letting $X$ count the successes and failures and $Y$ the two different surveys.
 
 
-Several news articles discussed a divide between "red" and "blue" states and their covid rates based on a politicalization of vaccinations. *Suppose* data was collected on whether a person with COVID-19 needed hospitalization was cross-tabulated with their county, classified broadly as "red" or "blue". The data is
+Several news articles of the time discussed a divide between "red" and "blue" states and their covid rates based on a politicalization of vaccinations in the United States. *Suppose* data was collected on whether a person with COVID-19 needed hospitalization was cross-tabulated with their county, classified broadly as "red" or "blue". The data is
 
 ```
 Type / Hospitalization
@@ -1286,7 +1367,13 @@ Zobs = abs(phat1 - phat2)/SE  # use abs and double right tail
 p_value = 2 * (1 - cdf(Normal(0, 1), Zobs))
 ```
 
-Either way, both produced a  $p$-value smaller than the nominal $\alpha=0.05$ level for this made-up data.
+One other way to analyze this question is with [Fishers exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test). For a $2\times 2$ table, the bottom row divides into the top and the ratio of the two resulting numbers is considered ($(a/c) / (b/d)$). If there is no association, this ratio should be close to $1$. For this data, the Fisher exact test yields a $p$-value in the same range:
+
+```{julia}
+pvalue(FisherExactTest(100, 1000, 50, 750)) # a,b,c,d
+```
+
+Either way, all produced a  $p$-value smaller than the nominal $\alpha=0.05$ level for this made-up data.
 
 :::
 
@@ -1299,7 +1386,9 @@ $$
 H_0: \mu = \mu_0, \quad H_A: \mu = \mu_1
 $$
 
-Suppose the population is $Normal(\mu, \sigma)$. We had a similar setup in the discussion on power, where for a $T$-test a specified three of a $\alpha$, $\beta$, $n$, or an effect size allows the solving of the fourth using known facts about the $T$-statistic. The Neyman-Pearson lemma speaks to the *uniformly most powerful* test under this scenario with a single unknown parameter (the mean above, but could be the standard devation, etc.). This test can be realized as a likelihood ratio test also covers tests of more generality. Suppose the parameters being tested are call $\theta$ which sit in some subset $\Theta_0 \subset \Theta$. The non-direction alternative would be $\theta$ is in $\Theta \setminus \Theta_0$.
+Suppose the population is $Normal(\mu, \sigma)$. We had a similar setup in the discussion on power, where for a $T$-test specifying three of a $\alpha$, $\beta$, $n$, or an effect size allows the solving of the fourth using known facts about the $T$-statistic. The Neyman-Pearson lemma speaks to the *uniformly most powerful* test under this scenario with a **single** unknown parameter (the mean above, but could be the standard devation, etc.).
+
+This test can be realized as a likelihood ratio test, which also covers tests of more generality. Suppose the parameters being tested are called $\theta$ which sit in some subset $\Theta_0 \subset \Theta$. The non-directional alternative would be $\theta$ is in $\Theta \setminus \Theta_0$.
 
 A test for this can be based on the *likelihood ratio statistic*:
 
@@ -1308,9 +1397,9 @@ $$
 -2(\ln \sup_{\theta \in \Theta_0} L(\theta, x) - \ln \sup_{\theta \in \Theta} L(\theta, x)).
 $$
 
-The $\sup$ just means the maximum value of the set, which above is either the specific set of values in the null or *all* possible values. The ratio here is in $[0,1]$, the logarithm is then negative, the factor $-2$ means $\lambda$ is in $[0, \infty)$. Under some assumptions, $\lambda$ will have an *asymptotically* Chi-square distribution with the degrees of freedom given by the dimensionality of $\Theta$.
+The $\sup$ is essentially the maximum value of the function over the set, which above is either the specific set of values in the null or *all* possible values. The ratio here is in $[0,1]$, the logarithm is then negative, the factor $-2$ means $\lambda$ is in $[0, \infty)$. Under some assumptions, $\lambda$ will have an *asymptotically* Chi-square distribution with the degrees of freedom given by the dimensionality of $\Theta$.
 
-While only in the simple case, the likelihood ratio test is the most powerful, the approach is much more general than the ad hoc tests described previously and mostly agrees with them.
+While only in the simple case is the likelihood ratio test guaranteed to be the most powerful, the approach is much more general than the ad hoc tests described previously and mostly agrees with them.
 
 
 Let's consider the case of a survey modeled by a binomial. We test $H_0: p=1/2$ against a two-sided alternative.
@@ -1318,7 +1407,7 @@ Let's consider the case of a survey modeled by a binomial. We test $H_0: p=1/2$ 
 The log-likelihood function, $l(p,x)$, for the data is simply:
 
 ```{julia}
-function loglik(θ, data)
+function loglik(θ, data) # both θ, data are containers
     p = first(θ)
     x, n = data
     logpdf(Binomial(n, p), x)
@@ -1339,7 +1428,7 @@ l̂, i = findmax(ls)
 p̂ = ps[i]
 ```
 
-We see $\hat{p} = x/n$, which can be shown mathematically. The value of the log-likelihood ratio statistic can be found through:
+We see $\hat{p} = x/n$ (which could have been shown mathematically). The value of the log-likelihood ratio statistic can be found through:
 
 
 ```{julia}
@@ -1357,7 +1446,7 @@ The $Chisq(1)$ distribution describes this statistic asymptotically. Supposing t
 ::: {#exm-linear-model}
 ##### The linear-regression model
 
-The *simple* linear regression model was given by $y_i = \beta_0 + \beta_1 x_i + e_i$, where for purposes of modeling, we will take $e_i$ to have a $Normal(0, \sigma)$ distribution. We discuss this model more formally in the susequent chapter, but here we see we can approach the model using maximum likelihood.
+The *simple* linear regression model was given by $y_i = \beta_0 + \beta_1 x_i + e_i$, where for purposes of modeling, we will take $e_i$ to have a $Normal(0, \sigma)$ distribution. We discuss this model more formally in the subsequent chapter, but here we see we can approach the model using maximum likelihood.
 
 For a given data set, we test whether $\beta_1=0$ against a two-sided alternative.
 
@@ -1394,7 +1483,7 @@ x = [100, 100, 200, 200, 400, 400, 600, 800]
 y = [5, 5, 6, 4, 5, 8, 6, 6];
 ```
 
-We use `ProfileLikelihood` to model this. First we set up the model using an initial guess at the maximum likelihood estimators:
+We use the `ProfileLikelihood` package to model this. First we set up the model using an initial guess at the maximum likelihood estimators:
 
 ```{julia}
 dat = (y, x)
@@ -1465,7 +1554,7 @@ The likelihood ratio statistic is computed with the difference of the respective
 l = -2 * (sol₀.maximum - sol.maximum)
 ```
 
-This observed value can be turned into a $p$-value using the asymptotically correct $Chisqs(1)$ distribution:
+This observed value can be turned into a $p$-value using the asymptotically correct $Chisq(1)$ distribution:
 
 ```{julia}
 1 - cdf(Chisq(1), l)

@@ -56,6 +56,9 @@ format:
 #    include-in-header: packages.tex
 #    include-before-body: definitions.tex
 
+website:
+  google-analytics: "G-KS515LKBGZ"
+
 execute:
   warning: false
   error: true

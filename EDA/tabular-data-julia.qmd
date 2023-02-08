@@ -1040,7 +1040,28 @@ The "combine" part of the paradigm takes the pieces and reassembles. The data fr
 [ (; Type, MPG) for (Type,MPG) in pairs(ms)] |> DataFrame
 ```
 
+### Aggregating data
 
+Somewhat inverse to flattening data is to aggregate data, by which we mean combining multiple columns into a single one, or combine multiple rows into a single one. The `select` and `combine` methods can do these tasks.
+
+Consider the three price variables in the `cars` data. We can find an average of the three price numbers easily enough. This function allows the specification as different arguments, not in a container:
+
+```{julia}
+_mean(xs...) = mean(xs)
+```
+
+We can then use `select` to aggregate the three price variables. In the following, these are selected with a regular expression:
+
+```{julia}
+cars_price = select(cars, 1:3, r"Price" => ByRow(_mean) => :price)
+first(cars_price, 3)
+```
+
+To aggregate over columns, the `groupby` construct can be used to specify the groupings to aggregate over. In the following this is the car type:
+
+```{julia}
+combine(groupby(cars_price, :Type), :price => mean => :avg_price)
+```
 
 
 ### Tidy data; stack, unstack
@@ -1102,3 +1123,122 @@ w2 = unstack(w1, :element, :value)
 ```
 
 As described in the vignette, now each variable is in one column, and each row describes one day.
+
+### Joins
+
+Consider the three following assessments of some class. The students have somewhat spotty attendance:
+
+```{julia}
+t1 = """
+first,last,points
+Alice, Smith, 100
+Bob, Jones, 200
+"""
+
+t2 = """
+first,last,score
+Carol, Gates, 125
+Chad, Gad, 200
+Bob, Jones, 225
+"""
+
+t3 = """
+first,last,points
+Bob, Jones, 300
+Carol, Gates, 150
+Erin, Dan, 100
+"""
+a1, a2, a3 = [CSV.read(IOBuffer(txt), DataFrame) for txt ∈ (t1, t2, t3)];
+```
+
+We have several ways to combine these three data frames.
+
+We can concatenate them using `vcat`. Before doing so, we need to align the column names, as the second data set used a different name:
+
+```{julia}
+select!(a2, 1:2, :score => :points);
+```
+
+The `vcat` method for data frames takes a named argument `source` allowing a variable to be appended indicating the source of the data frame. The following will indicate with a `1`, `2`, or `3` what data frame contributed what row:
+
+```{julia}
+aₛ = vcat(a1, a2, a3; source=:assignment)
+describe(aₛ)
+```
+
+Similarly, `append!` could be used in combination with `reduce` (as in
+`reduce(append!, (a1, a2, a3))`).
+
+A more common alternative to the above is to *join* the data frames using one of several join commands. Joins allow multiple tables to be merged, or mashed. into one. We briefly illustrate the implementations in `DataFrames` of outer, left, right, inner, semi, and anti joins, leaving the cross join and further details to the documentation.
+
+We return to the original data, with the differently named columns:
+
+```{julia}
+a1, a2, a3 = [CSV.read(IOBuffer(txt), DataFrame) for txt ∈ (t1, t2, t3)];
+```
+
+The first join we introduce is `outerjoin`. It combines two data frames with rows for keys found in *any* of the data frames passed in.
+
+```{julia}
+outerjoin(a1, a2, on=["first", "last"])
+```
+
+
+The `on` argument is a column name (or names as above) to join the data frames on. They need not have the same name; the values passed to `on` may be pairs indicating the mapping. (That is, if we were joining on the last variable, `on=:points => :score` would be possible.)
+
+The variable to join on is often called the "key," though in `Julia` that terminology is also used with associative arrays.
+
+The joined data frame includes all columns from either data frame not specified in `on`. The resulting data frame, in this case, is in a wide, not tidy, format.
+
+In the above, the columns do not have names in conflict. However, were `a1` and `a3` joined, they would. Passing `makeunique=true` instructs distinguishing names to be produced:
+
+```{julia}
+outerjoin(a1, a3, on=["first", "last"], makeunique=true)
+```
+
+More than two data frames may be passed to `outerjoin`, as illustrated below where all three are. The result includes a row for each person (key) in any of the data sets.
+
+```{julia}
+outerjoin(a1, a2, a3, on=["first", "last"], makeunique=true)
+```
+
+From the `outerjoin`, we easily note that only the first listed student was present for all the assessments.
+
+Three other joins related to `outerjoin` are:
+
+* `leftjoin(df1, df2; on, ...)` which includes all rows in the left data frame
+* `rightjoin(df1, df2; on, ...)` which includes all rows in the right data frame (similar to `leftjoin(df2, df1)`.
+* `innerjoin(df1, df2; on, ...)` which includes all rows with keys in *both* data data frames.
+
+To illustrate:
+
+```{julia}
+leftjoin(a1, a2, on=["first", "last"])
+```
+
+```{julia}
+rightjoin(a1, a2, on=["first", "last"])
+```
+
+In the following, we must qualify the function  below, as `SplitApplyCombine` has a conflicting use, though this isn't typically needed:
+
+```{julia}
+DataFrames.innerjoin(a1, a2, on=["first", "last"])
+```
+
+
+Joins have an analog in set operations: the outer join is like a union, the inner join is like an intersection.
+
+The next two joins do not join columns, as the ones above. Rather, they use the second data frame to filter out rows of the first data frame.
+
+The `semijoin` returns the rows of the left data frame that *match* a key of the right data frame:
+
+```{julia}
+semijoin(a1, a2[3:3, :]; on=["first", "last"])
+```
+
+An `antijoin` includes rows in the left data frame that *do not* match a key in the right data frame. (Like the set difference). Here we see the row in common to `a1` and `a2` is not included:
+
+```{julia}
+antijoin(a1, a2, on=["first", "last"])
+```

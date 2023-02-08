@@ -663,6 +663,14 @@ Factors are not a built-in data type, but are provided by the `CategoricalArrays
 using CategoricalArrays
 ```
 
+Some main tasks when working with such data are:
+
+* reordering factor levels
+
+* changing the labels of factor levels
+
+* combining several levels into one
+
 
 We use an example based on coffee sizes at your neighborhood Starbucks. An order consisted of $4$ drinks with these sizes, put into a categorical array:
 
@@ -701,7 +709,7 @@ levels!(x, ["Tall", "Venti", "Grande"])
 x[1] > x[2]
 ```
 
-The levels can be extended through assignment. For example, we might prefer the label "Tall, 12oz" to "Tall" and can readily do this:
+The levels can be extended through assignment. For example, we might prefer to change the label "Tall" for a new label "Tall, 12oz". We can readily do this *for a single value* through assignment:
 
 ```{julia}
 x[3] = "Tall, 12oz"
@@ -709,13 +717,21 @@ x[3] = "Tall, 12oz"
 
 After this command, there are 4 levels though only 3 used in the vector. To trim out extra levels, the `droplevels!` function can be used.
 
-In general and for multiple replacements, the `replace` function is useful and the levels are adjusted accordingly:
+In general and *for multiple replacements*, the `replace` function is useful and the levels are adjusted accordingly:
 
 ```{julia}
-replace(x, "Grande" => "Grande, 20oz", "Venti" => "Venti, 16oz")
+replace!(x, "Grande" => "Grande, 20oz", "Venti" => "Venti, 16oz")
 ```
 
-Categorical data can be combined, with `vcat`, say, and if ordered, as much as possible, an order will attempt to be matched.
+
+The same command can be used to consolidate labels. For example, suppose we wanted to use just "Really big" and "regular sized" where we lump the two smaller ones together. It could be we just use `replace` with the right hand side using duplicates. Below we use *broadcasting* to illustrate how this might be done more easily were there many levels to combine. We do this in two lines, to be less confusing, but it could be written with just one:
+
+```{julia}
+replace!(x, (["Tall, 12oz", "Venti, 16oz"] .=> "regular sized")...)
+replace(x, "Grande, 20oz" => "Really big")
+```
+
+Categorical data, like numeric data, can also be combined with `vcat`, say. If ordered, as much as possible, an order will attempt to be matched.
 
 
 

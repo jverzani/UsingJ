@@ -13,9 +13,11 @@ import RDatasets: dataset
 
 ## Univariate categorical data
 
+We first start with a single categorical variable before turning our attention to one or more.
+
+### Tabulations
+
 Let's consider a data set from R's `MASS` package on a student survey; in particular the `Smoke` variable, which is stored as a categorical variable. The `levels` method reports 4 levels for this variable:
-
-
 
 ```{julia}
 survey = dataset("MASS", "survey")
@@ -56,11 +58,13 @@ Named vectors are from the `NamedArrays` package and offer indexing by name, sim
 
 Either way (and there are others), this shows for this data set, even in the 90s "Never" is by far the most common response for past smoking habits, and it shows there is 1 missing response.
 
-----
 
-Such tabulations can be visualized.
+### Visualizations
 
-A bar chart represents the above table using bars proportional to the counts. The `bar` function makes a bar chart for the labels in `x` and the given data. For this example, we have either have to add "missing" to the levels, or, as is done here, excise it from the data set
+Tabulations can be visualized beyond using a table.
+
+A bar chart represents the above table using bars proportional to the counts. The `bar` function makes a bar chart for the labels in `x` and the given data. For this example, we have either have to add "missing" to the levels, or, as is done here, excise it from the data set.
+
 
 ```{julia}
 #| label: fig-basic-bar-plot
@@ -68,7 +72,7 @@ A bar chart represents the above table using bars proportional to the counts. Th
 bar(levels(smokes), tbl[1:end-1]; legend=false)
 ```
 
-Another common graphic is to use a dot, not a bar, to represent the value. Still another are pie charts, which are common in the business world, but not favorites within introductory statistics.
+Another common graphic is to use a dot, not a bar, to represent the value. Still another graphic is the pie charts; common in the business world, but not favorites within introductory statistics.
 
 
 ## Paired categorical data
@@ -107,6 +111,18 @@ The above dropped missing values; to keep them in, the `allowmissing` argument m
 end
 ```
 
+The `missing` values can be replaced with `0` using the `coalesce` function which scans through its arguments returning the first that is not equal to `missing`:
+
+```{julia}
+@chain survey begin
+    groupby([:Sex, :Smoke])
+    combine(nrow => :value)
+    unstack(:Smoke, :value; allowmissing=true)
+    transform(Not(1) .=> ByRow(x -> coalesce(x, 0)); renamecols=false)
+end
+```
+
+
 More conveniently,
 the `freqtable` command will produce contingency tables:
 
@@ -115,6 +131,19 @@ tbl = freqtable(survey, :Sex, :Smoke)
 ```
 
 The `freqtable` interface allows the user to pass in two variables of data, or, as above, a tabular data set and two variable names. The `freqtable` method summarized them with the levels of the first variables naming the rows, and levels of the second naming the columns.
+
+It is essentially this function using `DataFrames`:
+
+```{julia}
+function xtabs(d, f, g)
+    @chain d begin
+        groupby([f, g])
+        combine(nrow => :value)
+        unstack(g, :value; allowmissing=true)
+        transform(Not(1) .=> ByRow(x ->coalesce(x, 0)); renamecols=false)
+    end
+end
+```
 
 ### Conditional distributions of two-way tables
 
@@ -138,6 +167,25 @@ Again, not much difference across the levels of `Exer`.
 
 Finding the row (or column) proportions as above finds the *conditional distribution* for a given value. (Answering the question, say, what is the distribution of the second variable *given* the first variables has a specific level?)
 
+#### Row proportions with Data Frames.
+
+The task of finding row proportions with a data frame can be similarly addressed by applying a transform to each row. The following uses a percentage scale:
+
+```{julia}
+perc(x,Σ) = round(100 * x / Σ, digits=1)
+perc(x::Missing, Σ) = x
+perc(r) = map(x -> perc(x,sum(skipmissing(r))), r)
+
+function perc_table(d)
+    nms = names(d, Union{AbstractString, CategoricalValue})
+    combine(d, nms, AsTable(Not(nms)) => ByRow(perc) => AsTable; renamecols=false)
+end
+
+xtabs(survey, :Exer, :Smoke) |> perc_table
+```
+
+
+
 ### Marginal distributions of two-way tables
 
 A *marginal* distribution from a two-way table is found by adding all the values in each row, or each column. With two-way tables generated from the full data, there are more direct ways to realize these, but from a two-way table, we just need to apply `sum` to each row or column. The `sum` function takes a `dims` argument to specify the dimension, which, in this case, is `2` for adding along the columns (the second dimension) and `1` for adding down the rows (the first dimension):^[The `margins` argument and `dims` argument are a bit confusing, a `1` for `margins` means each row is normalized, a `1` for `dims` means add down a row. Which is similar, but `prop(tbl; margins=1)` could be realized through `tbl . / sum(tbl, dims=2)`.]
@@ -149,6 +197,8 @@ sum(tbl, dims=1) # kinda like `freqtable(survey.Smoke)`
 ```{julia}
 sum(tbl, dims=2) # like `freqtable(survey.Exer)`
 ```
+
+
 
 
 ### Two-way tables from summarized data

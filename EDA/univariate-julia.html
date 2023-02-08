@@ -231,9 +231,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#sec-numeric-data-types" id="toc-sec-numeric-data-types" class="nav-link" data-scroll-target="#sec-numeric-data-types"><span class="toc-section-number">2.2.1</span>  Numeric data types</a></li>
   <li><a href="#sec-categ-data-types" id="toc-sec-categ-data-types" class="nav-link" data-scroll-target="#sec-categ-data-types"><span class="toc-section-number">2.2.2</span>  Categorical data types</a></li>
-  <li><a href="#sec-logical-data" id="toc-sec-logical-data" class="nav-link" data-scroll-target="#sec-logical-data"><span class="toc-section-number">2.2.3</span>  Logical data and operators</a></li>
-  <li><a href="#sec-date-time-types" id="toc-sec-date-time-types" class="nav-link" data-scroll-target="#sec-date-time-types"><span class="toc-section-number">2.2.4</span>  Date and time types</a></li>
-  <li><a href="#structured-data" id="toc-structured-data" class="nav-link" data-scroll-target="#structured-data"><span class="toc-section-number">2.2.5</span>  Structured data</a></li>
+  <li><a href="#basic-manipulations-of-categorical-data" id="toc-basic-manipulations-of-categorical-data" class="nav-link" data-scroll-target="#basic-manipulations-of-categorical-data"><span class="toc-section-number">2.2.3</span>  Basic manipulations of categorical data</a></li>
+  <li><a href="#sec-logical-data" id="toc-sec-logical-data" class="nav-link" data-scroll-target="#sec-logical-data"><span class="toc-section-number">2.2.4</span>  Logical data and operators</a></li>
+  <li><a href="#sec-date-time-types" id="toc-sec-date-time-types" class="nav-link" data-scroll-target="#sec-date-time-types"><span class="toc-section-number">2.2.5</span>  Date and time types</a></li>
+  <li><a href="#structured-data" id="toc-structured-data" class="nav-link" data-scroll-target="#structured-data"><span class="toc-section-number">2.2.6</span>  Structured data</a></li>
   </ul></li>
   <li><a href="#sec-defining-functions" id="toc-sec-defining-functions" class="nav-link" data-scroll-target="#sec-defining-functions"><span class="toc-section-number">2.3</span>  Functions</a></li>
   <li><a href="#sec-numeric-data" id="toc-sec-numeric-data" class="nav-link" data-scroll-target="#sec-numeric-data"><span class="toc-section-number">2.4</span>  Numeric summaries</a></li>
@@ -968,6 +969,12 @@ Entering Unicode
 <div class="cell" data-execution_count="56">
 <div class="sourceCode cell-code" id="cb113"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CategoricalArrays</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Some main tasks when working with such data are:</p>
+<ul>
+<li><p>reordering factor levels</p></li>
+<li><p>changing the labels of factor levels</p></li>
+<li><p>combining several levels into one</p></li>
+</ul>
 <p>We use an example based on coffee sizes at your neighborhood Starbucks. An order consisted of <span class="math inline">\(4\)</span> drinks with these sizes, put into a categorical array:</p>
 <div class="cell" data-execution_count="57">
 <div class="sourceCode cell-code" id="cb114"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fu">categorical</span>([<span class="st">"Grande"</span>, <span class="st">"Venti"</span>, <span class="st">"Tall"</span>, <span class="st">"Venti"</span>], ordered<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1014,7 +1021,7 @@ Entering Unicode
 <pre><code>true</code></pre>
 </div>
 </div>
-<p>The levels can be extended through assignment. For example, we might prefer the label “Tall, 12oz” to “Tall” and can readily do this:</p>
+<p>The levels can be extended through assignment. For example, we might prefer to change the label “Tall” for a new label “Tall, 12oz”. We can readily do this <em>for a single value</em> through assignment:</p>
 <div class="cell" data-execution_count="62">
 <div class="sourceCode cell-code" id="cb124"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fl">3</span>] <span class="op">=</span> <span class="st">"Tall, 12oz"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="63">
@@ -1022,9 +1029,9 @@ Entering Unicode
 </div>
 </div>
 <p>After this command, there are 4 levels though only 3 used in the vector. To trim out extra levels, the <code>droplevels!</code> function can be used.</p>
-<p>In general and for multiple replacements, the <code>replace</code> function is useful and the levels are adjusted accordingly:</p>
+<p>In general and <em>for multiple replacements</em>, the <code>replace</code> function is useful and the levels are adjusted accordingly:</p>
 <div class="cell" data-execution_count="63">
-<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replace</span>(x, <span class="st">"Grande"</span> <span class="op">=&gt;</span> <span class="st">"Grande, 20oz"</span>, <span class="st">"Venti"</span> <span class="op">=&gt;</span> <span class="st">"Venti, 16oz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replace!</span>(x, <span class="st">"Grande"</span> <span class="op">=&gt;</span> <span class="st">"Grande, 20oz"</span>, <span class="st">"Venti"</span> <span class="op">=&gt;</span> <span class="st">"Venti, 16oz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="64">
 <pre><code>4-element CategoricalArray{String,1,UInt32}:
  "Grande, 20oz"
@@ -1033,29 +1040,110 @@ Entering Unicode
  "Venti, 16oz"</code></pre>
 </div>
 </div>
-<p>Categorical data can be combined, with <code>vcat</code>, say, and if ordered, as much as possible, an order will attempt to be matched.</p>
+<p>The same command can be used to consolidate labels. For example, suppose we wanted to use just “Really big” and “regular sized” where we lump the two smaller ones together. It could be we just use <code>replace</code> with the right hand side using duplicates. Below we use <em>broadcasting</em> to illustrate how this might be done more easily were there many levels to combine. We do this in two lines, to be less confusing, but it could be written with just one:</p>
+<div class="cell" data-execution_count="64">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replace!</span>(x, ([<span class="st">"Tall, 12oz"</span>, <span class="st">"Venti, 16oz"</span>] <span class="op">.=&gt;</span> <span class="st">"regular sized"</span>)<span class="op">...</span>)</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a><span class="fu">replace</span>(x, <span class="st">"Grande, 20oz"</span> <span class="op">=&gt;</span> <span class="st">"Really big"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="65">
+<pre><code>4-element CategoricalArray{String,1,UInt32}:
+ "Really big"
+ "regular sized"
+ "regular sized"
+ "regular sized"</code></pre>
+</div>
+</div>
+<p>Categorical data, like numeric data, can also be combined with <code>vcat</code>, say. If ordered, as much as possible, an order will attempt to be matched.</p>
 </section>
 </section>
-<section id="sec-logical-data" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="sec-logical-data"><span class="header-section-number">2.2.3</span> Logical data and operators</h3>
+<section id="basic-manipulations-of-categorical-data" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="basic-manipulations-of-categorical-data"><span class="header-section-number">2.2.3</span> Basic manipulations of categorical data</h3>
+<p>As discussed, the <code>CategoricalArray</code> type is useful to working with categorical data, as an alternative to string data. The variables are called factors, the values levels which may be ordered or nominal. Four main tasks when working with such data are:</p>
+<ol type="1">
+<li>Changing the labels of factor levels,</li>
+<li>Reordering factor levels,</li>
+<li>Combining several levels into one (both string-like labels and numeric, probably go together), and</li>
+<li>Making derived factor variables.</li>
+</ol>
+<p>We quickly illustrate methods to do these four tasks.</p>
+<p>The <code>Smoke</code> variable has 4 levels and a missing value.</p>
+<p>The labels are truncated, we can change their values with <code>replace</code>:</p>
+<div class="cell" data-execution_count="65">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replace!</span>(survey.Smoke, <span class="st">"Occas"</span> <span class="op">=&gt;</span> <span class="st">"Occasionally"</span>, <span class="st">"Regul"</span> <span class="op">=&gt;</span> <span class="st">"Regularly"</span>)</span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(survey, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: UndefVarError: survey not defined</code></pre>
+</div>
+</div>
+<p>The levels are not ordered; we can order them using the keyword <code>order</code> on construction, or, as follows, with <code>ordered!</code>:</p>
+<div class="cell" data-execution_count="66">
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>before <span class="op">=</span> <span class="fu">isordered</span>(survey.Smoke)</span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ordered!</span>(survey.Smoke, <span class="cn">true</span>)</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a>after <span class="op">=</span>  <span class="fu">isordered</span>(survey.Smoke)</span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a>before, after</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: UndefVarError: survey not defined</code></pre>
+</div>
+</div>
+<p>Now we order the levels with <code>levels!</code>:</p>
+<div class="cell" data-execution_count="67">
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>levs <span class="op">=</span> [<span class="st">"Heavy"</span>, <span class="st">"Regularly"</span>,  <span class="st">"Occasionally"</span>,  <span class="st">"Never"</span>]</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels!</span>(survey.Smoke, levs)</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(survey, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: UndefVarError: survey not defined</code></pre>
+</div>
+</div>
+<p>We can combine levels. For example, Here we combine “Regularly” and “Occasionally” using broadcasting:</p>
+<div class="cell" data-execution_count="68">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replace!</span>(survey.Smoke, ([<span class="st">"Regularly"</span>,<span class="st">"Occasionally"</span>] <span class="op">.=&gt;</span> <span class="st">"Sometimes"</span>)<span class="op">...</span>)</span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(survey, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: UndefVarError: survey not defined</code></pre>
+</div>
+</div>
+<p>The values could stand re-ordering:</p>
+<div class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels!</span>(survey.Smoke, [<span class="st">"Heavy"</span>,<span class="st">"Sometimes"</span>, <span class="st">"Never"</span>])</span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(survey, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: UndefVarError: survey not defined</code></pre>
+</div>
+</div>
+<p>Suppose now we wish to derive a new variable computed from the <code>Exer</code> and the <code>Smoke</code> variable. If our assessment is (for no scientific reason) that heavy smokers that are frequent exercisers is ok, as is all other combinations, we might compute this in a formula:</p>
+<div class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">risk</span>(exer, smoke)</span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">ismissing</span>(exer) <span class="op">||</span> <span class="fu">ismissing</span>(smoke)) <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">missing</span></span>
+<span id="cb140-3"><a href="#cb140-3" aria-hidden="true" tabindex="-1"></a>    smoke <span class="op">==</span> <span class="st">"Heavy"</span> <span class="op">&amp;&amp;</span> exer <span class="op">!=</span> <span class="st">"Freq"</span> <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="st">"oof"</span></span>
+<span id="cb140-4"><a href="#cb140-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"ok"</span></span>
+<span id="cb140-5"><a href="#cb140-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb140-6"><a href="#cb140-6" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(survey, [<span class="op">:</span>Exer, <span class="op">:</span>Smoke] <span class="op">=&gt;</span> <span class="fu">ByRow</span>(risk) <span class="op">=&gt;</span> <span class="op">:</span>risk)</span>
+<span id="cb140-7"><a href="#cb140-7" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(survey, <span class="op">:</span>risk <span class="op">=&gt;</span> categorical <span class="op">=&gt;</span> <span class="op">:</span>risk) <span class="co"># make a factor</span></span>
+<span id="cb140-8"><a href="#cb140-8" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(survey, <span class="op">:</span>risk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: UndefVarError: survey not defined</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-logical-data" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="sec-logical-data"><span class="header-section-number">2.2.4</span> Logical data and operators</h3>
 <p>The Boolean type in <code>Julia</code> has two values: <code>true</code> and <code>false</code>.</p>
 <p>Boolean values have their own algebra. The <em>short-circuiting</em> <code>&amp;&amp;</code> and <code>||</code> implement “and” and “or:”</p>
-<div class="cell" data-execution_count="64">
-<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="cn">false</span> <span class="op">&amp;&amp;</span> <span class="cn">false</span>, <span class="cn">true</span> <span class="op">&amp;&amp;</span> <span class="cn">false</span>, <span class="cn">false</span> <span class="op">&amp;&amp;</span> <span class="cn">true</span>, <span class="cn">true</span> <span class="op">&amp;&amp;</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="65">
+<div class="cell" data-execution_count="71">
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="cn">false</span> <span class="op">&amp;&amp;</span> <span class="cn">false</span>, <span class="cn">true</span> <span class="op">&amp;&amp;</span> <span class="cn">false</span>, <span class="cn">false</span> <span class="op">&amp;&amp;</span> <span class="cn">true</span>, <span class="cn">true</span> <span class="op">&amp;&amp;</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="72">
 <pre><code>(false, false, false, true)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="65">
-<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="cn">false</span> <span class="op">||</span> <span class="cn">false</span>, <span class="cn">true</span> <span class="op">||</span> <span class="cn">false</span>, <span class="cn">false</span> <span class="op">||</span> <span class="cn">true</span>, <span class="cn">true</span> <span class="op">||</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="66">
+<div class="cell" data-execution_count="72">
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="cn">false</span> <span class="op">||</span> <span class="cn">false</span>, <span class="cn">true</span> <span class="op">||</span> <span class="cn">false</span>, <span class="cn">false</span> <span class="op">||</span> <span class="cn">true</span>, <span class="cn">true</span> <span class="op">||</span> <span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="73">
 <pre><code>(false, true, true, true)</code></pre>
 </div>
 </div>
 <p>These are called “short circuiting,” as the right-hand side is only evaluated if it need be (as in <code>true || false</code>, the statement is known to be true after the left side of <code>||</code> is evaluated, so the right-hand side is not evaluated). This is used frequently for error messages, as the <code>error</code> is not called when the expression is <code>true</code>. These operations may be broadcasted, so the above might have been illustrated by</p>
-<div class="cell" data-execution_count="66">
-<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>[<span class="cn">true</span> <span class="cn">false</span>] <span class="op">.&amp;&amp;</span> [<span class="cn">true</span>, <span class="cn">false</span>]  <span class="co"># produces a matrix to accommodate sizes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="67">
+<div class="cell" data-execution_count="73">
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>[<span class="cn">true</span> <span class="cn">false</span>] <span class="op">.&amp;&amp;</span> [<span class="cn">true</span>, <span class="cn">false</span>]  <span class="co"># produces a matrix to accommodate sizes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="74">
 <pre><code>2×2 BitMatrix:
  1  0
  0  0</code></pre>
@@ -1066,10 +1154,10 @@ Entering Unicode
 <p>Boolean values are returned by the <em>comparison operators</em> <code>&lt;</code>, <code>&lt;=</code>, <code>==</code>, <code>===</code>, <code>&gt;=</code>, and <code>&gt;</code>. These have the expected meaning, save <code>==</code> is a test of equality (not <code>=</code>, which is used for assignment) <em>and</em> <code>===</code> is a test of whether two values are <em>identical</em>. (E.g. for a vector <code>x</code> we have <code>x == copy(x)</code> is true, but <code>x === copy(x)</code> is false, as the latter does not point to the exact same container.) The symbol <code>!</code> is used for negation.</p>
 <p>Boolean values can be used for <em>indexing</em>. Suppose <code>inds</code> is a vector of <code>true</code>s and <code>false</code>s with the <em>same</em> length as a vector <code>x</code>, then <code>x[inds]</code> will return those values from <code>x</code> where <code>inds</code> is <code>true</code>.</p>
 <p>To create such Boolean vectors, the comparison operators are typically used <em>combined</em> with broadcasting. For example, the following redefines the <code>whale</code> dataset, then filters out only those values bigger than or equal to <span class="math inline">\(200\)</span>:</p>
-<div class="cell" data-execution_count="67">
-<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>whale <span class="op">=</span> [<span class="fl">74</span>, <span class="fl">122</span>, <span class="fl">235</span>, <span class="fl">111</span>, <span class="fl">292</span>, <span class="fl">111</span>, <span class="fl">211</span>, <span class="fl">133</span>, <span class="fl">156</span>, <span class="fl">79</span>]</span>
-<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>whale[ whale <span class="op">.&gt;=</span> <span class="fl">200</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="68">
+<div class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>whale <span class="op">=</span> [<span class="fl">74</span>, <span class="fl">122</span>, <span class="fl">235</span>, <span class="fl">111</span>, <span class="fl">292</span>, <span class="fl">111</span>, <span class="fl">211</span>, <span class="fl">133</span>, <span class="fl">156</span>, <span class="fl">79</span>]</span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a>whale[ whale <span class="op">.&gt;=</span> <span class="fl">200</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="75">
 <pre><code>3-element Vector{Int64}:
  235
  292
@@ -1077,9 +1165,9 @@ Entering Unicode
 </div>
 </div>
 <p>Or, this example – which shows the mathematically natural chaining of comparison operators – filters out only the values in <span class="math inline">\([100, 125)\)</span>:</p>
-<div class="cell" data-execution_count="68">
-<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>whale[ <span class="fl">100</span> <span class="op">.&lt;=</span> whale <span class="op">.&lt;</span> <span class="fl">125</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="69">
+<div class="cell" data-execution_count="75">
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>whale[ <span class="fl">100</span> <span class="op">.&lt;=</span> whale <span class="op">.&lt;</span> <span class="fl">125</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="76">
 <pre><code>3-element Vector{Int64}:
  122
  111
@@ -1099,23 +1187,23 @@ Entering Unicode
 <p>In general, <code>x in v</code> will check if the element <code>x</code> is in the vector <code>v</code>. The Unicode operator <code>∈</code> (<code>\in[tab]</code>) can replace <code>in</code>.</p>
 </section>
 </section>
-<section id="sec-date-time-types" class="level3" data-number="2.2.4">
-<h3 data-number="2.2.4" class="anchored" data-anchor-id="sec-date-time-types"><span class="header-section-number">2.2.4</span> Date and time types</h3>
+<section id="sec-date-time-types" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="sec-date-time-types"><span class="header-section-number">2.2.5</span> Date and time types</h3>
 <p><code>Julia</code> provides the built-in <code>Dates</code> module for working with date and time data. This module need not be installed, but is not loaded by default, so loading or importing it is needed to access the functionality.</p>
-<div class="cell" data-execution_count="69">
-<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="76">
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Dates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Constructing a date is done with the <code>Date</code> constructor which expects a year, followed by an optional month and day. Date and time objects have the <code>DateTime</code> constructor. This example uses the vernal equinox, summer solstice, autumnal equinox, and winter solstice in the year 2022 for illustration:</p>
-<div class="cell" data-execution_count="70">
-<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>ve, ss, ae, ws <span class="op">=</span> <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">3</span>, <span class="fl">20</span>), <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">6</span>, <span class="fl">21</span>), <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">9</span>, <span class="fl">22</span>), <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">12</span>, <span class="fl">21</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="71">
+<div class="cell" data-execution_count="77">
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>ve, ss, ae, ws <span class="op">=</span> <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">3</span>, <span class="fl">20</span>), <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">6</span>, <span class="fl">21</span>), <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">9</span>, <span class="fl">22</span>), <span class="fu">Date</span>(<span class="fl">2022</span>, <span class="fl">12</span>, <span class="fl">21</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="78">
 <pre><code>(Date("2022-03-20"), Date("2022-06-21"), Date("2022-09-22"), Date("2022-12-21"))</code></pre>
 </div>
 </div>
 <p>Dates can also be parsed from a string. The following uses the default format;<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>:</p>
-<div class="cell" data-execution_count="71">
-<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Date</span>.([<span class="st">"2022-03-20"</span>, <span class="st">"2022-06-21"</span>, <span class="st">"2022-09-22"</span>, <span class="st">"2022-12-21"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="72">
+<div class="cell" data-execution_count="78">
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Date</span>.([<span class="st">"2022-03-20"</span>, <span class="st">"2022-06-21"</span>, <span class="st">"2022-09-22"</span>, <span class="st">"2022-12-21"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="79">
 <pre><code>4-element Vector{Date}:
  2022-03-20
  2022-06-21
@@ -1124,38 +1212,38 @@ Entering Unicode
 </div>
 </div>
 <p>Date objects have the accessors <code>year</code>, <code>month</code>, and <code>day</code>:</p>
-<div class="cell" data-execution_count="72">
-<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">year</span>(ve), <span class="fu">month</span>(ve), <span class="fu">day</span>(ve)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="73">
+<div class="cell" data-execution_count="79">
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">year</span>(ve), <span class="fu">month</span>(ve), <span class="fu">day</span>(ve)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="80">
 <pre><code>(2022, 3, 20)</code></pre>
 </div>
 </div>
 <p>The objects allow for natural operations, such as comparisons and differences:</p>
-<div class="cell" data-execution_count="73">
-<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>ve <span class="op">&lt;</span> ss <span class="op">&lt;</span> ae <span class="op">&lt;</span> ws, ae <span class="op">-</span> ve, ve <span class="op">+</span> <span class="fu">Day</span>(<span class="fl">93</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="74">
+<div class="cell" data-execution_count="80">
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a>ve <span class="op">&lt;</span> ss <span class="op">&lt;</span> ae <span class="op">&lt;</span> ws, ae <span class="op">-</span> ve, ve <span class="op">+</span> <span class="fu">Day</span>(<span class="fl">93</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="81">
 <pre><code>(true, Day(186), Date("2022-06-21"))</code></pre>
 </div>
 </div>
 <p>The difference is returned in the number of days. The last command shows the duration of 93 days can be constructed with <code>Day</code> and its value added to a <code>Date</code> object.</p>
 <p>There are ways to query how a date falls within the calendar</p>
-<div class="cell" data-execution_count="74">
-<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dayofyear</span>(ve), <span class="fu">dayofweek</span>(ve), <span class="fu">dayname</span>(ve), <span class="fu">dayofweekofmonth</span>(ve)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="75">
+<div class="cell" data-execution_count="81">
+<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dayofyear</span>(ve), <span class="fu">dayofweek</span>(ve), <span class="fu">dayname</span>(ve), <span class="fu">dayofweekofmonth</span>(ve)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="82">
 <pre><code>(79, 7, "Sunday", 3)</code></pre>
 </div>
 </div>
 <p>The last command indicating that the vernal equinox in 2022 fell on the third Sunday of the month.</p>
 </section>
-<section id="structured-data" class="level3" data-number="2.2.5">
-<h3 data-number="2.2.5" class="anchored" data-anchor-id="structured-data"><span class="header-section-number">2.2.5</span> Structured data</h3>
+<section id="structured-data" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="structured-data"><span class="header-section-number">2.2.6</span> Structured data</h3>
 <p>Structured data may not represent statistical data, but is useful nonetheless, e.g, for specifying the year of the counts in the <code>whale</code> data set.</p>
 <p>For a vector of all ones or all zeros, the <code>ones</code> and <code>zeros</code> functions are useful. The command <code>ones(n)</code> will return a vector of <code>n</code> zeros using the default <code>Float64</code> type. To specify a different type, such as <code>Int64</code>, the two-argument form, <code>ones(T, n)</code>, is available. Similarly, <code>zeros</code> is used to create a vector of zeros. The singular <code>one()</code>, <code>zero()</code> (one <code>one(T)</code> and <code>zero(T)</code>) are useful for generic programming. For example, we use the idiom <code>one.(x)</code> to create a vector of all <code>1</code>s with the length and type of the vector <code>x</code>.</p>
 <p>Arithmetic sequences, <span class="math inline">\(a, a+h, a+2h, \dots, b\)</span> can be created with the colon operator <code>a:h:b</code> or <code>a:b</code> when <code>h</code> is <code>1</code>. This operator returns a recipe for generating the sequence, it is lazy – it does not generate the sequence. The precedence is such that simple arithmetic operations do not need parentheses. That is <code>a+1:b-1</code> represents the sequence <span class="math inline">\(a+1, a+2, \dots, b-1\)</span>. Arithmetic sequences prove useful for indexing into a vector.</p>
 <p>The colon operator for floating point values may or may not stop at <code>b</code>. Programming this is harder than it seems. The simple example of <code>1/10:1/10:3/10</code> should be <span class="math inline">\(1/10, 2/10, 3/10\)</span>, but it turns out that on the computer <code>1/10 + 2*1/10</code> is actually <em>just larger</em> than <code>3/10</code>. See the value of <code>3/10 - (1/10 + 1/10 + 1/10)</code> to investigate. However, the algorithm of <code>:</code> does produce the result with <span class="math inline">\(3\)</span> values here.</p>
-<div class="cell" data-execution_count="75">
-<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">/</span><span class="fl">10</span><span class="op">:</span><span class="fl">1</span><span class="op">/</span><span class="fl">10</span><span class="op">:</span><span class="fl">3</span><span class="op">/</span><span class="fl">10</span> <span class="op">|&gt;</span> collect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="76">
+<div class="cell" data-execution_count="82">
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">/</span><span class="fl">10</span><span class="op">:</span><span class="fl">1</span><span class="op">/</span><span class="fl">10</span><span class="op">:</span><span class="fl">3</span><span class="op">/</span><span class="fl">10</span> <span class="op">|&gt;</span> collect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="83">
 <pre><code>3-element Vector{Float64}:
  0.1
  0.2
@@ -1165,10 +1253,10 @@ Entering Unicode
 <p>The <code>range</code> function creates sequences. The common usage is <code>range(start, stop, length)</code>. That is <code>a:h:b</code> specifies a <em>step</em> size, whereas the <em>positional</em> arguments of <code>range</code> specify the number of values between the starting and stopping values. Keyword arguments allow other combinations of <code>start</code>, <code>stop</code>, <code>step</code>, and <code>length</code>. The <code>range</code> returns a similar expression as the colon operator, it does not realize the entire range of values.</p>
 <p>Scalar multiplication, scalar division, and addition of like-sized ranges are defined, as they return an arithmetic sequence.</p>
 <p>For example, if <code>whale</code> holds beaching numbers for the years 2010 through 2019, we can get the odd years though the following:</p>
-<div class="cell" data-execution_count="76">
-<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>oddyrs <span class="op">=</span> <span class="fl">2011</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">2019</span></span>
-<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>whale[oddyrs <span class="op">.-</span> <span class="fl">2010</span> <span class="op">.+</span> <span class="fl">1</span>] <span class="co"># 1-based offset is why we add 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="77">
+<div class="cell" data-execution_count="83">
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a>oddyrs <span class="op">=</span> <span class="fl">2011</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">2019</span></span>
+<span id="cb165-2"><a href="#cb165-2" aria-hidden="true" tabindex="-1"></a>whale[oddyrs <span class="op">.-</span> <span class="fl">2010</span> <span class="op">.+</span> <span class="fl">1</span>] <span class="co"># 1-based offset is why we add 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
 <pre><code>5-element Vector{Int64}:
  122
  111
@@ -1179,16 +1267,16 @@ Entering Unicode
 </div>
 <p>The <code>fill</code> function creates an array of a specific size, filling it with a value. For example, to create a vector of all <code>1</code>s of length 10, <code>fill(1, 10)</code> will do so. A tuple is used for the second positional argument to construct higher-dimensional filled arrays.</p>
 <p>For more complicated patterns, the <code>repeat</code> function can prove useful. For an array, it creates a new array comprised of repeats of the given array. For a vector, the only use here, two repeating patterns are often desired: repeating the whole vector several times; repeating each entry of a vector several times then combining.</p>
-<div class="cell" data-execution_count="77">
-<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>]</span>
-<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a><span class="fu">repeat</span>(v, <span class="fl">3</span>) <span class="op">|&gt;</span> show</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="84">
+<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>]</span>
+<span id="cb167-2"><a href="#cb167-2" aria-hidden="true" tabindex="-1"></a><span class="fu">repeat</span>(v, <span class="fl">3</span>) <span class="op">|&gt;</span> show</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1, 2, 3, 1, 2, 3, 1, 2, 3]</code></pre>
 </div>
 </div>
 <p>In the above, the entire vector is repeated three times. The <code>3</code> is passed to the <code>outer</code> argument. To repeat the <code>1</code>s then the <code>2</code>s and then the <code>3</code>s the <code>inner</code> argument is used:</p>
-<div class="cell" data-execution_count="78">
-<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">repeat</span>(v, inner<span class="op">=</span><span class="fl">3</span>) <span class="op">|&gt;</span> show</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="85">
+<div class="sourceCode cell-code" id="cb169"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">repeat</span>(v, inner<span class="op">=</span><span class="fl">3</span>) <span class="op">|&gt;</span> show</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1, 1, 1, 2, 2, 2, 3, 3, 3]</code></pre>
 </div>
@@ -1199,65 +1287,65 @@ Entering Unicode
 <h2 data-number="2.3" class="anchored" data-anchor-id="sec-defining-functions"><span class="header-section-number">2.3</span> Functions</h2>
 <p><code>Julia</code> has a simple syntax for user-defined functions.</p>
 <p>For simple functions, the syntax borrowed from common mathematics is used. For example, here we define a function to find the <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation"><code>mad</code></a> defined by the median of the transformed data <span class="math inline">\(|x_i - M_x|\)</span>.</p>
-<div class="cell" data-execution_count="79">
-<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>(x) <span class="op">=</span> <span class="fu">median</span>(<span class="fu">abs</span>.(x <span class="op">.-</span> <span class="fu">median</span>(x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="80">
+<div class="cell" data-execution_count="86">
+<div class="sourceCode cell-code" id="cb171"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb171-1"><a href="#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>(x) <span class="op">=</span> <span class="fu">median</span>(<span class="fu">abs</span>.(x <span class="op">.-</span> <span class="fu">median</span>(x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="87">
 <pre><code>MAD (generic function with 1 method)</code></pre>
 </div>
 </div>
 <p>The function is named <code>MAD</code> (to distinguish it from the already defined <code>mad</code> function in <code>StatsBase</code>) and, as written, accepts a vector and returns a summary number:</p>
-<div class="cell" data-execution_count="80">
-<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="81">
+<div class="cell" data-execution_count="87">
+<div class="sourceCode cell-code" id="cb173"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb173-1"><a href="#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="88">
 <pre><code>38.5</code></pre>
 </div>
 </div>
 <p>For functions which are not one liners, a pair of <code>function</code>-<code>end</code> keywords will define a block. For example, the following computes the fifth standardized moment (skewness and kurtosis related to the 3rd and 4th). The first line is one way to document a function in <code>Julia</code>.</p>
-<div class="cell" data-execution_count="81">
-<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="st">"Compute 5th standardized momemt: m_5 / m_2^(5/2)"</span></span>
-<span id="cb161-2"><a href="#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fifth_sm</span>(x)</span>
-<span id="cb161-3"><a href="#cb161-3" aria-hidden="true" tabindex="-1"></a>    xbar, n <span class="op">=</span> <span class="fu">mean</span>(x), <span class="fu">length</span>(x)</span>
-<span id="cb161-4"><a href="#cb161-4" aria-hidden="true" tabindex="-1"></a>    m5 <span class="op">=</span> <span class="fu">sum</span>((xi <span class="op">-</span> xbar)<span class="op">^</span><span class="fl">5</span> <span class="cf">for</span> xi <span class="kw">in</span> x) <span class="op">/</span> n</span>
-<span id="cb161-5"><a href="#cb161-5" aria-hidden="true" tabindex="-1"></a>    m2 <span class="op">=</span> <span class="fu">sum</span>((xi <span class="op">-</span> xbar)<span class="op">^</span><span class="fl">2</span> <span class="cf">for</span> xi <span class="kw">in</span> x) <span class="op">/</span> n</span>
-<span id="cb161-6"><a href="#cb161-6" aria-hidden="true" tabindex="-1"></a>    m5 <span class="op">/</span> m2<span class="op">^</span>(<span class="fl">5</span><span class="op">/</span><span class="fl">2</span>)</span>
-<span id="cb161-7"><a href="#cb161-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb161-8"><a href="#cb161-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fifth_sm</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="82">
+<div class="cell" data-execution_count="88">
+<div class="sourceCode cell-code" id="cb175"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb175-1"><a href="#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="st">"Compute 5th standardized momemt: m_5 / m_2^(5/2)"</span></span>
+<span id="cb175-2"><a href="#cb175-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fifth_sm</span>(x)</span>
+<span id="cb175-3"><a href="#cb175-3" aria-hidden="true" tabindex="-1"></a>    xbar, n <span class="op">=</span> <span class="fu">mean</span>(x), <span class="fu">length</span>(x)</span>
+<span id="cb175-4"><a href="#cb175-4" aria-hidden="true" tabindex="-1"></a>    m5 <span class="op">=</span> <span class="fu">sum</span>((xi <span class="op">-</span> xbar)<span class="op">^</span><span class="fl">5</span> <span class="cf">for</span> xi <span class="kw">in</span> x) <span class="op">/</span> n</span>
+<span id="cb175-5"><a href="#cb175-5" aria-hidden="true" tabindex="-1"></a>    m2 <span class="op">=</span> <span class="fu">sum</span>((xi <span class="op">-</span> xbar)<span class="op">^</span><span class="fl">2</span> <span class="cf">for</span> xi <span class="kw">in</span> x) <span class="op">/</span> n</span>
+<span id="cb175-6"><a href="#cb175-6" aria-hidden="true" tabindex="-1"></a>    m5 <span class="op">/</span> m2<span class="op">^</span>(<span class="fl">5</span><span class="op">/</span><span class="fl">2</span>)</span>
+<span id="cb175-7"><a href="#cb175-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb175-8"><a href="#cb175-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fifth_sm</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="89">
 <pre><code>3.6325544657722215</code></pre>
 </div>
 </div>
 <p>(The above uses a <em>generator</em>, created by the use of <code>for</code> and <code>in</code> to loop over the different values of <code>x</code> rather than broadcasting.)</p>
 <p>The repetition above in <code>m5</code> and <code>m2</code> could be avoided if we made a function to compute the sample moments about the mean which accepted both the data and a value for the exponent:</p>
-<div class="cell" data-execution_count="82">
-<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_moment</span>(x, n<span class="op">=</span><span class="fl">2</span>) <span class="op">=</span> <span class="fu">sum</span>((xi <span class="op">-</span> x)<span class="op">^</span>n <span class="cf">for</span> xi <span class="kw">in</span> x) <span class="op">/</span> <span class="fu">length</span>(x)</span>
-<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fifth_sm</span>(x) <span class="op">=</span> <span class="fu">sample_moment</span>(x, <span class="fl">5</span>) <span class="op">/</span> <span class="fu">sample_moment</span>(x)<span class="op">^</span>(<span class="fl">5</span><span class="op">/</span><span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="83">
+<div class="cell" data-execution_count="89">
+<div class="sourceCode cell-code" id="cb177"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_moment</span>(x, n<span class="op">=</span><span class="fl">2</span>) <span class="op">=</span> <span class="fu">sum</span>((xi <span class="op">-</span> x)<span class="op">^</span>n <span class="cf">for</span> xi <span class="kw">in</span> x) <span class="op">/</span> <span class="fu">length</span>(x)</span>
+<span id="cb177-2"><a href="#cb177-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fifth_sm</span>(x) <span class="op">=</span> <span class="fu">sample_moment</span>(x, <span class="fl">5</span>) <span class="op">/</span> <span class="fu">sample_moment</span>(x)<span class="op">^</span>(<span class="fl">5</span><span class="op">/</span><span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="90">
 <pre><code>fifth_sm (generic function with 1 method)</code></pre>
 </div>
 </div>
 <p>The variable <code>n</code> is in the second position <em>and</em> has a <em>default</em> value of <code>2</code> which is employed in the denominator of the above, where <code>sample_moment</code> is called with just a single argument.</p>
 <p>There can be many positional arguments, only the last ones can have default values specified.</p>
 <p>Functions can have a variable number of arguments. Here is a way to find the proportions of a set of numbers that is not stored in a container, but rather is passed to the function separated by commas:</p>
-<div class="cell" data-execution_count="83">
-<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">proportion</span>(xs<span class="op">...</span>) <span class="op">=</span> <span class="fu">collect</span>(xs) <span class="op">/</span> <span class="fu">sum</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="84">
+<div class="cell" data-execution_count="90">
+<div class="sourceCode cell-code" id="cb179"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="fu">proportion</span>(xs<span class="op">...</span>) <span class="op">=</span> <span class="fu">collect</span>(xs) <span class="op">/</span> <span class="fu">sum</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="91">
 <pre><code>proportion (generic function with 1 method)</code></pre>
 </div>
 </div>
 <p>The splat syntax <code>...</code> indicates a variable number of arguments in a function definition, and can be used to expand a list of arguments when used inside a function call. The use of <code>collect</code>, above, is needed above to generate a vector, as <code>xs</code> is passed to the body of the function as a tuple and tuples do not have division defined for them.<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a></p>
 <p>The <code>mad</code> function from <code>StatsBase</code> has signature <code>mad(x; center=median(x), normalize=true)</code>. This shows the use of <em>keyword arguments</em>. These have a default value, which, as illustrated, can depend on the data passed in. To call a function without the default, the keyword is typed, as in:</p>
-<div class="cell" data-execution_count="84">
-<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mad</span>(whale; center<span class="op">=</span><span class="fu">mean</span>(whale))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="85">
+<div class="cell" data-execution_count="91">
+<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mad</span>(whale; center<span class="op">=</span><span class="fu">mean</span>(whale))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="92">
 <pre><code>74.13011092528009</code></pre>
 </div>
 </div>
 <p>(We use a semicolon to separate positional arguments from keyword arguments, as that is needed to define a keyword, but commas can be used to call a keyword argument. What is important is the keywords come last.)</p>
 <p>Functions, as defined above, are methods of a <code>generic function</code>. That is, there can be more than one method for a given name. (There are over 200 methods for the generic function named <code>+</code> in base <code>Julia</code> – and packages can extend this even more.) To direct or <em>dispatch</em> a call to the appropriate method, <code>Julia</code> considers the number and types of its positional arguments. That is, like <code>+</code>, functions can be defined differently for integers and floating point values.</p>
 <p>We might like our <code>MAD</code> function to be more graceful than to throw a <code>MethodError</code> if a vector of strings is passed to it. A vector of strings has type <code>Vector{String}</code> so we could make a method just for that type:<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> `Julia makes adding methods easy, but the types that are used to extend the function shouldn’t be owned by other packages, as this is considered <strong>type-piracy</strong>. (Failing to do so may prompt a request for a <em>letter of marque</em>.)</p>
-<div class="cell" data-execution_count="85">
-<div class="sourceCode cell-code" id="cb169"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>(x<span class="op">::</span><span class="dt">Vector{String}</span>) <span class="op">=</span> <span class="fu">print</span>(<span class="st">"Sorry, MAD is not defined for vectors of strings"</span>)</span>
-<span id="cb169-2"><a href="#cb169-2" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>([<span class="st">"one"</span>, <span class="st">"three"</span>, <span class="st">"four"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="92">
+<div class="sourceCode cell-code" id="cb183"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>(x<span class="op">::</span><span class="dt">Vector{String}</span>) <span class="op">=</span> <span class="fu">print</span>(<span class="st">"Sorry, MAD is not defined for vectors of strings"</span>)</span>
+<span id="cb183-2"><a href="#cb183-2" aria-hidden="true" tabindex="-1"></a><span class="fu">MAD</span>([<span class="st">"one"</span>, <span class="st">"three"</span>, <span class="st">"four"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sorry, MAD is not defined for vectors of strings</code></pre>
 </div>
@@ -1266,23 +1354,23 @@ Entering Unicode
 <p>A <em>higher order</em> function is one that takes one or more <em>functions</em> as an argument. As example is the calling style of <code>findfirst(predicate, x)</code> where <code>predicate</code> is a function which returns a boolean value. Higher-order functions are widely used with data wrangling. For such uses it is convenient to be able to define an <em>anonymous</em> function. These do not create methods for a generic function, as they have no name (though anonymous functions can be assigned a name).</p>
 <p>Anonymous functions are easily defined through the pattern: <code>argument(s) -&gt; body</code>, where <code>body</code>, and, when multi-line, can be contained within <code>begin</code>/<code>end</code> blocks.</p>
 <p>For example, to find the index of the first year that there were 200 or more whale beachings we have:</p>
-<div class="cell" data-execution_count="86">
-<div class="sourceCode cell-code" id="cb171"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb171-1"><a href="#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findfirst</span>(x <span class="op">-&gt;</span> x <span class="op">&gt;=</span> <span class="fl">200</span>, whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="87">
+<div class="cell" data-execution_count="93">
+<div class="sourceCode cell-code" id="cb185"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findfirst</span>(x <span class="op">-&gt;</span> x <span class="op">&gt;=</span> <span class="fl">200</span>, whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="94">
 <pre><code>3</code></pre>
 </div>
 </div>
 <p>For the tasks of logical comparisons, there are partially-applied versions of the operators that are essentially defined like anonymous functions (cf.&nbsp;<code>Base.Fix2</code>). In particular, <code>&gt;=(200)</code> can be used for the anonymous function <code>x -&gt; x &gt;= 200</code>. To illustrate, here we see the index of first year where there were 200 or more beachings and the index of the last year, using <code>!</code> to negate a call (even though <code>&gt;=(200)</code> would be identical):</p>
-<div class="cell" data-execution_count="87">
-<div class="sourceCode cell-code" id="cb173"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb173-1"><a href="#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findfirst</span>(<span class="op">&gt;=</span>(<span class="fl">200</span>), whale), <span class="fu">findlast</span>(!<span class="fu">&lt;</span>(<span class="fl">200</span>), whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="88">
+<div class="cell" data-execution_count="94">
+<div class="sourceCode cell-code" id="cb187"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findfirst</span>(<span class="op">&gt;=</span>(<span class="fl">200</span>), whale), <span class="fu">findlast</span>(!<span class="fu">&lt;</span>(<span class="fl">200</span>), whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="95">
 <pre><code>(3, 7)</code></pre>
 </div>
 </div>
 <p>Another example would be to filter those values less than <code>100</code>. The <code>filter(predicate, v)</code> function does this:</p>
-<div class="cell" data-execution_count="88">
-<div class="sourceCode cell-code" id="cb175"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb175-1"><a href="#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">&lt;</span>(<span class="fl">100</span>), whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="89">
+<div class="cell" data-execution_count="95">
+<div class="sourceCode cell-code" id="cb189"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">&lt;</span>(<span class="fl">100</span>), whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="96">
 <pre><code>2-element Vector{Int64}:
  74
  79</code></pre>
@@ -1292,11 +1380,11 @@ Entering Unicode
 <h4 class="anchored" data-anchor-id="broadcasting-alternatives-iteration">Broadcasting alternatives; iteration</h4>
 <p>As a quick illustration of a few other concepts, we consider alternatives to broadcasting that can prove useful. Consider the simplest case of broadcasting a function <code>f</code> over a single collection <code>x</code>.</p>
 <p>For example here is broadcasting:</p>
-<div class="cell" data-execution_count="89">
-<div class="sourceCode cell-code" id="cb177"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">9</span>]</span>
-<span id="cb177-2"><a href="#cb177-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> <span class="fu">sqrt</span>(x)</span>
-<span id="cb177-3"><a href="#cb177-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>.(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="90">
+<div class="cell" data-execution_count="96">
+<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">9</span>]</span>
+<span id="cb191-2"><a href="#cb191-2" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> <span class="fu">sqrt</span>(x)</span>
+<span id="cb191-3"><a href="#cb191-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>.(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="97">
 <pre><code>3-element Vector{Float64}:
  1.0
  2.0
@@ -1304,9 +1392,9 @@ Entering Unicode
 </div>
 </div>
 <p>This use of broadcasting is also called the <em>mapping</em> of <code>f</code> over <code>x</code>. The <code>map(f, x)</code> function is defined:</p>
-<div class="cell" data-execution_count="90">
-<div class="sourceCode cell-code" id="cb179"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(f, x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="91">
+<div class="cell" data-execution_count="97">
+<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(f, x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="98">
 <pre><code>3-element Vector{Float64}:
  1.0
  2.0
@@ -1314,9 +1402,9 @@ Entering Unicode
 </div>
 </div>
 <p>Either broadcasting or <code>map</code> do the following: for each element of <code>x</code> apply the function <code>f</code>. This can be represented with the chaining operator, <code>|&gt;</code>, adjusted to broadcast the values of <code>x</code>:</p>
-<div class="cell" data-execution_count="91">
-<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">.|&gt;</span> f</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="92">
+<div class="cell" data-execution_count="98">
+<div class="sourceCode cell-code" id="cb195"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">.|&gt;</span> f</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="99">
 <pre><code>3-element Vector{Float64}:
  1.0
  2.0
@@ -1324,13 +1412,13 @@ Entering Unicode
 </div>
 </div>
 <p>The iteration over <code>x</code> can be made explicit with a <code>for</code> loop. The essential syntax would include:</p>
-<div class="cell" data-execution_count="92">
-<div class="sourceCode cell-code" id="cb183"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> <span class="dt">Any</span>[]</span>
-<span id="cb183-2"><a href="#cb183-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> xi <span class="kw">in</span> x</span>
-<span id="cb183-3"><a href="#cb183-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">push!</span>(out, <span class="fu">f</span>(xi))</span>
-<span id="cb183-4"><a href="#cb183-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb183-5"><a href="#cb183-5" aria-hidden="true" tabindex="-1"></a>out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="93">
+<div class="cell" data-execution_count="99">
+<div class="sourceCode cell-code" id="cb197"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> <span class="dt">Any</span>[]</span>
+<span id="cb197-2"><a href="#cb197-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> xi <span class="kw">in</span> x</span>
+<span id="cb197-3"><a href="#cb197-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">push!</span>(out, <span class="fu">f</span>(xi))</span>
+<span id="cb197-4"><a href="#cb197-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb197-5"><a href="#cb197-5" aria-hidden="true" tabindex="-1"></a>out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="100">
 <pre><code>3-element Vector{Any}:
  1.0
  2.0
@@ -1339,18 +1427,18 @@ Entering Unicode
 </div>
 <p>For loops require extra effort for accumulation, which, in the above, required the selection of a container. We used <code>Any[]</code> to create a zero-length container that can hold any object and push values onto this. If would be preferable to have a concrete type, which in this case is just <code>Float64[]</code>, but, in general, that requires some peeking into the output of <code>f</code>. This is to point out some background work performed by <code>map</code> and broadcasting that simplify other common tasks.</p>
 <p>The <code>for xi in x</code> part of the for loop assigns <code>xi</code> to each iterate of <code>x</code>. There are some iterations that return more than one value at once, and it is common to see these <em>destructured</em> in the syntax. For example, <code>enumerate</code> is a helper function which takes an iterable object, like a vector, and iterates over both the index and the value:</p>
-<div class="cell" data-execution_count="93">
-<div class="sourceCode cell-code" id="cb185"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i, xi) <span class="kw">in</span> <span class="fu">enumerate</span>(x)</span>
-<span id="cb185-2"><a href="#cb185-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"element </span><span class="sc">$</span>i<span class="st"> is </span><span class="sc">$</span>xi<span class="st">. "</span>)</span>
-<span id="cb185-3"><a href="#cb185-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="100">
+<div class="sourceCode cell-code" id="cb199"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i, xi) <span class="kw">in</span> <span class="fu">enumerate</span>(x)</span>
+<span id="cb199-2"><a href="#cb199-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"element </span><span class="sc">$</span>i<span class="st"> is </span><span class="sc">$</span>xi<span class="st">. "</span>)</span>
+<span id="cb199-3"><a href="#cb199-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>element 1 is 1. element 2 is 4. element 3 is 9. </code></pre>
 </div>
 </div>
 <p>A <em>comprehension</em> is a good alternative to a for loop when accumulation is required and the computation for each iterate is simple to express. Comprehensions have the syntax <code>[ex for x in xs]</code> and additional syntax for multiple iterations. The expression <code>ex</code> can use the variable <code>x</code>; <code>xs</code> is some iterable, such as a vector. For example, we might have this alternative to <code>f.(x)</code></p>
-<div class="cell" data-execution_count="94">
-<div class="sourceCode cell-code" id="cb187"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a>[xi <span class="op">-</span> <span class="fu">mean</span>(x) for xi <span class="kw">in</span> x]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="95">
+<div class="cell" data-execution_count="101">
+<div class="sourceCode cell-code" id="cb201"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a>[xi <span class="op">-</span> <span class="fu">mean</span>(x) for xi <span class="kw">in</span> x]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="102">
 <pre><code>3-element Vector{Float64}:
  -3.666666666666667
  -0.666666666666667
@@ -1359,10 +1447,10 @@ Entering Unicode
 </div>
 <p>Comprehensions use <em>generators</em>, which can also be used for many other functions, such as <code>sum</code>, which was previously illustrated. This form has the advantage of not needing to allocate temporary space to compute. For example <code>sum([xi for xi in x])</code> would have to find space for the vector created by the comprehension, but the similar – and easier to type – <code>sum(xi for xi in x)</code> would not.</p>
 <p>In this example, we sum the squared differences, passing an optional function to <code>sum</code>:</p>
-<div class="cell" data-execution_count="95">
-<div class="sourceCode cell-code" id="cb189"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span></span>
-<span id="cb189-2"><a href="#cb189-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(f, xi <span class="op">-</span> <span class="fu">mean</span>(whale) <span class="cf">for</span> xi <span class="kw">in</span> whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="96">
+<div class="cell" data-execution_count="102">
+<div class="sourceCode cell-code" id="cb203"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x) <span class="op">=</span> x<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb203-2"><a href="#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(f, xi <span class="op">-</span> <span class="fu">mean</span>(whale) <span class="cf">for</span> xi <span class="kw">in</span> whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="103">
 <pre><code>46020.399999999994</code></pre>
 </div>
 </div>
@@ -1419,31 +1507,31 @@ Entering Unicode
 <h2 data-number="2.4" class="anchored" data-anchor-id="sec-numeric-data"><span class="header-section-number">2.4</span> Numeric summaries</h2>
 <p>The <code>StatsBase</code> package provides numerous functions to compute numeric summaries of a univariate data set.</p>
 <p>For <strong>measures of center</strong> we have the mean (average), median (middle value), and mode (most common value):</p>
-<div class="cell" data-execution_count="96">
-<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(whale), <span class="fu">median</span>(whale), <span class="fu">mode</span>(whale), <span class="fu">mean</span>(<span class="fu">trim</span>(whale, prop<span class="op">=</span><span class="fl">0.2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="97">
+<div class="cell" data-execution_count="103">
+<div class="sourceCode cell-code" id="cb205"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(whale), <span class="fu">median</span>(whale), <span class="fu">mode</span>(whale), <span class="fu">mean</span>(<span class="fu">trim</span>(whale, prop<span class="op">=</span><span class="fl">0.2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="104">
 <pre><code>(152.4, 127.5, 111, 140.66666666666666)</code></pre>
 </div>
 </div>
 <p>The trimmed mean is computed by composing <code>mean</code> with the <code>trim</code> function which returns a generator producing the trimmed values (with proportion to trim specified to <code>prop</code>).</p>
 <p>For <strong>measures of spread</strong> we have the standard deviation, the median absolute deviation, and the inter-quartile range (<span class="math inline">\(Q_3 - Q_1\)</span>):</p>
-<div class="cell" data-execution_count="97">
-<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(whale), <span class="fu">mad</span>(whale), <span class="fu">iqr</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="98">
+<div class="cell" data-execution_count="104">
+<div class="sourceCode cell-code" id="cb207"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">std</span>(whale), <span class="fu">mad</span>(whale), <span class="fu">iqr</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="105">
 <pre><code>(71.5078861229849, 57.08018541246567, 86.25)</code></pre>
 </div>
 </div>
 <p>The <code>quantile(x, p)</code> function returns <strong>measures of position</strong>. Keywords <code>alpha</code> and <code>beta</code> can be used to adjust the algorithm employed. The <code>0</code> quantile is the minimum, the <code>1</code> quantile is the maximum, and <code>0.5</code> the median, or middle value. The <span class="math inline">\(p\)</span>th quqntile is an interpolated value that aspires to split the data with <span class="math inline">\(p\cdot 100\)</span>% of the values to the left and <span class="math inline">\((1-p)\cdot 100\)</span>% of the values to the right. The <code>p</code> specified to <code>quantile</code> may be an iterable, useful to computing more than one at a time. Here we see that the type of <code>p</code> is used to compute the output type:</p>
-<div class="cell" data-execution_count="98">
-<div class="sourceCode cell-code" id="cb195"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(whale, (<span class="fl">0</span>, <span class="fl">1</span><span class="op">//</span><span class="fl">2</span>, <span class="fl">1.0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="99">
+<div class="cell" data-execution_count="105">
+<div class="sourceCode cell-code" id="cb209"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb209-1"><a href="#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(whale, (<span class="fl">0</span>, <span class="fl">1</span><span class="op">//</span><span class="fl">2</span>, <span class="fl">1.0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="106">
 <pre><code>(74, 255//2, 292.0)</code></pre>
 </div>
 </div>
 <p>The <code>quantile</code> function is used internally by <code>StatsBase</code>: the <code>iqr</code> is defined by the difference of <code>quantile(x, [1/4, 3/4])</code>; the <code>summarystats</code> function returns a summary of a data set, with the 5-number summary of the quantiles (<code>p=0:1/4:1</code>), the mean, the length, and the number of missing data values.</p>
-<div class="cell" data-execution_count="99">
-<div class="sourceCode cell-code" id="cb197"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarystats</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="100">
+<div class="cell" data-execution_count="106">
+<div class="sourceCode cell-code" id="cb211"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb211-1"><a href="#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarystats</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="107">
 <pre><code>Summary Stats:
 Length:         10
 Missing Count:  0
@@ -1457,9 +1545,9 @@ Maximum:        292.000000</code></pre>
 </div>
 <p>A <strong>measure of position</strong> gives a sense of how large a value is relative to the data set. Knowing a value is the 20th percentile, say, says it is larger than 20 percent of the data and smaller than 80 percent. The percent of data less or equal a value can be computed by <code>sum(data .&lt;= value)</code> or <code>sum(x &lt;= value for x in data)</code>.</p>
 <p>The <span class="math inline">\(z\)</span>-score is a different measure of position. It measures differences from the mean on a scale of standard deviations. The <span class="math inline">\(z\)</span> score is computed by <code>(value - mean(data))/std(data)</code> or for all values at once with:</p>
-<div class="cell" data-execution_count="100">
-<div class="sourceCode cell-code" id="cb199"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a>zs <span class="op">=</span> (whale <span class="op">.-</span> <span class="fu">mean</span>(whale)) <span class="op">/</span> <span class="fu">std</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="101">
+<div class="cell" data-execution_count="107">
+<div class="sourceCode cell-code" id="cb213"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb213-1"><a href="#cb213-1" aria-hidden="true" tabindex="-1"></a>zs <span class="op">=</span> (whale <span class="op">.-</span> <span class="fu">mean</span>(whale)) <span class="op">/</span> <span class="fu">std</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="108">
 <pre><code>10-element Vector{Float64}:
  -1.0963825705204249
  -0.4251279355079199
@@ -1475,12 +1563,12 @@ Maximum:        292.000000</code></pre>
 </div>
 <p>A rule of thumb, based on a certain bell-shaped distribution, is that values larger than 3 in absolute value are unusual, none of which are seen in this data.</p>
 <p>The <span class="math inline">\(z\)</span>-score is the typical form of <em>standardization</em> and is also supported directly through either of the following:</p>
-<div class="cell" data-execution_count="101">
-<div class="sourceCode cell-code" id="cb201"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a>zs1 <span class="op">=</span> <span class="fu">zscore</span>(whale)</span>
-<span id="cb201-2"><a href="#cb201-2" aria-hidden="true" tabindex="-1"></a>zs2 <span class="op">=</span> <span class="fu">standardize</span>(ZScoreTransform, <span class="fu">Float64</span>.(whale))</span>
-<span id="cb201-3"><a href="#cb201-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb201-4"><a href="#cb201-4" aria-hidden="true" tabindex="-1"></a>zs <span class="op">==</span> zs1 <span class="op">==</span> zs2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="102">
+<div class="cell" data-execution_count="108">
+<div class="sourceCode cell-code" id="cb215"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb215-1"><a href="#cb215-1" aria-hidden="true" tabindex="-1"></a>zs1 <span class="op">=</span> <span class="fu">zscore</span>(whale)</span>
+<span id="cb215-2"><a href="#cb215-2" aria-hidden="true" tabindex="-1"></a>zs2 <span class="op">=</span> <span class="fu">standardize</span>(ZScoreTransform, <span class="fu">Float64</span>.(whale))</span>
+<span id="cb215-3"><a href="#cb215-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb215-4"><a href="#cb215-4" aria-hidden="true" tabindex="-1"></a>zs <span class="op">==</span> zs1 <span class="op">==</span> zs2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="109">
 <pre><code>true</code></pre>
 </div>
 </div>
@@ -1580,46 +1668,46 @@ Why so many measures?
 <section id="sec-shape" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="sec-shape"><span class="header-section-number">2.5</span> Shape</h2>
 <p>The <a href="https://en.wikipedia.org/wiki/Five-number_summary">five-number summary</a> gives some insight into the <em>shape</em> of a distribution, in that it can show skewness. The <code>skewness</code> function numerically quantifies this:</p>
-<div class="cell" data-execution_count="102">
-<div class="sourceCode cell-code" id="cb203"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skewness</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="103">
+<div class="cell" data-execution_count="109">
+<div class="sourceCode cell-code" id="cb217"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb217-1"><a href="#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skewness</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="110">
 <pre><code>0.7785957149991207</code></pre>
 </div>
 </div>
 <p>Perfectly symmetric data has <span class="math inline">\(0\)</span> skew.</p>
 <p>The <code>kurtosis</code> function numerically summarizes if a distribution has long or short tails compared to a benchmark distribution, the normal:</p>
-<div class="cell" data-execution_count="103">
-<div class="sourceCode cell-code" id="cb205"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kurtosis</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="104">
+<div class="cell" data-execution_count="110">
+<div class="sourceCode cell-code" id="cb219"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb219-1"><a href="#cb219-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kurtosis</span>(whale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="111">
 <pre><code>-0.5833928499406711</code></pre>
 </div>
 </div>
 <p>These numeric summaries are helpful, but to best see <strong>shape of a distribution</strong> graphical summaries are suggested.</p>
 <p>A stem or stem-and-leaf plot is useful summary of a data set that can be computed easily by hand for modest-sized data. In short, numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.</p>
 <p>A stem-and-leaf plot function is not part of the <code>StatsBase</code> package.<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> This one, below, is modified from a RosettaCode <a href="https://rosettacode.org/wiki/Stem-and-leaf_plot#Julia">submission</a>. It is simplified by assuming non-negative data. Essentially, it finds the right place to split a number into two values, a stem and a leaf. Then it displays each.</p>
-<div class="cell" data-execution_count="104">
-<div class="sourceCode cell-code" id="cb207"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Printf</span></span>
-<span id="cb207-2"><a href="#cb207-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">stemleaf</span>(a<span class="op">::</span><span class="dt">Array{T,1}</span>, leafsize<span class="op">=</span><span class="fl">1</span>) <span class="kw">where</span> {T<span class="op">&lt;:</span><span class="dt">Real</span>}</span>
-<span id="cb207-3"><a href="#cb207-3" aria-hidden="true" tabindex="-1"></a>    ls <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu">floor</span>(<span class="dt">Int</span>, <span class="fu">log10</span>(leafsize))</span>
-<span id="cb207-4"><a href="#cb207-4" aria-hidden="true" tabindex="-1"></a>    aa <span class="op">=</span> <span class="fu">floor</span>.(<span class="dt">Int</span>, <span class="fu">sort</span>(a)<span class="op">/</span>ls)</span>
-<span id="cb207-5"><a href="#cb207-5" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="fu">divrem</span>.(aa, <span class="fl">10</span>)</span>
-<span id="cb207-6"><a href="#cb207-6" aria-hidden="true" tabindex="-1"></a>    stem, leaf <span class="op">=</span> <span class="fu">first</span>.(out), <span class="fu">last</span>.(out)</span>
-<span id="cb207-7"><a href="#cb207-7" aria-hidden="true" tabindex="-1"></a>    io <span class="op">=</span> <span class="fu">IOBuffer</span>()</span>
-<span id="cb207-8"><a href="#cb207-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> stem[<span class="fl">1</span>]<span class="op">:</span>stem[<span class="kw">end</span>]</span>
-<span id="cb207-9"><a href="#cb207-9" aria-hidden="true" tabindex="-1"></a>        i <span class="op">!=</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu">println</span>(io, <span class="st">""</span>)</span>
-<span id="cb207-10"><a href="#cb207-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(io, (<span class="pp">@sprintf</span> <span class="st">"%10d | "</span> i))</span>
-<span id="cb207-11"><a href="#cb207-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">println</span>(io, <span class="fu">join</span>(<span class="fu">map</span>(string, leaf[stem <span class="op">.==</span> i]), <span class="st">""</span>))</span>
-<span id="cb207-12"><a href="#cb207-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb207-13"><a href="#cb207-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(io, <span class="st">" Leaf Unit = "</span> <span class="op">*</span> <span class="fu">string</span>(<span class="fu">convert</span>(T, ls)))</span>
-<span id="cb207-14"><a href="#cb207-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">String</span>(<span class="fu">take!</span>(io))</span>
-<span id="cb207-15"><a href="#cb207-15" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="105">
+<div class="cell" data-execution_count="111">
+<div class="sourceCode cell-code" id="cb221"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb221-1"><a href="#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Printf</span></span>
+<span id="cb221-2"><a href="#cb221-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">stemleaf</span>(a<span class="op">::</span><span class="dt">Array{T,1}</span>, leafsize<span class="op">=</span><span class="fl">1</span>) <span class="kw">where</span> {T<span class="op">&lt;:</span><span class="dt">Real</span>}</span>
+<span id="cb221-3"><a href="#cb221-3" aria-hidden="true" tabindex="-1"></a>    ls <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu">floor</span>(<span class="dt">Int</span>, <span class="fu">log10</span>(leafsize))</span>
+<span id="cb221-4"><a href="#cb221-4" aria-hidden="true" tabindex="-1"></a>    aa <span class="op">=</span> <span class="fu">floor</span>.(<span class="dt">Int</span>, <span class="fu">sort</span>(a)<span class="op">/</span>ls)</span>
+<span id="cb221-5"><a href="#cb221-5" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="fu">divrem</span>.(aa, <span class="fl">10</span>)</span>
+<span id="cb221-6"><a href="#cb221-6" aria-hidden="true" tabindex="-1"></a>    stem, leaf <span class="op">=</span> <span class="fu">first</span>.(out), <span class="fu">last</span>.(out)</span>
+<span id="cb221-7"><a href="#cb221-7" aria-hidden="true" tabindex="-1"></a>    io <span class="op">=</span> <span class="fu">IOBuffer</span>()</span>
+<span id="cb221-8"><a href="#cb221-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> stem[<span class="fl">1</span>]<span class="op">:</span>stem[<span class="kw">end</span>]</span>
+<span id="cb221-9"><a href="#cb221-9" aria-hidden="true" tabindex="-1"></a>        i <span class="op">!=</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu">println</span>(io, <span class="st">""</span>)</span>
+<span id="cb221-10"><a href="#cb221-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(io, (<span class="pp">@sprintf</span> <span class="st">"%10d | "</span> i))</span>
+<span id="cb221-11"><a href="#cb221-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">println</span>(io, <span class="fu">join</span>(<span class="fu">map</span>(string, leaf[stem <span class="op">.==</span> i]), <span class="st">""</span>))</span>
+<span id="cb221-12"><a href="#cb221-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb221-13"><a href="#cb221-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(io, <span class="st">" Leaf Unit = "</span> <span class="op">*</span> <span class="fu">string</span>(<span class="fu">convert</span>(T, ls)))</span>
+<span id="cb221-14"><a href="#cb221-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">String</span>(<span class="fu">take!</span>(io))</span>
+<span id="cb221-15"><a href="#cb221-15" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="112">
 <pre><code>stemleaf (generic function with 2 methods)</code></pre>
 </div>
 </div>
 <p>For the <code>whale</code> data, which is spread out over a wide range, we use a leaf size of 10:</p>
-<div class="cell" data-execution_count="105">
-<div class="sourceCode cell-code" id="cb209"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb209-1"><a href="#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stemleaf</span>(whale, <span class="fl">10</span>) <span class="op">|&gt;</span> print</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="112">
+<div class="sourceCode cell-code" id="cb223"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb223-1"><a href="#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stemleaf</span>(whale, <span class="fl">10</span>) <span class="op">|&gt;</span> print</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
          0 | 77
@@ -1630,15 +1718,15 @@ Why so many measures?
 </div>
 <p>We can identify <code>0|7</code> which is <code>0*100 + 70</code> or 70 as the “smallest” value. The <em>actual</em> smallest value is <span class="math inline">\(74\)</span>, but the data is rounded for this graphic so that just two digits (the stem and leaf) can represent all the values. Similarly 290 is identified as the largest values (which is actually 292).</p>
 <p>For graphical summaries of data, we will introduce the <code>StatsPlots</code> package, which adds to the <code>Plots</code> package recipes for many statistical graphics. In later chapters we will use a different plotting package, but for now, the <code>StatsPlots</code> package provides easy to use and understand methods to produce the desired graphics.</p>
-<div class="cell" data-execution_count="106">
-<div class="sourceCode cell-code" id="cb211"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb211-1"><a href="#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsPlots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="113">
+<div class="sourceCode cell-code" id="cb225"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsPlots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For a univariate data set, graphics are used to help gauge the center, spread, and shape of a distribution of values. Different graphics have their advantages. In the following, we illustrate the dot plot, the box plot, the histogram, the density plot, and the quantile-normal plot. There are basic recipes for each graphic that require little more than specifying which data to use, though we do adjust a few default values through keyword arguments, such as <code>legend</code>.</p>
 <p>A <a href="https://en.wikipedia.org/wiki/Dot_plot_(statistics)">dot plot</a> shows the data on a number line, traditionally horizontally, and with circles (dots) representing each data point. For data with ties, like the <code>whale</code> data set, there are many techniques to disamgibuate the data in the graphic: the tied data may be stacked, using the <span class="math inline">\(y\)</span> direction; the data may be <em>jittered</em> in the <span class="math inline">\(x\)</span> direction, adding a small random to each value; the data may be <em>jittered</em> in the <span class="math inline">\(y\)</span> direction. In <code>StatsPlots</code>, with the <code>dotplot</code> recipe, values are jittered when plotted vertically or when plotted with just the <span class="math inline">\(x\)</span> values. Here we use the <code>dotplot(x, y)</code> method with <code>x</code> representing the data to display. For this, we manually jitter the <code>x</code> values and we make a vector of values, <code>y</code> all with the same value, in this case <code>1</code> as the <code>one</code> function makes this convenient:</p>
-<div class="cell" data-execution_count="107">
-<div class="sourceCode cell-code" id="cb212"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb212-1"><a href="#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jitter</span>(x, scale<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fl">4</span>) <span class="op">=</span> x <span class="op">+</span> <span class="fu">randn</span>(<span class="fu">length</span>(x)) <span class="op">*</span> scale</span>
-<span id="cb212-2"><a href="#cb212-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb212-3"><a href="#cb212-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">dotplot</span>(<span class="fu">jitter</span>(whale), <span class="fu">one</span>.(whale); legend<span class="op">=</span><span class="cn">false</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="114">
+<div class="sourceCode cell-code" id="cb226"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb226-1"><a href="#cb226-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jitter</span>(x, scale<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="fl">4</span>) <span class="op">=</span> x <span class="op">+</span> <span class="fu">randn</span>(<span class="fu">length</span>(x)) <span class="op">*</span> scale</span>
+<span id="cb226-2"><a href="#cb226-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb226-3"><a href="#cb226-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">dotplot</span>(<span class="fu">jitter</span>(whale), <span class="fu">one</span>.(whale); legend<span class="op">=</span><span class="cn">false</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In <a href="#fig-dotplot-boxplot">Figure&nbsp;<span>2.1</span></a> the graph appears on the left side.</p>
 <p>A dot plot shows all the data from which the reader can gauge the center, spread, and shape easily enough. For a small number of data points, such as with the <code>whale</code> data it is a very good graphic for assessing the distribution of values. However, for a large number of values, the graphic can get too crowded, and alternatives are useful.</p>
@@ -1652,26 +1740,26 @@ Why so many measures?
 <li><p>The <em>range</em> is seen through the whiskers or identified outliers.</p></li>
 </ul>
 <p>Box plots are excellent graphics for comparing several distributions, and usually appear vertically oriented in such usage, the default orientation. Here, with a single data set, we show how to use the <code>orientation</code> argument to specify a horizontal layout. For this boxplot, we also add in a dot plot with each dot colored by its respective quartile.</p>
-<div class="cell" data-execution_count="108">
-<div class="sourceCode cell-code" id="cb213"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb213-1"><a href="#cb213-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">boxplot</span>(whale; orientation<span class="op">=:</span>horizontal, legend<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb213-2"><a href="#cb213-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb213-3"><a href="#cb213-3" aria-hidden="true" tabindex="-1"></a>Q1, Q2,Q3 <span class="op">=</span> <span class="fu">quantile</span>(whale, (<span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>))</span>
-<span id="cb213-4"><a href="#cb213-4" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile_color</span>(x) <span class="op">=</span> x <span class="op">&lt;</span> Q1 ? <span class="st">"red"</span> <span class="op">:</span> x <span class="op">&lt;</span> Q2 ? <span class="st">"yellow"</span> <span class="op">:</span> x <span class="op">&lt;</span> Q3 ? <span class="st">"blue"</span> <span class="op">:</span> <span class="st">"pink"</span></span>
-<span id="cb213-5"><a href="#cb213-5" aria-hidden="true" tabindex="-1"></a>whale′ <span class="op">=</span> <span class="fu">jitter</span>(<span class="fu">sort</span>(whale))</span>
-<span id="cb213-6"><a href="#cb213-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot!</span>(p2, whale′, <span class="fl">1</span><span class="op">/</span><span class="fl">2</span> <span class="op">.+</span> <span class="fu">zero</span>.(whale′), color<span class="op">=</span><span class="fu">quantile_color</span>.(whale′));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="115">
+<div class="sourceCode cell-code" id="cb227"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">boxplot</span>(whale; orientation<span class="op">=:</span>horizontal, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb227-2"><a href="#cb227-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb227-3"><a href="#cb227-3" aria-hidden="true" tabindex="-1"></a>Q1, Q2,Q3 <span class="op">=</span> <span class="fu">quantile</span>(whale, (<span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>))</span>
+<span id="cb227-4"><a href="#cb227-4" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile_color</span>(x) <span class="op">=</span> x <span class="op">&lt;</span> Q1 ? <span class="st">"red"</span> <span class="op">:</span> x <span class="op">&lt;</span> Q2 ? <span class="st">"yellow"</span> <span class="op">:</span> x <span class="op">&lt;</span> Q3 ? <span class="st">"blue"</span> <span class="op">:</span> <span class="st">"pink"</span></span>
+<span id="cb227-5"><a href="#cb227-5" aria-hidden="true" tabindex="-1"></a>whale′ <span class="op">=</span> <span class="fu">jitter</span>(<span class="fu">sort</span>(whale))</span>
+<span id="cb227-6"><a href="#cb227-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot!</span>(p2, whale′, <span class="fl">1</span><span class="op">/</span><span class="fl">2</span> <span class="op">.+</span> <span class="fu">zero</span>.(whale′), color<span class="op">=</span><span class="fu">quantile_color</span>.(whale′));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The right-hand graphic in <a href="#fig-dotplot-boxplot">Figure&nbsp;<span>2.1</span></a> shows the boxplot. A careful comparison shows the interpolation used to identify the quartiles. This graphic has no identified outliers. A slight skew is seen, as the right half of the figure is longer than the left half, though this may be an artifact of sampling, and not a fact about the underlying population.</p>
 <div id="fig-dotplot-boxplot" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" data-execution_count="109" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output cell-output-display" data-execution_count="110">
-<p><img src="univariate-julia_files/figure-html/cell-110-output-1.svg" class="img-fluid figure-img"></p>
+<div class="cell quarto-layout-cell" data-execution_count="116" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="117">
+<p><img src="univariate-julia_files/figure-html/cell-117-output-1.svg" class="img-fluid figure-img"></p>
 </div>
 </div>
-<div class="cell quarto-layout-cell" data-execution_count="110" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output cell-output-display" data-execution_count="111">
-<p><img src="univariate-julia_files/figure-html/cell-111-output-1.svg" class="img-fluid figure-img"></p>
+<div class="cell quarto-layout-cell" data-execution_count="117" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="118">
+<p><img src="univariate-julia_files/figure-html/cell-118-output-1.svg" class="img-fluid figure-img"></p>
 </div>
 </div>
 </div>
@@ -1679,30 +1767,30 @@ Why so many measures?
 </figure>
 </div>
 <p>A <a href="https://en.wikipedia.org/wiki/Histogram">histogram</a> is a another graphic well suited for displaying large data sets. It presents an illustration of what values are seen and also how prevalent that size value is. It does this by selecting a number of “bins” over the range of the data and counting the number of values in that bin, similar to what happens in a stem-and-leaf plot. This number is then represented using a bar with the property that that <em>area</em> of the bar is <em>proportional</em> to the frequency of data being in that bin. This proportion may just represent the count (if all the bins have the same length), or may be scaled so the total area is <span class="math inline">\(1\)</span> (as these graphics suggest the shape of the underlying probability density function, which has total area <span class="math inline">\(1\)</span>). The <code>histogram</code> function in <code>StatsPlots</code> offers still more means to scale the bars; adjustments specified through the <code>normalize</code> argument.</p>
-<div class="cell" data-execution_count="111">
-<div class="sourceCode cell-code" id="cb214"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb214-1"><a href="#cb214-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">histogram</span>(whale; bins <span class="op">=</span> <span class="fl">5</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb214-2"><a href="#cb214-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb214-3"><a href="#cb214-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot!</span>(p1, <span class="fu">jitter</span>(whale), <span class="fl">1</span><span class="op">/</span><span class="fl">5</span> <span class="op">.+</span> <span class="fu">zero</span>.(whale), markersize<span class="op">=</span><span class="fl">10</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="118">
+<div class="sourceCode cell-code" id="cb228"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb228-1"><a href="#cb228-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">histogram</span>(whale; bins <span class="op">=</span> <span class="fl">5</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb228-2"><a href="#cb228-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb228-3"><a href="#cb228-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot!</span>(p1, <span class="fu">jitter</span>(whale), <span class="fl">1</span><span class="op">/</span><span class="fl">5</span> <span class="op">.+</span> <span class="fu">zero</span>.(whale), markersize<span class="op">=</span><span class="fl">10</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This graphic is illustrated in <a href="#fig-histogram-densityplot">Figure&nbsp;<span>2.2</span></a>. To make it, we adjusted the default number of bins through the <code>bins</code> argument, and added a dotplot with somewhat larger dots, to illustrate the data being counted. The height of each bar should reflect the number of data points within the bin associated to the bar.</p>
 <p>Histograms are great for seeing the center of the data (the balancing point of the graphic), the spread, and the shape. However, when the are many bins, the graphic gets busy. The key information being conveyed is the general shape of the top of each bar, not the vertical lines producing the bar. The <code>stephist</code> function avoids these lines, though the density plot is a more widely used alternative.</p>
 <p>A density plot also illustrates the distribution of values in a data set along with how they cluster, however, it smooths out the binning process. Density plots are scaled to have area <span class="math inline">\(1\)</span>, as they will be seen to suggest the shape of a probability density function. In <a href="#fig-histogram-densityplot">Figure&nbsp;<span>2.2</span></a> we create a density plot overlaid on a histogram, which is normalized to have area <span class="math inline">\(1\)</span>:</p>
-<div class="cell" data-execution_count="112">
-<div class="sourceCode cell-code" id="cb215"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb215-1"><a href="#cb215-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">stephist</span>(whale; bins<span class="op">=</span><span class="fl">5</span>, normalize<span class="op">=:</span>pdf, alpha<span class="op">=</span><span class="fl">0.75</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb215-2"><a href="#cb215-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb215-3"><a href="#cb215-3" aria-hidden="true" tabindex="-1"></a><span class="fu">density!</span>(p2, whale; linewidth<span class="op">=</span><span class="fl">5</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="119">
+<div class="sourceCode cell-code" id="cb229"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb229-1"><a href="#cb229-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">stephist</span>(whale; bins<span class="op">=</span><span class="fl">5</span>, normalize<span class="op">=:</span>pdf, alpha<span class="op">=</span><span class="fl">0.75</span>, legend<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb229-2"><a href="#cb229-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb229-3"><a href="#cb229-3" aria-hidden="true" tabindex="-1"></a><span class="fu">density!</span>(p2, whale; linewidth<span class="op">=</span><span class="fl">5</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="fig-histogram-densityplot" class="quarto-layout-panel">
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" data-execution_count="113" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output cell-output-display" data-execution_count="114">
-<p><img src="univariate-julia_files/figure-html/cell-114-output-1.svg" class="img-fluid figure-img"></p>
+<div class="cell quarto-layout-cell" data-execution_count="120" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="121">
+<p><img src="univariate-julia_files/figure-html/cell-121-output-1.svg" class="img-fluid figure-img"></p>
 </div>
 </div>
-<div class="cell quarto-layout-cell" data-execution_count="114" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output cell-output-display" data-execution_count="115">
-<p><img src="univariate-julia_files/figure-html/cell-115-output-1.svg" class="img-fluid figure-img"></p>
+<div class="cell quarto-layout-cell" data-execution_count="121" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="122">
+<p><img src="univariate-julia_files/figure-html/cell-122-output-1.svg" class="img-fluid figure-img"></p>
 </div>
 </div>
 </div>
@@ -1716,9 +1804,9 @@ Why so many measures?
 <li><p>if the data set is symmetric, but has long tails these will show a deviations in both edges of the line.</p></li>
 </ul>
 <p>The <code>qqnorm</code> function produces <a href="#fig-quantile-normal">Figure&nbsp;<span>2.3</span></a>:</p>
-<div class="cell" data-execution_count="115">
-<div class="sourceCode cell-code" id="cb216"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb216-1"><a href="#cb216-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(whale; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="116">
+<div class="cell" data-execution_count="122">
+<div class="sourceCode cell-code" id="cb230"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb230-1"><a href="#cb230-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(whale; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="123">
 <div id="fig-quantile-normal" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="univariate-julia_files/figure-html/fig-quantile-normal-output-1.svg" class="img-fluid figure-img"></p>

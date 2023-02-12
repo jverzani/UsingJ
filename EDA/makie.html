@@ -142,6 +142,15 @@ div.csl-indent {
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KS515LKBGZ"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -257,6 +266,7 @@ div.csl-indent {
   <li><a href="#d-scatterplots" id="toc-d-scatterplots" class="nav-link" data-scroll-target="#d-scatterplots"><span class="toc-section-number">6.3.2</span>  3D scatterplots</a></li>
   </ul></li>
   <li><a href="#categorical-data" id="toc-categorical-data" class="nav-link" data-scroll-target="#categorical-data"><span class="toc-section-number">6.4</span>  Categorical data</a></li>
+  <li><a href="#customizing-plots-through-axis" id="toc-customizing-plots-through-axis" class="nav-link" data-scroll-target="#customizing-plots-through-axis"><span class="toc-section-number">6.5</span>  Customizing plots through <code>axis</code></a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jverzani/UsingJ/edit/master/EDA/makie.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -295,7 +305,7 @@ div.csl-indent {
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">PalmerPenguins</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> <span class="fu">dropmissing</span>(<span class="fu">DataFrame</span>(PalmerPenguins.<span class="fu">load</span>()))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(penguins, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="432">
+<div class="cell-output cell-output-display" data-execution_count="3">
 
 <div><div style="float: left;"><span>3×7 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">species</th><th style="text-align: left;">island</th><th style="text-align: left;">bill_length_mm</th><th style="text-align: left;">bill_depth_mm</th><th style="text-align: left;">flipper_length_mm</th><th style="text-align: left;">body_mass_g</th><th style="text-align: left;">sex</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="InlineStrings.String15" style="text-align: left;">String15</th><th title="InlineStrings.String15" style="text-align: left;">String15</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="InlineStrings.String7" style="text-align: left;">String7</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Adelie</td><td style="text-align: left;">Torgersen</td><td style="text-align: right;">39.1</td><td style="text-align: right;">18.7</td><td style="text-align: right;">181</td><td style="text-align: right;">3750</td><td style="text-align: left;">male</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Adelie</td><td style="text-align: left;">Torgersen</td><td style="text-align: right;">39.5</td><td style="text-align: right;">17.4</td><td style="text-align: right;">186</td><td style="text-align: right;">3800</td><td style="text-align: left;">female</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Adelie</td><td style="text-align: left;">Torgersen</td><td style="text-align: right;">40.3</td><td style="text-align: right;">18.0</td><td style="text-align: right;">195</td><td style="text-align: right;">3250</td><td style="text-align: left;">female</td></tr></tbody></table></div>
 </div>
@@ -323,10 +333,11 @@ div.csl-indent {
 </ul>
 <p>The attributes are those for the underlying plotting function. For <code>visual(BoxPlot)</code>, these can be seen at the help page for <code>boxplot</code>, displayed with the command <code>?boxplot</code>.</p>
 <p>The <code>mapping</code> calls shows two uses of the mini language for data manipulation. The basic form is <code>source =&gt; function =&gt; target</code> and works very much like the DataFrames mini language does for <code>select</code> or <code>transform</code>, but unlike those, the function is <em>always</em> applied by row. This makes some transformations, such as <span class="math inline">\(z\)</span>-scores not possible within this call – transformations requiring the entire column need to be done within the values passed to <code>data</code>. The abbreviated forms are just <code>source</code>, as used with the <code>color=:species</code> argument; <code>source =&gt; function</code>; and <code>source =&gt; target</code>, such as <code>:bill_length_mm =&gt; "bill length (mm)"</code> used to rename the variable for labeling purposes. When the source involves more than one column selector, tuples should be used to group them. A few functions are provided to bypass the usual mapping of the data. (For example, <code>color</code> maps levels of a factor to a color ramp behind the scenes.) Among these are <code>nonnumeric</code> to pass a numeric variable to a value expecting a categorical variables and <code>verbatim</code> to avoid this mapping. The latter, <code>=&gt; verbatim</code>, will be necessary to add when annotating a figure.</p>
-<p>The object <code>p</code> can be rendered to the screen with the <code>draw</code> method resulting in <a href="#fig-basic-boxplot-penguin">Figure&nbsp;<span>6.1</span></a>. Just <code>draw(p)</code> will render the graphic, the following also shows how the <code>figure</code> keyword argument can be used to set attributes using a named tuple, in this case the figure size. Similarly <code>axis</code> values can be modified in this manner.</p>
+<p>The object <code>p</code> can be rendered to the screen with the <code>draw</code> method resulting in <a href="#fig-basic-boxplot-penguin">Figure&nbsp;<span>6.1</span></a>. Just <code>draw(p)</code> will render the graphic, the following also shows how the <code>figure</code> keyword argument can be used to set attributes using a named tuple, in this case the figure size. Similarly <code>axis</code> values can be modified in this manner. In the following, we set a title attribute for the axis.</p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p; figure<span class="op">=</span>(resolution<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">400</span>),) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="434">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p; figure<span class="op">=</span>(;resolution<span class="op">=</span>(<span class="fl">600</span>,<span class="fl">400</span>)),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>     axis<span class="op">=</span>(; title<span class="op">=</span><span class="st">"Bill length"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
 <div id="fig-basic-boxplot-penguin" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-basic-boxplot-penguin-output-1.svg" class="img-fluid figure-img"></p>
@@ -371,7 +382,7 @@ div.csl-indent {
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">draw!</span>(f[<span class="fl">2</span>,<span class="fl">1</span>], p2)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">draw!</span>(f[<span class="fl">2</span>,<span class="fl">2</span>], p3)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>f</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="440">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div id="fig-layout-example" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-layout-example-output-1.svg" class="img-fluid figure-img"></p>
@@ -427,7 +438,7 @@ div.csl-indent {
 </div>
 <p>All these figures appear in <a href="#fig-dotplot-variations">Figure&nbsp;<span>6.3</span></a>.</p>
 <div class="cell" data-execution_count="15">
-<div class="cell-output cell-output-display" data-execution_count="445">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <div id="fig-dotplot-variations" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-dotplot-variations-output-1.svg" class="img-fluid figure-img"></p>
@@ -474,7 +485,7 @@ div.csl-indent {
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>p4 <span class="op">=</span> p4a <span class="op">+</span> p4b;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="20">
-<div class="cell-output cell-output-display" data-execution_count="450">
+<div class="cell-output cell-output-display" data-execution_count="21">
 <div id="fig-histogram-densityplot-example" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-histogram-densityplot-example-output-1.svg" class="img-fluid figure-img"></p>
@@ -502,12 +513,12 @@ div.csl-indent {
 <figure class="figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell quarto-layout-cell" data-execution_count="23" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output cell-output-display" data-execution_count="453">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <p><img src="makie_files/figure-html/cell-24-output-1.svg" class="img-fluid figure-img"></p>
 </div>
 </div>
 <div class="cell quarto-layout-cell" data-execution_count="24" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output cell-output-display" data-execution_count="454">
+<div class="cell-output cell-output-display" data-execution_count="25">
 <p><img src="makie_files/figure-html/cell-25-output-1.svg" class="img-fluid figure-img"></p>
 </div>
 </div>
@@ -538,7 +549,7 @@ div.csl-indent {
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visual</span>(Makie.Text) <span class="op">*</span></span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y, text <span class="op">=</span> <span class="op">:</span>label <span class="op">=&gt;</span> verbatim)</span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="455">
+<div class="cell-output cell-output-display" data-execution_count="26">
 <p><img src="makie_files/figure-html/cell-26-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
@@ -571,7 +582,7 @@ div.csl-indent {
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="op">=</span> d1 <span class="op">*</span> layers <span class="op">*</span>  <span class="fu">mapping</span>(color<span class="op">=:</span>species, layout<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="30">
-<div class="cell-output cell-output-display" data-execution_count="460">
+<div class="cell-output cell-output-display" data-execution_count="31">
 <div id="fig-scatterplot-example" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-scatterplot-example-output-1.svg" class="img-fluid figure-img"></p>
@@ -588,7 +599,7 @@ div.csl-indent {
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>nms <span class="op">=</span> <span class="fu">names</span>(penguins, <span class="fl">3</span><span class="op">:</span><span class="fl">5</span>)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">select</span>(penguins, nms <span class="op">.=&gt;</span> <span class="fu">replace</span>.(nms, <span class="st">"_mm"</span> <span class="op">=&gt;</span> <span class="st">""</span>, <span class="st">"_"</span> <span class="op">=&gt;</span> <span class="st">" "</span>)) <span class="co"># adjust names</span></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pairplot</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="461">
+<div class="cell-output cell-output-display" data-execution_count="32">
 <p><img src="makie_files/figure-html/cell-32-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
@@ -605,7 +616,7 @@ div.csl-indent {
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> d <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm <span class="op">=&gt;</span> <span class="op">:</span>bl,  <span class="op">:</span>bill_depth_mm <span class="op">=&gt;</span> <span class="op">:</span>bd,  <span class="op">:</span>flipper_length_mm<span class="op">=&gt;:</span>fl; color<span class="op">=:</span>species,</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>              row<span class="op">=:</span>sex, col<span class="op">=:</span>island)</span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p, axis<span class="op">=</span>((<span class="kw">type</span><span class="op">=</span>Axis3,)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="462">
+<div class="cell-output cell-output-display" data-execution_count="33">
 <div id="fig-3d-scatterplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-3d-scatterplot-output-1.svg" class="img-fluid figure-img"></p>
@@ -639,7 +650,7 @@ div.csl-indent {
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(row<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="37">
-<div class="cell-output cell-output-display" data-execution_count="467">
+<div class="cell-output cell-output-display" data-execution_count="38">
 <div id="fig-barplot-example" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="makie_files/figure-html/fig-barplot-example-output-1.svg" class="img-fluid figure-img"></p>
@@ -648,6 +659,35 @@ div.csl-indent {
 </div>
 </div>
 </div>
+</section>
+<section id="customizing-plots-through-axis" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="customizing-plots-through-axis"><span class="header-section-number">6.5</span> Customizing plots through <code>axis</code></h2>
+<p>There are a numerous customizations available when drawing a plot. We discuss a small handful of them here. See the <a href="https://tutorials.pumas.ai/html/PlottingInJulia/04-AoG-Custom.html">PumasAI</a> tutorial and the documentation for more details.</p>
+<p>The <code>draw</code> command allows the passing of values to the <code>axis</code> mechanism of <code>Makie</code>. This allows customization of various features such as the title, the ticks, the aspect ration, and the grids.</p>
+<p><code>Makie</code> plots are themeable. In the above we used <code>set_aog_theme!()</code>. This theme sets a number of defaults for the axis attributes:</p>
+<pre><code>Axis = (
+        xgridvisible=false,
+        ygridvisible=false,
+        topspinevisible=false,
+        rightspinevisible=false,
+        bottomspinecolor=:darkgray,
+        leftspinecolor=:darkgray,
+        xtickcolor=:darkgray,
+        ytickcolor=:darkgray,
+        xticklabelfont=lightfont,
+        yticklabelfont=lightfont,
+        xlabelfont=mediumfont,
+        ylabelfont=mediumfont,
+        titlefont=mediumfont,
+    )</code></pre>
+<p>To override these or pass other attributes on to the rendering, the <code>axis</code> keyword argument accepts a named tuple of values. So, for example, to set the graphics title, we would see <code>axis=(; title="Some title")</code>, to instruct the labels in a barplot on the <code>x</code> axis to be rotated, we would see <code>axis=(;xticklabelrotation = pi/2)</code>. Of course these would typically combined, as above.</p>
+<p>The following lists some useful attributes. A complete list is in the <a href="https://docs.makie.org/dev/api/#Axis">Makie</a> docs for the <code>Axis</code> constructor.</p>
+<p>The aspect ratio for a graphic is adjustable through the <code>aspect</code> attribute XX</p>
+<p>The following labeling attributes can be adjusted: <code>title</code>, <code>subtitle</code>, <code>xlabel</code>, <code>ylabel</code>. These take a string (or an observable) for the value to display. This value can be adjusted, for example, there are <code>titlealign</code>, <code>titlecolor</code>, <code>titlefont</code>, <code>titlesize</code>, and <code>titlevisible</code> attributes. Similar attributes exist for the other labels.</p>
+<p>An axis has ticks. These are often numbers. For the ticks on an <code>x</code> axis there are attributes <code>xticks</code>, <code>xtickcolor</code>, <code>xtickformat</code>, <code>xticksize</code>, and <code>xtickwidth</code>. Similarly with <code>y</code>. There are also minor ticks, adjustable with, for example, <code>xminorticks</code>, <code>xminortickcolor</code>, <code>xminorticksize</code>, etc.</p>
+<p>For ticks representing categorical values, labels are used. Attributes for tick labels include: <code>xticklabelalign</code>, <code>xticklabelcolor</code>, <code>xticklabelfont</code>, <code>xticklabelrotation</code>, and <code>xticklabelsize</code>.</p>
+<p>The displayed grid is adjustable through attributes like <code>xgridcolor</code>, <code>xgridstyle</code>, <code>xgridvisible</code>, <code>xgridwidth</code>, along with “<code>minor</code>” versions.</p>
+<p>For 3 dimension plots, the <code>Axis3</code> object is used for display. This has similarly named attributes for <code>z</code> values.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">

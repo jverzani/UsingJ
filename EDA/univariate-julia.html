@@ -1508,7 +1508,7 @@ Maximum:        292.000000</code></pre>
  -1.0264602127066222</code></pre>
 </div>
 </div>
-<p>A rule of thumb, based on a certain bell-shaped distribution, is that values larger than 3 in absolute value are unusual, none of which are seen in this data.</p>
+<p>A rule of thumb, based on a certain bell-shaped distribution, is that values larger than <span class="math inline">\(3\)</span> in absolute value are unusual, none of which are seen in this data.</p>
 <p>The <span class="math inline">\(z\)</span>-score is the typical form of <em>standardization</em> and is also supported directly through either of the following:</p>
 <div class="cell" data-execution_count="103">
 <div class="sourceCode cell-code" id="cb205"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a>zs1 <span class="op">=</span> <span class="fu">zscore</span>(whale)</span>
@@ -1534,8 +1534,8 @@ Why so many measures?
 <p><span class="math display">\[
 \bar{x} = \frac{1}{n} \sum_{i=1}^n x_i.
 \]</span></p>
-<p>A property of the mean is when we <em>center</em> by the mean, i.e.&nbsp;take the transformation <span class="math inline">\(y_i = x_i - \bar{x}\)</span>, then the mean of the <span class="math inline">\(y_i\)</span> is just <span class="math inline">\(0\)</span>. Put another way, the mean is the point where the differences to the left and right of the mean even out when added.</p>
-<p>The standard deviation, as a sense of scale, has the property that if we center and <em>then scale</em> by the standard deviation, the center will be <span class="math inline">\(0\)</span> and the scale will be <span class="math inline">\(1\)</span>. That is, the <span class="math inline">\(z\)</span>-scores have mean <span class="math inline">\(0\)</span> (as we’ve centered) and standard deviation <span class="math inline">\(1\)</span> (as we’ve scaled) – the <span class="math inline">\(z\)</span> scores speak to the “shape” or distribution of values of a data set.</p>
+<p>A property of the mean is when the data is <em>centered</em> by the mean, i.e.&nbsp;take the transformation <span class="math inline">\(y_i = x_i - \bar{x}\)</span>, then the mean of the <span class="math inline">\(y_i\)</span> is just <span class="math inline">\(0\)</span>. Put another way, the mean is the point where the differences to the left and right of the mean even out when added.</p>
+<p>The standard deviation, as a sense of scale, has the property that if the data is centered and <em>then scaled</em> by the standard deviation, the center will be <span class="math inline">\(0\)</span> and the scale will be <span class="math inline">\(1\)</span>. That is, the <span class="math inline">\(z\)</span>-scores have mean <span class="math inline">\(0\)</span> (as they data is centered) and standard deviation <span class="math inline">\(1\)</span> (as the data is scaled) – the <span class="math inline">\(z\)</span> scores speak to the “shape” or distribution of values of a data set.</p>
 <p>These measures are sensitive – or not <em>resistant</em> – to one or more <em>outlying</em> values. For example, the average wealth of people in a bar changes dramatically if someone like a pre-crash Elon Musk walks in. The standard deviation is similar. So measures based on position are better when data is <em>skewed</em>, especially if heavily skewed. For these, the median and IQR are not impacted greatly by one large value. That is they are resistant to outliers. The extreme values (the minimum and maximum) are less so. As such, the range of the data is a poor measure of spread, the range of the middle quartiles (the IQR) a much more resistant measure of spread.</p>
 </div>
 </div>
@@ -1629,8 +1629,8 @@ Why so many measures?
 <pre><code>-0.5833928499406711</code></pre>
 </div>
 </div>
-<p>These numeric summaries are helpful, but to best see <strong>shape of a distribution</strong> graphical summaries are suggested.</p>
-<p>A stem or stem-and-leaf plot is useful summary of a data set that can be computed easily by hand for modest-sized data. In short, numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.</p>
+<p>These numeric summaries are helpful, but to best see the <strong>shape of a distribution</strong> graphical summaries are suggested.</p>
+<p>A stem or stem-and-leaf plot is a useful summary of a data set that can be computed easily by hand for modest-sized data. In short, numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.</p>
 <p>A stem-and-leaf plot function is not part of the <code>StatsBase</code> package.<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> This one, below, is modified from a RosettaCode <a href="https://rosettacode.org/wiki/Stem-and-leaf_plot#Julia">submission</a>. It is simplified by assuming non-negative data. Essentially, it finds the right place to split a number into two values, a stem and a leaf. Then it displays each.</p>
 <div class="cell" data-execution_count="106">
 <div class="sourceCode cell-code" id="cb211"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb211-1"><a href="#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Printf</span></span>
@@ -1663,7 +1663,7 @@ Why so many measures?
  Leaf Unit = 10</code></pre>
 </div>
 </div>
-<p>We can identify <code>0|7</code> which is <code>0*100 + 70</code> or 70 as the “smallest” value. The <em>actual</em> smallest value is <span class="math inline">\(74\)</span>, but the data is rounded for this graphic so that just two digits (the stem and leaf) can represent all the values. Similarly 290 is identified as the largest values (which is actually 292).</p>
+<p>We can identify <code>0|7</code> which is <code>0*100 + 70</code> or 70 as the “smallest” value. The <em>actual</em> smallest value is <span class="math inline">\(74\)</span>, but the data is rounded for this graphic so that just two digits (the leaf always is represented by one, the stem may use more than one) can represent all the values. Similarly 290 is identified as the largest values (which is actually 292).</p>
 <p>For graphical summaries of data, we will introduce the <code>StatsPlots</code> package, which adds to the <code>Plots</code> package recipes for many statistical graphics. In later chapters we will use a different plotting package, but for now, the <code>StatsPlots</code> package provides easy to use and understand methods to produce the desired graphics.</p>
 <div class="cell" data-execution_count="108">
 <div class="sourceCode cell-code" id="cb215"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb215-1"><a href="#cb215-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsPlots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

@@ -382,7 +382,7 @@ Before pursuing, let's note that the assumption implies a few things about the s
 
 * The *independent* assumption technically requires sampling *with replacement*, where a person could be asked $0$, $1$, *or more* times the question. But *practically* if $N$ is much greater than $n$ this isn't necessary and *sampling without replacement* can be used.
 
-* The *identically distributed* assumption requires the sampling to be representative. For example, if it is a state-wide population, a sample concentrated on one, possibly partisan, district would not be expected to be identically distributed from the population. Such sampling would sure introduce *bias*.
+* The *identically distributed* assumption requires the sampling to be representative. For example, if it is a state-wide population, a sample concentrated on one, possibly partisan, district would not be expected to be identically distributed from the population. Such sampling would likely introduce a *bias*.
 
 Assuming, a survey is *reasonably* described by a $Binomial(n,p)$ distribution, the `BinomialTest` can be used to identify a confidence interval for a given confidence level.
 
@@ -408,7 +408,7 @@ As $0.50$ is in this interval, there is no suggestion candidate A can't win. (An
 (last(ci) - first(ci)) * 1/2
 ```
 
-A bit under 3 percentage points. A rough guide is 3 percentage points is around 1,000 people polled, a larger margin of error (MOE) is fewer people polled, a smaller one is more than 1,000 polled. Why is expanded on in a bit.
+A bit under 3 percentage points. A rough guide is 3 percentage points is around 1,000 people polled, a larger margin of error (MOE) is fewer people polled, a smaller one is more than 1,000 polled. Why this is so is expanded on in a bit.
 
 The `BinomialTest` has several different ways to compute the margin of error, or the confidence interval. These are passed to the `method` argument of `confint` as symbols. The default is `:clopper_pearson` which is based on the binomial distribution. The value `:wald` uses a normal approximation to the binomial, which may be very inaccurate when $p$ is close to $0$ or $1$. There are others (cf. `?confint(:BinomialTest)`).
 
@@ -521,7 +521,7 @@ cl, cr = quantile.(Chisq(n-1), [alpha/2, 1 - alpha/2])
 
 ### Confidence interval for comparing population standard deviations
 
-The comparison of two sample standard deviations is of interest, as seen in the two-sample $T$ confidence interval, where different formulas are available should there be an assumption of equality. For two *independent* normally distributed iid random samples, the $F$-statistic can be used to construct a confidence interval, as a scaled ratio of the sample standard deviations will have a certain $F$ distribution. So for a given $\alpha$, the following happens with probability $1-\alpha$:
+The comparison of two sample standard deviations is of interest, as seen in the two-sample $T$ confidence interval, where different formulas are available should there be an assumption of equality. For two *independent* **normally distributed** iid random samples, the $F$-statistic can be used to construct a confidence interval, as a scaled ratio of the sample standard deviations will have a certain $F$ distribution. That is, for a given $\alpha$, the following happens with probability $1-\alpha$:
 
 $$
 F_{\alpha/2; n_1-1, n_2-1} < (S_1^2/\sigma_1^2) / (S_2^2/\sigma_2^2) < F_{1 -\alpha/2; n_1-1, n_2-1}
@@ -566,7 +566,7 @@ That this includes `1` suggest no reason to think the two population variances d
 
 ### Likelihood ratio confidence intervals
 
-The confidence intervals so far are based on pivotal quantities with known sampling distributions. A more generally applicable alternative is to use the likelihood function, $L(\theta | x) = f(x | \theta)$, where the latter is the joint pdf of the data for a given parameter or parameters. The idea of maximizing the likelihood is to choose the values for $\theta$ which maximize the probability of seeing the observed data and estimating $\theta$ with those values.
+The confidence intervals so far are based on pivotal quantities with known sampling distributions. A more generally applicable alternative is to use the likelihood function, $L(\theta | x) = f(x | \theta)$, where the latter is the joint pdf of the data for a given parameter or parameters. The idea of maximizing the likelihood is to choose the value(s) for $\theta$ which maximize the probability of seeing the observed data using the choice(s) to estimate $\theta$.
 
 The *maximum likelihood estimate* is an alternative manner to estimate a parameter. Here we apply the method to data that would otherwise be amenable to a a $T$-test. First we generate some random data:
 
@@ -656,7 +656,7 @@ The basic setup is similar to a courtroom trial in the United States -- as seen 
 * a defendant is judged by a jury with an *assumption of innocence*
 * presentation of evidence is given
 * the jury weighs the evidence *assuming* the defendant is innocent.
-* If it is a civil trial a *preponderence of evidence* is enough for the jury to say the defendent is guilty (not innocent); if a criminal trial the standard if the evidence is "beyond a reasonable doubt" then the defendent is deemed not innocent. Otherwise the defendant is said to be "not guilty," though really it should be that they weren't "proven" to be guilty.
+* If it is a civil trial a *preponderence of evidence* is enough for the jury to say the defendent is guilty (not innocent); if a criminal trial the standard is if the evidence is "beyond a reasonable doubt" then the defendent is deemed not innocent. Otherwise the defendant is said to be "not guilty," though really it should be that they weren't "proven" to be guilty.
 
 In a hypothesis or significance test for parameters, the setup is similar:
 
@@ -720,7 +720,7 @@ Is this $p$-value suggestive that the null hypothesis is not a valid explanation
 
 The jury has guidance, depending on the type of trial, here there is also guidance in terms of a stated *significance level*. This is done in advance, but is typically just $\alpha = 0.05$. So if the $p$-value is less than $\alpha$ the null hypothesis is suggested to be incorrect; if not there is no evidence to conclude the null hypothesis is incorrect. Since here the $p$-value is much greater than $\alpha = 0.05$, we would say there is no evidence to *reject* the null hypothesis.
 
-The mechanics here are standard and encapsulated in the `OneSampleTTest` constructor. The `pvalue` method allows the specification of the type of "tail". In this case, as the alternative hypothesis is $H_A: \mu > 70$, the tail is `:right`:
+The mechanics here are standard and encapsulated in the `OneSampleTTest` constructor. The `pvalue` method allows the specification of the type of "tail". In this case, as the alternative hypothesis is $H_A: \mu > 70$, the tail is "`:right`":
 
 ```{julia}
 pvalue(OneSampleTTest(xs, 70); tail=:right)
@@ -1039,7 +1039,7 @@ B = BinomialTest(x, n, p)
 pvalue(B, tail=:right)
 ```
 
-This is an example of "transfer shock," which over time is known to go away for most transfer students.
+The notion of "transfer shock" anticipates first semester fall off exceeding typical rates; it is known that on average this difference in performance goes away after transfer students become more familiar with their new environment.
 
 ### Two-sample test of center
 
@@ -1186,7 +1186,7 @@ r_obs = cor(x, y)
 2 * ccdf(TDist(n-2), abs(r_obs))
 ```
 
-https://www.politico.com/news/2023/01/25/george-santos-199-expenses-00079334
+
 
 
 For testing other values, the Fischer approximation proves useful, namely that
@@ -1245,6 +1245,8 @@ pks = log.(10, ks .+ 1) - log.(10, ks)
 
 This small $p$-value suggests the law does not exactly apply, though the general form of the law (monotonically decreasing probabilities) is certainly suggested.
 
+You may be interested in applying this empirical law to the spending patterns of a certain [congressman](https://www.politico.com/news/2023/01/25/george-santos-199-expenses-00079334).
+
 :::
 
 
@@ -1273,7 +1275,7 @@ ps /= sum(ps) # make sum to exactly 1
 χ².stat
 ```
 
-We don't show the $p$ value -- yet -- as we need to consider an adjusted degrees of freedom. There are $s=2$ parameters estimated from the data, so the degrees of freedom of this test statistic is $18 - 2 - 1 = 15$. The $p$-value is found by computing the area to the *right* of the observed value, giving:
+We don't show the $p$ value -- yet -- as we need to consider an adjusted degrees of freedom. There are $s=2$ parameters estimated from the data, so the degrees of freedom of this test statistic are $18 - 2 - 1 = 15$. The $p$-value is found by computing the area to the *right* of the observed value, giving:
 
 ```{julia}
 1 - cdf(Chisq(18 - 2 - 1), χ².stat)
@@ -1367,13 +1369,13 @@ Zobs = abs(phat1 - phat2)/SE  # use abs and double right tail
 p_value = 2 * (1 - cdf(Normal(0, 1), Zobs))
 ```
 
-One other way to analyze this question is with [Fishers exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test). For a $2\times 2$ table, the bottom row divides into the top and the ratio of the two resulting numbers is considered ($(a/c) / (b/d)$). If there is no association, this ratio should be close to $1$. For this data, the Fisher exact test yields a $p$-value in the same range:
+One other way to analyze this question is with [Fisher's exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test). For a $2\times 2$ table, the bottom row divides into the top and the ratio of the two resulting numbers is considered ($(a/c) / (b/d)$). If there is no association, this ratio should be close to $1$. For this data, the Fisher exact test yields a $p$-value in the same range:
 
 ```{julia}
 pvalue(FisherExactTest(100, 1000, 50, 750)) # a,b,c,d
 ```
 
-Either way, all produced a  $p$-value smaller than the nominal $\alpha=0.05$ level for this made-up data.
+Either way, all produced a  $p$-value smaller than the nominal $\alpha=0.05$ level for this manufactured data.
 
 :::
 
@@ -1386,7 +1388,7 @@ $$
 H_0: \mu = \mu_0, \quad H_A: \mu = \mu_1
 $$
 
-Suppose the population is $Normal(\mu, \sigma)$. We had a similar setup in the discussion on power, where for a $T$-test specifying three of a $\alpha$, $\beta$, $n$, or an effect size allows the solving of the fourth using known facts about the $T$-statistic. The Neyman-Pearson lemma speaks to the *uniformly most powerful* test under this scenario with a **single** unknown parameter (the mean above, but could be the standard devation, etc.).
+Suppose the population is $Normal(\mu, \sigma)$. We had a similar setup in the discussion on power, where for a $T$-test specifying three of a $\alpha$, $\beta$, $n$, or an effect size allows the solving of the fourth using known facts about the $T$-statistic. The Neyman-Pearson lemma speaks to the *uniformly most powerful* test under this scenario with a **single** unknown parameter (the mean above, but it could also have been the standard devation, etc.).
 
 This test can be realized as a likelihood ratio test, which also covers tests of more generality. Suppose the parameters being tested are called $\theta$ which sit in some subset $\Theta_0 \subset \Theta$. The non-directional alternative would be $\theta$ is in $\Theta \setminus \Theta_0$.
 

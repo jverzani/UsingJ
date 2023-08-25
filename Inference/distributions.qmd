@@ -145,13 +145,13 @@ There are parallels between random variables and data sets:
 
 Statistical inference makes statements using the language of probability about the *parameters* in terms of various sample statistics.
 
-An intuitive example is the tossing of a fair coin modeling heads by a $1$ and tails by a $0$ then we can *parameterize* the distribution by $f(1) = P(X=1) = p$ and $f(0) = P(X=0) = 1 - P(X=1) = 1-p$. This distribution is summarized by $\mu=p$, $\sigma = \sqrt{p(1-p)}$. A *fair* coin would have $p=1/2$. A sequence of coin tosses, say H,T,T,H,H might be modeled by a sequence of iid random variables, each having this distribution. The we might expect a few things, where $\hat{p}$ below is the proportion of heads in the $n$ tosses:
+An intuitive example is the tossing of a fair coin modeling heads by a $1$ and tails by a $0$ then we can *parameterize* the distribution by $f(1) = P(X=1) = p$ and $f(0) = P(X=0) = 1 - P(X=1) = 1-p$. This distribution is summarized by $\mu=p$, $\sigma = \sqrt{p(1-p)}$. A *fair* coin would have $p=1/2$. A sequence of coin tosses, say H,T,T,H,H might be modeled by a sequence of iid random variables, each having this distribution. Then we might expect a few things, where $\hat{p}$ below is the proportion of heads in the $n$ tosses:
 
 * A given data set is not random, but it may be viewed as the result of a random process and had that process been run again would likely result in a different outcome. These different outcomes may be described probabalistically in terms of a distribution.
 * If $n$ is large enough, the sample proportion $\hat{p}$ should be *close* to the population proportion $p$.
 * Were the sampling repeated, the variation in the values of $\hat{p}$ should be smaller  for larger sample sizes, $n$.
 
-These imprecise statements can be made more precise, as will be seen. The right graphic in @fig-pop-parameters-sample shows this for a bell-shaped population. Each  of the 10 rows of dots shows a random sample of size $n=9$ which is summarized by its sample mean with a red star. The boxplot summarizes the red stars. The spread of the bell shaped population is much greater than the spread of the empirical density plot summarizing the sample means. By the above, we'd expect the standard deviation of the population to be $\sqrt{9}$ times bigger than the standard deviation of the sample mean statistic.
+These imprecise statements can be made more precise, as will be seen. Figure @fig-pop-parameters-sample illustrates a population, several different samples from it with the *sample means* visualized by a density plot. The density plot is centered at the same location as the population, but is narrower, reflecting smaller variability.
 
 
 ```{julia}
@@ -199,13 +199,12 @@ draw!(F[2,2], p3)
 F
 ```
 
-However, the center of the population and the center of the empirical density plot are nearly the same. This is because the mean of the population is the same as the mean of the sample-mean statistic.
 
 Inferential statistics is similar: A population is a distribution summarized by parameters. A random sample drawn from a population is summarized by statistics. A statistic summarizes just one sample, but the language of probability is used to infer from that one sample, statements about the parameters which would be apparent were there many different random samples.
 
 ## The Distributions package
 
-While populations are in general described by a cdf, populations which are discrete or continuous are more naturally described by their pdf. There are many standard pdfs used to describe different types of randomness. Many of these are supported in the `Distributions` package. This section reviews several.
+While populations are in general described by a cdf, populations which are discrete or continuous are more naturally described by their pdf. There are many standard pdfs used to describe different types of randomness and supported in the `Distributions` package. This section reviews several.
 
 ```{julia}
 using Distributions
@@ -352,7 +351,7 @@ The multinomial distribution is the distribution of counts for a sequence of $n$
 
 ### The continuous uniform distribution
 
-The continuous uniform distribution models equally likely outcomes over an interval $[a,b]$. (The endpoints possibly open, as mathematically they have no chance of being selected.) For example, the built-in `rand` function for Float64 values returns random numbers which are modeled by being uniform over $[0,1)$. (That they can be `0` but not `1` is a reality of how computers and mathematical models aren't always exactly the same, but rather the model is a abstraction of the implementation.)
+The continuous uniform distribution models equally likely outcomes over an interval $[a,b]$. (The endpoints possibly open, as mathematically they have no chance of being selected.) For example, the built-in `rand` function for Float64 values returns random numbers which are modeled by being uniform over $[0,1)$. (That they can be `0` but not `1` is a reality of how computers and mathematical models aren't always exactly the same, but rather the model is an abstraction of the implementation.)
 
 The `Uniform(a,b)` type models these numbers. Here we see `rand` being used to randomly sample $3$ uniform numbers using a more general interface than the use of `rand` in base `Julia`:
 
@@ -466,7 +465,9 @@ A distribution with excess kurtosis exceeding the normal is called *leptokurtic*
 isleptokurtic(T5), isplatykurtic(U)
 ```
 
-For the $T$-distribution, when the degrees of freedom gets large, say bigger than $100$, the distribution is well approximated by the normal. Here we see a similar comparison as above. For a quantile-normal plot see the upper-right graphic in @fig-qqplots-distributions.
+For the $T$-distribution, when the degrees of freedom gets large, say bigger than $100$, the distribution is well approximated by the normal.
+In the following code,  we see a similar comparison as above to compare the difference.
+For a quantile-normal plot see the upper-right graphic in @fig-qqplots-distributions.
 
 ```{julia}
 T100 = TDist(100)

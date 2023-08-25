@@ -1652,7 +1652,7 @@ Why so many measures?
 <pre><code>stemleaf (generic function with 2 methods)</code></pre>
 </div>
 </div>
-<p>For the <code>whale</code> data, which is spread out over a wide range, we use a leaf size of 10:</p>
+<p>For the <code>whale</code> data, which is spread out over a wide range, we use a leaf size of <span class="math inline">\(10\)</span>:</p>
 <div class="cell" data-execution_count="107">
 <div class="sourceCode cell-code" id="cb213"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb213-1"><a href="#cb213-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stemleaf</span>(whale, <span class="fl">10</span>) <span class="op">|&gt;</span> print</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1663,7 +1663,7 @@ Why so many measures?
  Leaf Unit = 10</code></pre>
 </div>
 </div>
-<p>We can identify <code>0|7</code> which is <code>0*100 + 70</code> or 70 as the “smallest” value. The <em>actual</em> smallest value is <span class="math inline">\(74\)</span>, but the data is rounded for this graphic so that just two digits (the leaf always is represented by one, the stem may use more than one) can represent all the values. Similarly 290 is identified as the largest values (which is actually 292).</p>
+<p>We can identify <code>0|7</code> which is <code>0*100 + 70</code> or <span class="math inline">\(70\)</span> as the “smallest” value. The <em>actual</em> smallest value is <span class="math inline">\(74\)</span>, but the data is rounded for this graphic so that just two digits (the leaf always is represented by one, the stem may use more than one) can represent all the values. Similarly <span class="math inline">\(290\)</span> is identified as the largest values (which is actually <span class="math inline">\(292\)</span>).</p>
 <p>For graphical summaries of data, we will introduce the <code>StatsPlots</code> package, which adds to the <code>Plots</code> package recipes for many statistical graphics. In later chapters we will use a different plotting package, but for now, the <code>StatsPlots</code> package provides easy to use and understand methods to produce the desired graphics.</p>
 <div class="cell" data-execution_count="108">
 <div class="sourceCode cell-code" id="cb215"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb215-1"><a href="#cb215-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsPlots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1768,7 +1768,7 @@ Why so many measures?
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>For some case, where <code>show</code> takes too much horizontal space, <code>permutedims</code> is used for a similar purpose, as may elide some values.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>For some cases, where <code>show</code> takes too much horizontal space, <code>permutedims</code> is used for a similar purpose, as it may elide some values.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>The parentheses for constructing tuples with 2 or more elements are technically optional, a fact that is useful for bundling different outputs into one<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>The output of the following command is displayed as a tuple, as the commas used create the tuple, even if not enclosed in parentheses.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>The <code>var</code> implementation is via a <em>string macro</em>, and is documented through <code>@var_str</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>

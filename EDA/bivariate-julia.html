@@ -436,7 +436,7 @@ Ode to the boxplots
 </section>
 <section id="histograms-across-groups" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="histograms-across-groups"><span class="header-section-number">4.1.4</span> Histograms across groups</h3>
-<p>The density plot is, perhaps, less familiar than a histogram, but makes a better grahpic when comparing two or more distributions, as the individual graphics don’t overlap. There are attempts to use the histogram, and they can be effective. In <a href="#fig-xword-histograms">Figure&nbsp;<span>4.7</span></a>, taken from an article on <a href="https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/">fivethirtyeight.com</a> on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overalpping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In <code>StatsPlots</code>, the <code>grouped hist</code> function can produce similar graphics.</p>
+<p>The density plot is, perhaps, less familiar than a histogram, but makes a better graphic when comparing two or more distributions, as the individual graphics don’t overlap. There are attempts to use the histogram, and they can be effective. In <a href="#fig-xword-histograms">Figure&nbsp;<span>4.7</span></a>, taken from an article on <a href="https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/">fivethirtyeight.com</a> on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overalpping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In <code>StatsPlots</code>, the <code>grouped hist</code> function can produce similar graphics.</p>
 <div id="fig-xword-histograms" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <div class="quarto-figure quarto-figure-center">
@@ -571,7 +571,7 @@ Correlation is not causation
 <section id="trend-lines" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="trend-lines"><span class="header-section-number">4.2.2</span> Trend lines</h3>
 <p>We mentioned that the Pearson correlation is a measure of a linear association and the Spearman rank correlation a measure of monotonic association. We now discuss some basic <em>trend lines</em> that highlight the association in paired data, where there is response variable.</p>
-<p>We use the language <em>explanatory</em> variable to describe the <span class="math inline">\(x\)</span> variable, and <em>response</em> variable to describe the <span class="math inline">\(y\)</span> variable, with the understanding that <span class="math inline">\(x\)</span> might be experimentally controlled and <span class="math inline">\(y\)</span> a random measured response. The “line” is an explanation of how the <span class="math inline">\(y\)</span> values vary <em>on average</em> as the <span class="math inline">\(x\)</span> values vary by the experimenter.</p>
+<p>We use the language <em>explanatory</em> variable to describe the <span class="math inline">\(x\)</span> variable, and <em>response</em> variable to describe the <span class="math inline">\(y\)</span> variable, with the understanding that <span class="math inline">\(x\)</span> might be experimentally controlled and <span class="math inline">\(y\)</span> a random, measured response. The “line” is an explanation of how the <span class="math inline">\(y\)</span> values vary <em>on average</em> as the <span class="math inline">\(x\)</span> values vary by the experimenter.</p>
 <p>There are many choices for how to identify a trend line, though we will show one such way that is the most commonly used. To set it in a mathematical setting, a line can be parameterized by two values, <span class="math inline">\(y = \beta_0 + \beta_1 x\)</span>. Use the value <span class="math inline">\(\hat{y}_i = \beta_0 + \beta_1 x_i\)</span>, which is the <span class="math inline">\(y\)</span> value of the point on the line corresponding to <span class="math inline">\(x_i\)</span>. The residual amount is usually defined by <span class="math inline">\(e_i = y_i - \hat{y}_i\)</span>. That is the vertical distance from the data point to the line. See <a href="#fig-two-models">Figure&nbsp;<span>4.10</span></a> for a visualization. One could argue that the distance to the line might be better than the vertical distance, but this choice leads to a very useful mathematical characterization.</p>
 <div class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display" data-execution_count="22">
@@ -624,7 +624,7 @@ y_2 &amp; = \beta_0 + \beta_1 x_2\\
 &amp; \vdots \\
 y_n &amp; = \beta_0 + \beta_1 x_n\\
 \end{align*}\]</span></p>
-<p>There are 2 unknowns, <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. <em>Were</em> there two equations (<span class="math inline">\(n=2\)</span>), we could solve by substitution to find an expression for these in terms of <span class="math inline">\((x_1,y_1)\)</span> and <span class="math inline">\((x_2, y_2)\)</span>. We algebraically solve this below with the help of a symbolic math package:</p>
+<p>There are <span class="math inline">\(2\)</span> unknowns, <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. <em>Were</em> there two equations (<span class="math inline">\(n=2\)</span>), we could solve by substitution to find an expression for these in terms of <span class="math inline">\((x_1,y_1)\)</span> and <span class="math inline">\((x_2, y_2)\)</span>. We algebraically solve this below with the help of a symbolic math package:</p>
 <div class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SymPy</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@syms</span> x[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>] y[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>] β[<span class="fl">0</span><span class="op">:</span><span class="fl">1</span>]</span>
@@ -639,8 +639,8 @@ y_n &amp; = \beta_0 + \beta_1 x_n\\
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">solve</span>(eqns, β)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>Dict{Any, Any} with 2 entries:
-  β₁ =&gt; (y₁ - y₂)/(x₁ - x₂)
-  β₀ =&gt; (x₁*y₂ - x₂*y₁)/(x₁ - x₂)</code></pre>
+  β₀ =&gt; (x₁*y₂ - x₂*y₁)/(x₁ - x₂)
+  β₁ =&gt; (y₁ - y₂)/(x₁ - x₂)</code></pre>
 </div>
 </div>
 <p>Mathematically for the <em>linear problem</em>, this last line is equivalent to solving the equation <span class="math inline">\(A\beta=y\)</span> where <span class="math inline">\(A\)</span> is a <em>matrix</em> with one column of 1s and the other of <span class="math inline">\(x\)</span>:</p>
@@ -832,7 +832,7 @@ A constant model
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="prediction"><span class="header-section-number">4.2.5</span> Prediction</h3>
 <p>In the definition of <code>loess_line!</code> and <a href="#fig-robust-regression">Figure&nbsp;<span>4.12</span></a> a <code>predict</code> method from various packages was used to plot the trend line. The pattern was similar: <code>predict(model, (l=data,))</code> created <span class="math inline">\(y\)</span> values for the given explanatory values.</p>
 <p>The language comes from the usage of statistical models.</p>
-<p>The explanatory “variable”, in general, may consist of 0, 1, or more variables. Examples with 0 or 1 for <code>lm</code> were given. It is not hard to envision in the <code>iris</code> data that the petal length might be influenced by the species, the petal width, and even details of the sepal sizes. The word explanatory hints that the <span class="math inline">\(y\)</span> values should be somehow explained by the covariates. Of course, statistical data is typically subject to variability, so even if all covariates are equal, different responses need not be the same. A statistical model may account for this by expressing a relationship:</p>
+<p>The explanatory “variable”, in general, may consist of <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, or more variables. Examples with <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> for <code>lm</code> were given. It is not hard to envision in the <code>iris</code> data that the petal length might be influenced by the species, the petal width, and even details of the sepal sizes. The word explanatory hints that the <span class="math inline">\(y\)</span> values should be somehow explained by the covariates. Of course, statistical data is typically subject to variability, so even if all covariates are equal, different responses need not be the same. A statistical model may account for this by expressing a relationship:</p>
 <blockquote class="blockquote">
 <p>response = predicted + error</p>
 </blockquote>
@@ -855,7 +855,7 @@ A constant model
 <div class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">residuals</span>(res)), <span class="fu">std</span>(<span class="fu">residuals</span>(res))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
-<pre><code>(-8.43769498715119e-17, 0.44725332332180934)</code></pre>
+<pre><code>(5.773159728050814e-17, 0.46230001625092915)</code></pre>
 </div>
 </div>
 <p>(The mean of the residuals is <strong>always</strong> 0 for a linear model, a consequence of the method of least squares.)</p>
@@ -866,7 +866,7 @@ A constant model
 <div class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>sigma_e <span class="op">=</span> <span class="fu">dispersion</span>(res.model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="39">
-<pre><code>0.45188819657765233</code></pre>
+<pre><code>0.4670908179504741</code></pre>
 </div>
 </div>
 <p>This is the square root of the sum of the squared residuals (computed by <code>deviance</code>) divided by the <em>degrees of freedom</em> (in this case <span class="math inline">\(n-2\)</span>, but in general given by <code>dof_residual</code>):</p>
@@ -874,14 +874,14 @@ A constant model
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> <span class="fu">deviance</span>(res) <span class="op">/</span> <span class="fu">dof_residual</span>(res) <span class="co"># sense of scale</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(mse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="40">
-<pre><code>0.45188819657765233</code></pre>
+<pre><code>0.4670908179504741</code></pre>
 </div>
 </div>
 <p>For the simple linear regression model, the value <span class="math inline">\(\sum e_i^2\)</span> is minimized by the choice of the estimates for the <span class="math inline">\(\beta\)</span>s. This value is called the SSE, or sum of squared errors (or the SSR, sum of squared residuals). It can be found from the residuals <em>or</em> the generic method <code>deviance</code>:</p>
 <div class="cell" data-execution_count="40">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(ei<span class="op">^</span><span class="fl">2</span> <span class="cf">for</span> ei <span class="kw">in</span> <span class="fu">residuals</span>(res)), <span class="fu">deviance</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="41">
-<pre><code>(9.801741225897743, 9.801741225897741)</code></pre>
+<pre><code>(10.472343946254858, 10.47234394625486)</code></pre>
 </div>
 </div>
 <p>The deviance gives a sense of scale, but does not reflect the size of the data set, <span class="math inline">\(n\)</span>. The residual <em>degrees of freedom</em> of a model is <span class="math inline">\(n-k -1\)</span> where <span class="math inline">\(k\)</span> is the number of variables. Assuming an intercept, in simple linear regression <span class="math inline">\(k=1\)</span></p>
@@ -917,7 +917,7 @@ A constant model
 </div>
 </div>
 <p>The <code>hat</code> function computes a matrix that arises in the regression model, its diagonal entries are returned by <code>hatvalues</code>. These are used to scale the residuals to produce the <em>standardized residuals</em>, computed by <code>rstandard</code>. The generic <code>leverage</code>, defined in <code>StatsBase</code>, is intended to compute what <code>hatvalues</code> does, but it currently doesn’t have a method defined in <code>GLM</code>.</p>
-<p>The 4 basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In <a href="#fig-diagnostic-plots">Figure&nbsp;<span>4.13</span></a> the 4 graphics are shown for the “setosa” species data with PetalWidth modeled by PetalLength.</p>
+<p>The four basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In <a href="#fig-diagnostic-plots">Figure&nbsp;<span>4.13</span></a> the four graphics are shown for the “setosa” species data with PetalWidth modeled by PetalLength.</p>
 <div class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fitted_versus_residuals</span>(res)</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  p <span class="op">=</span> <span class="fu">plot</span>(; legend<span class="op">=</span><span class="cn">false</span>)</span>
@@ -1029,7 +1029,7 @@ Alternatives
 <div id="fig-box-cox-animals" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="bivariate-julia_files/figure-html/fig-box-cox-animals-output-1.svg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.15: The <code>animals</code> data after both the <code>Body</code> and <code>Brain</code> variables have been transformed through the Box-Cox method. This data set has 3 outliers that pull the <code>lm</code> regression line downward, but do not impact the robust regression line, which more accurately captures the trend for all but the 3 outliers (which happen to be dinosaur species).</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.15: The <code>animals</code> data after both the <code>Body</code> and <code>Brain</code> variables have been transformed through the Box-Cox method. This data set has three outliers that pull the <code>lm</code> regression line downward, but do not impact the robust regression line, which more accurately captures the trend for all but the three outliers (which happen to be dinosaur species).</figcaption><p></p>
 </figure>
 </div>
 </div>

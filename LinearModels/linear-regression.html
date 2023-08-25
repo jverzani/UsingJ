@@ -327,7 +327,7 @@ Y = [y_1, y_2, \cdots, y_n], \quad \beta = [\beta_0, \beta_1, \dots, \beta_k], \
 <p><span class="math display">\[
 \Sigma_{\hat{\beta}\hat{\beta}} = \sigma^2 (X'X)^{-1}.
 \]</span></p>
-<p>The parameter <span class="math inline">\(\sigma^2\)</span> can be estimated. We have the <em>residuals</em> are given in vector form by <span class="math inline">\(\hat{e} = Y - \hat{Y}\)</span>. Here <span class="math inline">\(\hat{Y} = \hat{H}Y\)</span> where <span class="math inline">\(\hat{H} = X(X'X)^{-1}X'\)</span> is called the “hat” matrix and comes from <span class="math inline">\(\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y\)</span>.</p>
+<p>The parameter <span class="math inline">\(\sigma^2\)</span> can be estimated. We have the <em>residuals</em> are given in vector form by <span class="math inline">\(\hat{e} = Y - \hat{Y}\)</span>. Here <span class="math inline">\(\hat{Y} = \hat{H}Y\)</span>. The product <span class="math inline">\(\hat{H} = X(X'X)^{-1}X'\)</span> is called the “hat” matrix and comes from <span class="math inline">\(\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y\)</span>.</p>
 <p>The hat matrix has the property of a <em>projection matrix</em> taking values in an <span class="math inline">\(n\)</span> dimensional space and projecting onto a subspace described by the columns of the <span class="math inline">\(X\)</span> matrix. This allows a geometric interpretation of the least-squares formulation.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <p>The sum of squared residuals is:</p>
 <p><span class="math display">\[
@@ -1039,7 +1039,7 @@ F = \frac{n-k-1}{k-p} \cdot \frac{SSR_0 - SSR}{SSR} =
 <p><span class="theorem-title"><strong>Example 9.6 </strong></span>Consider again the output of the last call to <code>ftest</code> which checked for an interaction between the <code>Supp</code> and <code>Dose</code> variables in the <code>ToothGrowth</code> data:</p>
 <div class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>res₀ <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(Len <span class="op">~</span> Supp <span class="op">+</span> Dose), ToothGrowth)</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(Len <span class="op">~</span> Supp <span class="op">*</span> Dose), ToothGrowth)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>res  <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(Len <span class="op">~</span> Supp <span class="op">*</span> Dose), ToothGrowth)</span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ftest</span>(res₀.model, res.model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="40">
 <pre><code>F-test: 2 models fitted on 60 observations

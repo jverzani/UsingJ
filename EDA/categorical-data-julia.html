@@ -275,7 +275,7 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 </div>
 <section id="univariate-categorical-data" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="univariate-categorical-data"><span class="header-section-number">5.1</span> Univariate categorical data</h2>
-<p>We first start with a single categorical variable before turning our attention to one or more.</p>
+<p>We first start with a single categorical variable before turning our attention to the case of one or more such variables.</p>
 <section id="tabulations" class="level3" data-number="5.1.1">
 <h3 data-number="5.1.1" class="anchored" data-anchor-id="tabulations"><span class="header-section-number">5.1.1</span> Tabulations</h3>
 <p>Let’s consider a data set from R’s <code>MASS</code> package on a student survey; in particular the <code>Smoke</code> variable, which is stored as a categorical variable. The <code>levels</code> method reports 4 levels for this variable:</p>
@@ -292,24 +292,38 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
  "Regul"</code></pre>
 </div>
 </div>
-<p>How frequent is each? We would need to tabulate to answer that question. This can be done by grouping and applying the <code>nrow</code> function from <code>DataFrames</code>:</p>
+<p>How frequent is each? We would need to tabulate to answer that question.</p>
+<p>The <code>countmap</code> function from the <code>StatsBase</code> package counts occurrences in each level, returning a dictionary:</p>
 <div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(survey, <span class="op">:</span>Smoke), nrow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">countmap</span>(smokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>Dict{Union{Missing, CategoricalValue{String, UInt8}}, Int64} with 5 entries:
+  "Occas" =&gt; 19
+  "Heavy" =&gt; 11
+  missing =&gt; 1
+  "Never" =&gt; 189
+  "Regul" =&gt; 17</code></pre>
+</div>
+</div>
+<p>There are numerous alternatives.</p>
+<p>Using a data frames approach, this tabulation can be done by grouping and applying the <code>nrow</code> function:</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(survey, <span class="op">:</span>Smoke), nrow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
 
 <div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Smoke</th><th style="text-align: left;">nrow</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Heavy</td><td style="text-align: right;">11</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Never</td><td style="text-align: right;">189</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">4</td><td style="text-align: left;">Occas</td><td style="text-align: right;">19</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">5</td><td style="text-align: left;">Regul</td><td style="text-align: right;">17</td></tr></tbody></table></div>
 </div>
 </div>
 <p>Similarly, we can split (with <code>group</code> from <code>SplitApplyCombine</code>) and apply <code>length</code>:</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">SplitApplyCombine</span>: group</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    eachrow</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    copy</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group</span>(r <span class="op">-&gt;</span> r.Smoke, _)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(length, _)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">SplitApplyCombine</span>: group</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    eachrow</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    copy</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group</span>(r <span class="op">-&gt;</span> r.Smoke, _)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(length, _)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
 <pre><code>5-element Dictionaries.Dictionary{Any, Int64}
  CategoricalValue{String, UInt8} "Never" │ 189
  CategoricalValue{String, UInt8} "Regul" │ 17
@@ -320,10 +334,10 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 </div>
 <p>The above easily tabulates the same, and would be useful if the data were not in a data frame.</p>
 <p>For tabulation, a separate package has benefits. We use the <code>FreqTables</code> package and its <code>freqtables</code> function. This returns a <em>named</em> vector:</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">FreqTables</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(smokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">FreqTables</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(smokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>5-element Named Vector{Int64}
 Dim1    │ 
 ────────┼────
@@ -335,15 +349,15 @@ missing │   1</code></pre>
 </div>
 </div>
 <p>Named vectors are from the <code>NamedArrays</code> package and offer indexing by name, similar to a data frame.</p>
-<p>Either way (and there are others), this shows for this data set, even in the 90s “Never” is by far the most common response for past smoking habits, and it shows there is 1 missing response.</p>
+<p>Any of these approaches show for this data set that even in the <span class="math inline">\(90\)</span>s “Never” is by far the most common response for past smoking habits, and that there is one missing response.</p>
 </section>
 <section id="visualizations" class="level3" data-number="5.1.2">
 <h3 data-number="5.1.2" class="anchored" data-anchor-id="visualizations"><span class="header-section-number">5.1.2</span> Visualizations</h3>
 <p>Tabulations can be visualized beyond using a table.</p>
-<p>A bar chart represents the above table using bars proportional to the counts. The <code>bar</code> function makes a bar chart for the labels in <code>x</code> and the given data. For this example, we have either have to add “missing” to the levels, or, as is done here, excise it from the data set.</p>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(<span class="fu">levels</span>(smokes), tbl[<span class="fl">1</span><span class="op">:</span><span class="kw">end</span><span class="op">-</span><span class="fl">1</span>]; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<p>A bar chart represents the above tablulations using bars proportional to the counts. The <code>bar</code> function makes a bar chart for the labels in <code>x</code> and the given data. For this example, we have either have to add “missing” to the levels, or, as is done here, excise it from the data set.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bar</span>(<span class="fu">levels</span>(smokes), tbl[<span class="fl">1</span><span class="op">:</span><span class="kw">end</span><span class="op">-</span><span class="fl">1</span>]; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div id="fig-basic-bar-plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="categorical-data-julia_files/figure-html/fig-basic-bar-plot-output-1.svg" class="img-fluid figure-img"></p>
@@ -352,65 +366,65 @@ missing │   1</code></pre>
 </div>
 </div>
 </div>
-<p>Another common graphic is to use a dot, not a bar, to represent the value. Still another graphic is the pie charts; common in the business world, but not favorites within introductory statistics.</p>
+<p>Another common graphic is to use a dot, not a bar, to represent the value. Still another graphic is the pie chart; common in the business world, but not a favorite within introductory statistics.</p>
 </section>
 </section>
 <section id="paired-categorical-data" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="paired-categorical-data"><span class="header-section-number">5.2</span> Paired categorical data</h2>
 <p>In the <code>survey</code> data set we could look at pairs of data where both are categorical and ask questions about the pair. For example, the data contains information on smoking <em>and</em> identified gender (<code>Sex</code>). Is one gender more likely to smoke?</p>
 <p>Again, we can use grouping and apply to see the counts:</p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">combine</span>(<span class="fu">groupby</span>(survey, [<span class="op">:</span>Sex, <span class="op">:</span>Smoke]), nrow)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(tbl, <span class="fl">3</span>) <span class="co"># 3 of 10 rows displayed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">combine</span>(<span class="fu">groupby</span>(survey, [<span class="op">:</span>Sex, <span class="op">:</span>Smoke]), nrow)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(tbl, <span class="fl">3</span>) <span class="co"># 3 of 10 rows displayed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
 
 <div><div style="float: left;"><span>3×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Smoke</th><th style="text-align: left;">nrow</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: left;">Never</td><td style="text-align: right;">1</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Female</td><td style="text-align: left;">Heavy</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Female</td><td style="text-align: left;">Never</td><td style="text-align: right;">99</td></tr></tbody></table></div>
 </div>
 </div>
 <p>A <em>contingency table</em> is the more familiar means to view two-way categorical count data. A count of all combinations of the levels of one and the levels of the other is presented in a grid.</p>
 <p>With <code>unstack</code> we can do this within <code>DataFrames</code>:</p>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
 
 <div><div style="float: left;"><span>2×5 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Heavy</th><th style="text-align: left;">Never</th><th style="text-align: left;">Occas</th><th style="text-align: left;">Regul</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="CategoricalValue{String, UInt8}" style="text-align: left;">Cat…</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Female</td><td style="text-align: right;">5</td><td style="text-align: right;">99</td><td style="text-align: right;">9</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Male</td><td style="text-align: right;">6</td><td style="text-align: right;">89</td><td style="text-align: right;">10</td><td style="text-align: right;">12</td></tr></tbody></table></div>
 </div>
 </div>
 <p>The above dropped missing values; to keep them in, the <code>allowmissing</code> argument may be specified to <code>unstack</code>:</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
 
 <div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Never</th><th style="text-align: left;">Heavy</th><th style="text-align: left;">Occas</th><th style="text-align: left;">Regul</th><th style="text-align: left;">missing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th><th title="Union{Missing, Int64}" style="text-align: left;">Int64?</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: right;">1</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Female</td><td style="text-align: right;">99</td><td style="text-align: right;">5</td><td style="text-align: right;">9</td><td style="text-align: right;">5</td><td style="font-style: italic; text-align: right;">missing</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Male</td><td style="text-align: right;">89</td><td style="text-align: right;">6</td><td style="text-align: right;">10</td><td style="text-align: right;">12</td><td style="text-align: right;">1</td></tr></tbody></table></div>
 </div>
 </div>
 <p>The <code>missing</code> values can be replaced with <code>0</code> using the <code>coalesce</code> function which scans through its arguments returning the first that is not equal to <code>missing</code>:</p>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transform</span>(<span class="fu">Not</span>(<span class="fl">1</span>) <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(x <span class="op">-&gt;</span> <span class="fu">coalesce</span>(x, <span class="fl">0</span>)); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unstack</span>(<span class="op">:</span>Smoke, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transform</span>(<span class="fu">Not</span>(<span class="fl">1</span>) <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(x <span class="op">-&gt;</span> <span class="fu">coalesce</span>(x, <span class="fl">0</span>)); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
 
 <div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Sex</th><th style="text-align: left;">Never</th><th style="text-align: left;">Heavy</th><th style="text-align: left;">Occas</th><th style="text-align: left;">Regul</th><th style="text-align: left;">missing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Union{Missing, CategoricalValue{String, UInt8}}" style="text-align: left;">Cat…?</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="font-style: italic; text-align: left;">missing</td><td style="text-align: right;">1</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">Female</td><td style="text-align: right;">99</td><td style="text-align: right;">5</td><td style="text-align: right;">9</td><td style="text-align: right;">5</td><td style="text-align: right;">0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Male</td><td style="text-align: right;">89</td><td style="text-align: right;">6</td><td style="text-align: right;">10</td><td style="text-align: right;">12</td><td style="text-align: right;">1</td></tr></tbody></table></div>
 </div>
 </div>
 <p>More conveniently, the <code>freqtable</code> command will produce contingency tables:</p>
-<div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(survey, <span class="op">:</span>Sex, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(survey, <span class="op">:</span>Sex, <span class="op">:</span>Smoke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>3×5 Named Matrix{Int64}
 Sex ╲ Smoke │ "Heavy"  "Never"  "Occas"  "Regul"  missing
 ────────────┼────────────────────────────────────────────
@@ -421,25 +435,25 @@ missing     │       0        1        0        0        0</code></pre>
 </div>
 <p>The <code>freqtable</code> interface allows the user to pass in two variables of data, or, as above, a tabular data set and two variable names. The <code>freqtable</code> method summarized them with the levels of the first variables naming the rows, and levels of the second naming the columns.</p>
 <p>It is essentially this function using <code>DataFrames</code>:</p>
-<div class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">xtabs</span>(d, f, g)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@chain</span> d <span class="cf">begin</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">groupby</span>([f, g])</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">unstack</span>(g, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">transform</span>(<span class="fu">Not</span>(<span class="fl">1</span>) <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(x <span class="fu">-&gt;coalesce</span>(x, <span class="fl">0</span>)); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">xtabs</span>(d, f, g)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@chain</span> d <span class="cf">begin</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">groupby</span>([f, g])</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">unstack</span>(g, <span class="op">:</span>value; allowmissing<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">transform</span>(<span class="fu">Not</span>(<span class="fl">1</span>) <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(x <span class="fu">-&gt;coalesce</span>(x, <span class="fl">0</span>)); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>xtabs (generic function with 1 method)</code></pre>
 </div>
 </div>
 <section id="conditional-distributions-of-two-way-tables" class="level3" data-number="5.2.1">
 <h3 data-number="5.2.1" class="anchored" data-anchor-id="conditional-distributions-of-two-way-tables"><span class="header-section-number">5.2.1</span> Conditional distributions of two-way tables</h3>
-<p>At first glance, there does not seem to be much difference in the smoking variable between the identified genders. As tables may have many more counts in a given row or column, it can be helpful to take proportions of the rows or columns to compare. The <code>FreqTables</code> package provides the <code>prop</code> function to do so. By default, it takes a proportion of all the data; pass in <code>margins=1</code> to get proportions for each row, <code>margins=2</code> to get proportions for each column. For example, to compare the distribution of <code>Smokes</code> for each level of <code>Sex</code>, we take proportions across each row:</p>
-<div class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop</span>(tbl; margins<span class="op">=</span><span class="fl">1</span>)  <span class="co"># check `sum(prop(tbl; margins=1); dims=2)` returns 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<p>At first glance, there does not seem to be much difference in the smoking variable between the identified genders. As tables may have many more counts in a given row or column, it can be helpful to take proportions of the rows or columns to compare. The <code>FreqTables</code> package provides the <code>prop</code> function to do so. By default, it takes a proportion of all the data; the keyword <code>margins=1</code> is used to see proportions for each row, <code>margins=2</code> to see proportions for each column. For example, to compare the distribution of <code>Smokes</code> for each level of <code>Sex</code>, we take proportions across each row:</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop</span>(tbl; margins<span class="op">=</span><span class="fl">1</span>)  <span class="co"># check `sum(prop(tbl; margins=1); dims=2)` returns 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>3×5 Named Matrix{Float64}
 Sex ╲ Smoke │    "Heavy"     "Never"     "Occas"     "Regul"     missing
 ────────────┼───────────────────────────────────────────────────────────
@@ -448,12 +462,12 @@ Sex ╲ Smoke │    "Heavy"     "Never"     "Occas"     "Regul"     missing
 missing     │        0.0         1.0         0.0         0.0         0.0</code></pre>
 </div>
 </div>
-<p>There does not seem to be big differences between the rows, indicating that the gender doesn’t seem to have an effect on the smoking prevalency.</p>
+<p>There does not seem to be large differences between the rows, perhaps indicating that the gender doesn’t seem to have an effect on the smoking prevalency, though surveyed females were more likely to have never smoked and less likely to to be regular smokers compared to their male counterparts.</p>
 <p>What about the exercise variable?</p>
-<div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(survey, <span class="op">:</span>Exer, <span class="op">:</span>Smoke)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">prop</span>(tbl; margins<span class="op">=</span><span class="fl">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="fu">freqtable</span>(survey, <span class="op">:</span>Exer, <span class="op">:</span>Smoke)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">prop</span>(tbl; margins<span class="op">=</span><span class="fl">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>3×5 Named Matrix{Float64}
 Exer ╲ Smoke │   "Heavy"    "Never"    "Occas"    "Regul"    missing
 ─────────────┼──────────────────────────────────────────────────────
@@ -467,18 +481,18 @@ Exer ╲ Smoke │   "Heavy"    "Never"    "Occas"    "Regul"    missing
 <section id="row-proportions-with-data-frames." class="level4">
 <h4 class="anchored" data-anchor-id="row-proportions-with-data-frames.">Row proportions with Data Frames.</h4>
 <p>The task of finding row proportions with a data frame can be similarly addressed by applying a transform to each row. The following uses a percentage scale:</p>
-<div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perc</span>(x,Σ) <span class="op">=</span> <span class="fu">round</span>(<span class="fl">100</span> <span class="op">*</span> x <span class="op">/</span> Σ, digits<span class="op">=</span><span class="fl">1</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">perc</span>(x<span class="op">::</span><span class="dt">Missing</span>, Σ) <span class="op">=</span> x</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">perc</span>(r) <span class="op">=</span> <span class="fu">map</span>(x <span class="op">-&gt;</span> <span class="fu">perc</span>(x,<span class="fu">sum</span>(<span class="fu">skipmissing</span>(r))), r)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">perc_table</span>(d)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    nms <span class="op">=</span> <span class="fu">names</span>(d, <span class="dt">Union</span>{<span class="dt">AbstractString</span>, CategoricalValue})</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(d, nms, <span class="fu">AsTable</span>(<span class="fu">Not</span>(nms)) <span class="op">=&gt;</span> <span class="fu">ByRow</span>(perc) <span class="op">=&gt;</span> AsTable; renamecols<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">xtabs</span>(survey, <span class="op">:</span>Exer, <span class="op">:</span>Smoke) <span class="op">|&gt;</span> perc_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perc</span>(x, Σ) <span class="op">=</span> <span class="fu">round</span>(<span class="fl">100</span> <span class="op">*</span> x <span class="op">/</span> Σ, digits<span class="op">=</span><span class="fl">1</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">perc</span>(x<span class="op">::</span><span class="dt">Missing</span>, Σ) <span class="op">=</span> x</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">perc</span>(r) <span class="op">=</span> <span class="fu">map</span>(x <span class="op">-&gt;</span> <span class="fu">perc</span>(x,<span class="fu">sum</span>(<span class="fu">skipmissing</span>(r))), r)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">perc_table</span>(d)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    nms <span class="op">=</span> <span class="fu">names</span>(d, <span class="dt">Union</span>{<span class="dt">AbstractString</span>, CategoricalValue})</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(d, nms, <span class="fu">AsTable</span>(<span class="fu">Not</span>(nms)) <span class="op">=&gt;</span> <span class="fu">ByRow</span>(perc) <span class="op">=&gt;</span> AsTable; renamecols<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">xtabs</span>(survey, <span class="op">:</span>Exer, <span class="op">:</span>Smoke) <span class="op">|&gt;</span> perc_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
 
 <div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Exer</th><th style="text-align: left;">Heavy</th><th style="text-align: left;">Never</th><th style="text-align: left;">Occas</th><th style="text-align: left;">Regul</th><th style="text-align: left;">missing</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="CategoricalValue{String, UInt8}" style="text-align: left;">Cat…</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Freq</td><td style="text-align: right;">6.1</td><td style="text-align: right;">75.7</td><td style="text-align: right;">10.4</td><td style="text-align: right;">7.8</td><td style="text-align: right;">0.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">None</td><td style="text-align: right;">4.2</td><td style="text-align: right;">75.0</td><td style="text-align: right;">12.5</td><td style="text-align: right;">4.2</td><td style="text-align: right;">4.2</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">Some</td><td style="text-align: right;">3.1</td><td style="text-align: right;">85.7</td><td style="text-align: right;">4.1</td><td style="text-align: right;">7.1</td><td style="text-align: right;">0.0</td></tr></tbody></table></div>
 </div>
@@ -488,18 +502,18 @@ Exer ╲ Smoke │   "Heavy"    "Never"    "Occas"    "Regul"    missing
 <section id="marginal-distributions-of-two-way-tables" class="level3" data-number="5.2.2">
 <h3 data-number="5.2.2" class="anchored" data-anchor-id="marginal-distributions-of-two-way-tables"><span class="header-section-number">5.2.2</span> Marginal distributions of two-way tables</h3>
 <p>A <em>marginal</em> distribution from a two-way table is found by adding all the values in each row, or each column. With two-way tables generated from the full data, there are more direct ways to realize these, but from a two-way table, we just need to apply <code>sum</code> to each row or column. The <code>sum</code> function takes a <code>dims</code> argument to specify the dimension, which, in this case, is <code>2</code> for adding along the columns (the second dimension) and <code>1</code> for adding down the rows (the first dimension):<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">1</span>) <span class="co"># kinda like `freqtable(survey.Smoke)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">1</span>) <span class="co"># kinda like `freqtable(survey.Smoke)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>1×5 Named Matrix{Int64}
 Exer ╲ Smoke │ "Heavy"  "Never"  "Occas"  "Regul"  missing
 ─────────────┼────────────────────────────────────────────
 sum(Exer)    │      11      189       19       17        1</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">2</span>) <span class="co"># like `freqtable(survey.Exer)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">2</span>) <span class="co"># like `freqtable(survey.Exer)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>3×1 Named Matrix{Int64}
 Exer ╲ Smoke │ sum(Smoke)
 ─────────────┼───────────
@@ -544,47 +558,47 @@ Exer ╲ Smoke │ sum(Smoke)
 </tbody>
 </table>
 <p>This table could be <em>stored</em> as a two-way table in different ways. Here we show how to make this a data frame, then expand it to variables, then summarize.</p>
-<div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>([</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"A-C"</span>, IP<span class="op">=</span><span class="fl">10</span>, Hybrid<span class="op">=</span><span class="fl">5</span>,  Asynchronous<span class="op">=</span><span class="fl">5</span>),</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"D"</span>,   IP<span class="op">=</span><span class="fl">10</span>, Hybrid<span class="op">=</span><span class="fl">15</span>, Asynchronous<span class="op">=</span><span class="fl">10</span>),</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"F"</span>,   IP<span class="op">=</span><span class="fl">5</span>,  Hybrid<span class="op">=</span><span class="fl">10</span>, Asynchronous<span class="op">=</span><span class="fl">10</span>)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>([</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"A-C"</span>, IP<span class="op">=</span><span class="fl">10</span>, Hybrid<span class="op">=</span><span class="fl">5</span>,  Asynchronous<span class="op">=</span><span class="fl">5</span>),</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"D"</span>,   IP<span class="op">=</span><span class="fl">10</span>, Hybrid<span class="op">=</span><span class="fl">15</span>, Asynchronous<span class="op">=</span><span class="fl">10</span>),</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>(Grade<span class="op">=</span><span class="st">"F"</span>,   IP<span class="op">=</span><span class="fl">5</span>,  Hybrid<span class="op">=</span><span class="fl">10</span>, Asynchronous<span class="op">=</span><span class="fl">10</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
 
 <div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Grade</th><th style="text-align: left;">IP</th><th style="text-align: left;">Hybrid</th><th style="text-align: left;">Asynchronous</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">A-C</td><td style="text-align: right;">10</td><td style="text-align: right;">5</td><td style="text-align: right;">5</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">D</td><td style="text-align: right;">10</td><td style="text-align: right;">15</td><td style="text-align: right;">10</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">F</td><td style="text-align: right;">5</td><td style="text-align: right;">10</td><td style="text-align: right;">10</td></tr></tbody></table></div>
 </div>
 </div>
 <p>There are <code>80</code> students summarized here:</p>
-<div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>([<span class="fu">sum</span>(r[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>]) for r <span class="kw">in</span>  <span class="fu">eachrow</span>(df)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>([<span class="fu">sum</span>(r[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>]) for r <span class="kw">in</span>  <span class="fu">eachrow</span>(df)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>80</code></pre>
 </div>
 </div>
 <p>Here we make a data frame with 80 cases:</p>
-<div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ddf <span class="op">=</span> <span class="pp">@chain</span> df <span class="cf">begin</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stack</span>(<span class="fu">Not</span>(<span class="op">:</span>Grade), variable_name<span class="op">=:</span>InstructionType)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transform</span>(<span class="op">:</span>value <span class="op">=&gt;</span> <span class="fu">ByRow</span>(n <span class="op">-&gt;</span> <span class="fl">1</span><span class="op">:</span>n); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">flatten</span>(<span class="op">:</span>value)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">Not</span>(<span class="op">:</span>value))</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(ddf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ddf <span class="op">=</span> <span class="pp">@chain</span> df <span class="cf">begin</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stack</span>(<span class="fu">Not</span>(<span class="op">:</span>Grade), variable_name<span class="op">=:</span>InstructionType)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transform</span>(<span class="op">:</span>value <span class="op">=&gt;</span> <span class="fu">ByRow</span>(n <span class="op">-&gt;</span> <span class="fl">1</span><span class="op">:</span>n); renamecols<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">flatten</span>(<span class="op">:</span>value)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">Not</span>(<span class="op">:</span>value))</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(ddf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
 
 <div><div style="float: left;"><span>2×7 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">variable</th><th style="text-align: left;">mean</th><th style="text-align: left;">min</th><th style="text-align: left;">median</th><th style="text-align: left;">max</th><th style="text-align: left;">nmissing</th><th style="text-align: left;">eltype</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Symbol" style="text-align: left;">Symbol</th><th title="Nothing" style="text-align: left;">Nothing</th><th title="String" style="text-align: left;">String</th><th title="Nothing" style="text-align: left;">Nothing</th><th title="String" style="text-align: left;">String</th><th title="Int64" style="text-align: left;">Int64</th><th title="DataType" style="text-align: left;">DataType</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">Grade</td><td style="font-style: italic; text-align: left;"></td><td style="text-align: left;">A-C</td><td style="font-style: italic; text-align: left;"></td><td style="text-align: left;">F</td><td style="text-align: right;">0</td><td style="text-align: left;">String</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">InstructionType</td><td style="font-style: italic; text-align: left;"></td><td style="text-align: left;">Asynchronous</td><td style="font-style: italic; text-align: left;"></td><td style="text-align: left;">IP</td><td style="text-align: right;">0</td><td style="text-align: left;">String</td></tr></tbody></table></div>
 </div>
 </div>
 <p>(It isn’t the most efficient, but we utilize <code>flatten</code> to repeat the values easily created by the range operator, <code>1:n</code> above. As these values are not of interest, we subsequently drop them.)</p>
 <p>To see we could return to the original table, we first give the <code>InstructionType</code> the right ordering of the levels, then create a frequency table:</p>
-<div class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ordered_levels <span class="op">=</span> [<span class="st">"IP"</span>, <span class="st">"Hybrid"</span>, <span class="st">"Asynchronous"</span>]</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>ddf.InstructionType <span class="op">=</span> <span class="fu">categorical</span>(ddf.InstructionType;</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                                       ordered<span class="op">=</span><span class="cn">true</span>, levels<span class="op">=</span>ordered_levels)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(ddf, <span class="op">:</span>Grade, <span class="op">:</span>InstructionType)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ordered_levels <span class="op">=</span> [<span class="st">"IP"</span>, <span class="st">"Hybrid"</span>, <span class="st">"Asynchronous"</span>]</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>ddf.InstructionType <span class="op">=</span> <span class="fu">categorical</span>(ddf.InstructionType;</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                                       ordered<span class="op">=</span><span class="cn">true</span>, levels<span class="op">=</span>ordered_levels)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">freqtable</span>(ddf, <span class="op">:</span>Grade, <span class="op">:</span>InstructionType)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
 <pre><code>3×3 Named Matrix{Int64}
 Grade ╲ InstructionType │           "IP"        "Hybrid"  "Asynchronous"
 ────────────────────────┼───────────────────────────────────────────────
@@ -601,20 +615,20 @@ F                       │              5              10              10</code
 <h4 class="anchored" data-anchor-id="grouped-bar-plots">Grouped bar plots</h4>
 <p>The bar plot for a single categorical variable shows frequency counts for each level. A grouped bar plot shows a distribution of the second variable for the grouping variable.</p>
 <p>A useful data structure for this graphic is found using <code>groupby</code> with 2 variables:</p>
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="pp">@chain</span> survey <span class="cf">begin</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">groupedbar</span>(<span class="op">:</span>Sex, <span class="op">:</span>value, group<span class="op">=:</span>Smoke; xlab<span class="op">=</span><span class="st">"Identified gender"</span>)</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">groupedbar</span>(<span class="op">:</span>Sex, <span class="op">:</span>value, group<span class="op">=:</span>Smoke; xlab<span class="op">=</span><span class="st">"Identified gender"</span>,</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>                        bar_position <span class="op">=</span> <span class="op">:</span>stack)</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1, p2, layout <span class="op">=</span> (<span class="pp">@layout</span> [a b]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Sex, <span class="op">:</span>Smoke])</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>value)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">groupedbar</span>(<span class="op">:</span>Sex, <span class="op">:</span>value, group<span class="op">=:</span>Smoke; xlab<span class="op">=</span><span class="st">"Identified gender"</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">groupedbar</span>(<span class="op">:</span>Sex, <span class="op">:</span>value, group<span class="op">=:</span>Smoke; xlab<span class="op">=</span><span class="st">"Identified gender"</span>,</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>                        bar_position <span class="op">=</span> <span class="op">:</span>stack)</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1, p2, layout <span class="op">=</span> (<span class="pp">@layout</span> [a b]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
 <div id="fig-grouped-barchart" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="categorical-data-julia_files/figure-html/fig-grouped-barchart-output-1.svg" class="img-fluid figure-img"></p>
@@ -630,23 +644,23 @@ F                       │              5              10              10</code
 <h4 class="anchored" data-anchor-id="andrews-plot">Andrews plot</h4>
 <p>An <a href="https://en.wikipedia.org/wiki/Andrews_plot">Andrews plot</a> is implemented in <code>StatsPlots</code> showing differences in a collection of <strong>numeric</strong> variables for a given categorical variable. For each row, a trigonometric polynomial with coefficients given by the numeric values in the given row creates a function which is plotted. If the values across the categorical variable are similar, the graphs will be; if not, then the groupings will show up.</p>
 <p>We first show an example with the <code>iris</code> data where the categorical value is <code>:Species</code> and the numeric ones the first 4 values. This will be shown in the left graphic of <a href="#fig-andrews-plots">Figure&nbsp;<span>5.3</span></a>:</p>
-<div class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"datasets"</span>, <span class="st">"iris"</span>)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>andrews_1 <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">andrewsplot</span>(<span class="op">:</span>Species, <span class="fu">cols</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">4</span>));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"datasets"</span>, <span class="st">"iris"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>andrews_1 <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">andrewsplot</span>(<span class="op">:</span>Species, <span class="fu">cols</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">4</span>));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For the next plot, we use the <code>survey</code> data. There are some efforts needed to wrangle the data: we convert the categorical variables to the numeric levels (<code>levelcode</code>) <em>except</em> for <code>:Sex</code> which we use for the grouping variable. We also drop any <code>missing</code> values:</p>
-<div class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">iscategorical</span>(x) <span class="op">=</span> <span class="fu">isa</span>(x, CategoricalArray) <span class="co"># predicate function</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="pp">@chain</span> survey <span class="cf">begin</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(_, <span class="op">:</span>Sex, <span class="fu">findall</span>(iscategorical, <span class="fu">eachcol</span>(_))[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>] <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(levelcode);</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>            renamecols<span class="op">=</span><span class="cn">false</span>)</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>andrews_2 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">andrewsplot</span>(<span class="op">:</span>Sex, <span class="fu">cols</span>(<span class="fl">2</span><span class="op">:</span><span class="fu">ncol</span>(tbl)));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <div class="cell" data-execution_count="25">
-<div class="cell-output cell-output-display" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">iscategorical</span>(x) <span class="op">=</span> <span class="fu">isa</span>(x, CategoricalArray) <span class="co"># predicate function</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> <span class="pp">@chain</span> survey <span class="cf">begin</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(_, <span class="op">:</span>Sex, <span class="fu">findall</span>(iscategorical, <span class="fu">eachcol</span>(_))[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>] <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(levelcode);</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>            renamecols<span class="op">=</span><span class="cn">false</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>andrews_2 <span class="op">=</span> <span class="pp">@df</span> tbl <span class="fu">andrewsplot</span>(<span class="op">:</span>Sex, <span class="fu">cols</span>(<span class="fl">2</span><span class="op">:</span><span class="fu">ncol</span>(tbl)));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="cell-output cell-output-display" data-execution_count="27">
 <div id="fig-andrews-plots" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="categorical-data-julia_files/figure-html/fig-andrews-plots-output-1.svg" class="img-fluid figure-img"></p>
@@ -660,41 +674,41 @@ F                       │              5              10              10</code
 <h4 class="anchored" data-anchor-id="mosaic-plots">Mosaic plots</h4>
 <p>A mosaic plot presents a graphical view of a two-way contingency table. These are somewhat similar to the grouped bar plot with stacking, but the width of the bars depends on the frequency of the given level.</p>
 <p>This graphic is <em>not</em> part of <code>StatsPlots</code>. We borrow with modification this implementation from <a href="https://github.com/joshday/OnlineStats.jl/blob/master/src/viz/mosaicplot.jl">OnlineStats</a>:</p>
-<div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">FreqTables</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaic_plot</span>(f, g; kwargs<span class="op">...</span>) <span class="op">=</span> <span class="fu">mosaic_plot!</span>(Plots.<span class="fu">Plot</span>(), f, g; kwargs<span class="op">...</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mosaic_plot!</span>(p, f, g; xrotation<span class="op">=-</span><span class="fl">45</span>, kwargs<span class="op">...</span>)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    tbl <span class="op">=</span> <span class="fu">freqtable</span>(f, g)</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">2</span>)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">1</span>)</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    a′ <span class="op">=</span> [a.array<span class="op">...</span>]</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">vcat</span>(<span class="fl">0</span>, <span class="fu">cumsum</span>(a′)) <span class="op">/</span> <span class="fu">sum</span>(a′)</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    tbl′ <span class="op">=</span> <span class="fu">convert</span>(<span class="dt">Matrix</span>{<span class="dt">Float64</span>}, tbl.array)</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    tbl′[tbl′ <span class="op">.==</span> <span class="fl">0</span>] <span class="op">.+=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">10</span>  <span class="co"># give some width when missing</span></span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="fu">prop</span>(tbl′, margins<span class="op">=</span><span class="fl">1</span>)</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="fu">reverse</span>(<span class="fu">cumsum</span>(<span class="fu">prop</span>(tbl′, margins<span class="op">=</span><span class="fl">1</span>), dims<span class="op">=</span><span class="fl">2</span>), dims<span class="op">=</span><span class="fl">2</span>)</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bar!</span>(p,</span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>         <span class="fu">midpoints</span>(x), y;</span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>         legend<span class="op">=</span><span class="cn">false</span>,</span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>         bar_width <span class="op">=</span> <span class="fu">diff</span>(x),</span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>         xlims<span class="op">=</span>(<span class="fl">0</span>,<span class="fl">1</span>), ylims<span class="op">=</span>(<span class="fl">0</span>,<span class="fl">1</span>), linewidth <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>         xticks <span class="op">=</span>  (<span class="fu">midpoints</span>(x), <span class="fu">string</span>.(<span class="fu">names</span>(a,<span class="fl">1</span>))),</span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>         xrotation<span class="op">=</span>xrotation, xmirror<span class="op">=</span><span class="cn">true</span>,</span>
-<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>         yticks <span class="op">=</span> (<span class="fu">midpoints</span>(<span class="fu">vcat</span>(y[<span class="fl">1</span>,<span class="op">:</span>],<span class="fl">0</span>)), <span class="fu">reverse</span>(<span class="fu">string</span>.(<span class="fu">names</span>(b,<span class="fl">2</span>)))),</span>
-<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>         kwargs<span class="op">...</span></span>
-<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>         )</span>
-<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">FreqTables</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaic_plot</span>(f, g; kwargs<span class="op">...</span>) <span class="op">=</span> <span class="fu">mosaic_plot!</span>(Plots.<span class="fu">Plot</span>(), f, g; kwargs<span class="op">...</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mosaic_plot!</span>(p, f, g; xrotation<span class="op">=-</span><span class="fl">45</span>, kwargs<span class="op">...</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    tbl <span class="op">=</span> <span class="fu">freqtable</span>(f, g)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="fu">sum</span>(tbl, dims<span class="op">=</span><span class="fl">1</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    a′ <span class="op">=</span> [a.array<span class="op">...</span>]</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">vcat</span>(<span class="fl">0</span>, <span class="fu">cumsum</span>(a′)) <span class="op">/</span> <span class="fu">sum</span>(a′)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    tbl′ <span class="op">=</span> <span class="fu">convert</span>(<span class="dt">Matrix</span>{<span class="dt">Float64</span>}, tbl.array)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    tbl′[tbl′ <span class="op">.==</span> <span class="fl">0</span>] <span class="op">.+=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">10</span>  <span class="co"># give some width when missing</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="fu">prop</span>(tbl′, margins<span class="op">=</span><span class="fl">1</span>)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="fu">reverse</span>(<span class="fu">cumsum</span>(<span class="fu">prop</span>(tbl′, margins<span class="op">=</span><span class="fl">1</span>), dims<span class="op">=</span><span class="fl">2</span>), dims<span class="op">=</span><span class="fl">2</span>)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bar!</span>(p,</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>         <span class="fu">midpoints</span>(x), y;</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>         legend<span class="op">=</span><span class="cn">false</span>,</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>         bar_width <span class="op">=</span> <span class="fu">diff</span>(x),</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>         xlims<span class="op">=</span>(<span class="fl">0</span>,<span class="fl">1</span>), ylims<span class="op">=</span>(<span class="fl">0</span>,<span class="fl">1</span>), linewidth <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>         xticks <span class="op">=</span>  (<span class="fu">midpoints</span>(x), <span class="fu">string</span>.(<span class="fu">names</span>(a,<span class="fl">1</span>))),</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>         xrotation<span class="op">=</span>xrotation, xmirror<span class="op">=</span><span class="cn">true</span>,</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>         yticks <span class="op">=</span> (<span class="fu">midpoints</span>(<span class="fu">vcat</span>(y[<span class="fl">1</span>,<span class="op">:</span>],<span class="fl">0</span>)), <span class="fu">reverse</span>(<span class="fu">string</span>.(<span class="fu">names</span>(b,<span class="fl">2</span>)))),</span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>         kwargs<span class="op">...</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>mosaic_plot! (generic function with 1 method)</code></pre>
 </div>
 </div>
 <p>For the first variable, displayed on the <span class="math inline">\(x\)</span>-axis, the relative width of the bar is proportional to the marginal proportions; for each level on the <span class="math inline">\(x\)</span>-axis, the vertical bars show the relative proportions of the second variable. For example,</p>
-<div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@df</span> survey <span class="fu">mosaic_plot</span>(<span class="op">:</span>Exer, <span class="op">:</span>Smoke, xlab<span class="op">=</span><span class="st">"Exercise"</span>, ylab<span class="op">=</span><span class="st">"Smoke"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@df</span> survey <span class="fu">mosaic_plot</span>(<span class="op">:</span>Exer, <span class="op">:</span>Smoke, xlab<span class="op">=</span><span class="st">"Exercise"</span>, ylab<span class="op">=</span><span class="st">"Smoke"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
 <div id="fig-mosaicplot-exer-smoke" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="categorical-data-julia_files/figure-html/fig-mosaicplot-exer-smoke-output-1.svg" class="img-fluid figure-img"></p>

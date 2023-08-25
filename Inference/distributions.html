@@ -375,13 +375,13 @@ VAR(\bar{X}) &amp;= \frac{1}{n^2} \cdot \left(\sum_k VAR(X_k) + 2\sum_{i &lt; j}
 <li>The data set is <em>typically</em> summarized by sample statistics.</li>
 </ul>
 <p>Statistical inference makes statements using the language of probability about the <em>parameters</em> in terms of various sample statistics.</p>
-<p>An intuitive example is the tossing of a fair coin modeling heads by a <span class="math inline">\(1\)</span> and tails by a <span class="math inline">\(0\)</span> then we can <em>parameterize</em> the distribution by <span class="math inline">\(f(1) = P(X=1) = p\)</span> and <span class="math inline">\(f(0) = P(X=0) = 1 - P(X=1) = 1-p\)</span>. This distribution is summarized by <span class="math inline">\(\mu=p\)</span>, <span class="math inline">\(\sigma = \sqrt{p(1-p)}\)</span>. A <em>fair</em> coin would have <span class="math inline">\(p=1/2\)</span>. A sequence of coin tosses, say H,T,T,H,H might be modeled by a sequence of iid random variables, each having this distribution. The we might expect a few things, where <span class="math inline">\(\hat{p}\)</span> below is the proportion of heads in the <span class="math inline">\(n\)</span> tosses:</p>
+<p>An intuitive example is the tossing of a fair coin modeling heads by a <span class="math inline">\(1\)</span> and tails by a <span class="math inline">\(0\)</span> then we can <em>parameterize</em> the distribution by <span class="math inline">\(f(1) = P(X=1) = p\)</span> and <span class="math inline">\(f(0) = P(X=0) = 1 - P(X=1) = 1-p\)</span>. This distribution is summarized by <span class="math inline">\(\mu=p\)</span>, <span class="math inline">\(\sigma = \sqrt{p(1-p)}\)</span>. A <em>fair</em> coin would have <span class="math inline">\(p=1/2\)</span>. A sequence of coin tosses, say H,T,T,H,H might be modeled by a sequence of iid random variables, each having this distribution. Then we might expect a few things, where <span class="math inline">\(\hat{p}\)</span> below is the proportion of heads in the <span class="math inline">\(n\)</span> tosses:</p>
 <ul>
 <li>A given data set is not random, but it may be viewed as the result of a random process and had that process been run again would likely result in a different outcome. These different outcomes may be described probabalistically in terms of a distribution.</li>
 <li>If <span class="math inline">\(n\)</span> is large enough, the sample proportion <span class="math inline">\(\hat{p}\)</span> should be <em>close</em> to the population proportion <span class="math inline">\(p\)</span>.</li>
 <li>Were the sampling repeated, the variation in the values of <span class="math inline">\(\hat{p}\)</span> should be smaller for larger sample sizes, <span class="math inline">\(n\)</span>.</li>
 </ul>
-<p>These imprecise statements can be made more precise, as will be seen. The right graphic in <a href="#fig-pop-parameters-sample">Figure&nbsp;<span>7.2</span></a> shows this for a bell-shaped population. Each of the 10 rows of dots shows a random sample of size <span class="math inline">\(n=9\)</span> which is summarized by its sample mean with a red star. The boxplot summarizes the red stars. The spread of the bell shaped population is much greater than the spread of the empirical density plot summarizing the sample means. By the above, we’d expect the standard deviation of the population to be <span class="math inline">\(\sqrt{9}\)</span> times bigger than the standard deviation of the sample mean statistic.</p>
+<p>These imprecise statements can be made more precise, as will be seen. Figure <a href="#fig-pop-parameters-sample">Figure&nbsp;<span>7.2</span></a> illustrates a population, several different samples from it with the <em>sample means</em> visualized by a density plot. The density plot is centered at the same location as the population, but is narrower, reflecting smaller variability.</p>
 <div class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div id="fig-pop-parameters-sample" class="quarto-figure quarto-figure-center anchored">
@@ -392,13 +392,12 @@ VAR(\bar{X}) &amp;= \frac{1}{n^2} \cdot \left(\sum_k VAR(X_k) + 2\sum_{i &lt; j}
 </div>
 </div>
 </div>
-<p>However, the center of the population and the center of the empirical density plot are nearly the same. This is because the mean of the population is the same as the mean of the sample-mean statistic.</p>
 <p>Inferential statistics is similar: A population is a distribution summarized by parameters. A random sample drawn from a population is summarized by statistics. A statistic summarizes just one sample, but the language of probability is used to infer from that one sample, statements about the parameters which would be apparent were there many different random samples.</p>
 </section>
 </section>
 <section id="the-distributions-package" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="the-distributions-package"><span class="header-section-number">7.2</span> The Distributions package</h2>
-<p>While populations are in general described by a cdf, populations which are discrete or continuous are more naturally described by their pdf. There are many standard pdfs used to describe different types of randomness. Many of these are supported in the <code>Distributions</code> package. This section reviews several.</p>
+<p>While populations are in general described by a cdf, populations which are discrete or continuous are more naturally described by their pdf. There are many standard pdfs used to describe different types of randomness and supported in the <code>Distributions</code> package. This section reviews several.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -530,16 +529,16 @@ p: [0.3010299956639812, 0.17609125905568124, 0.12493873660829996, 0.096910013008
 </section>
 <section id="the-continuous-uniform-distribution" class="level3" data-number="7.2.3">
 <h3 data-number="7.2.3" class="anchored" data-anchor-id="the-continuous-uniform-distribution"><span class="header-section-number">7.2.3</span> The continuous uniform distribution</h3>
-<p>The continuous uniform distribution models equally likely outcomes over an interval <span class="math inline">\([a,b]\)</span>. (The endpoints possibly open, as mathematically they have no chance of being selected.) For example, the built-in <code>rand</code> function for Float64 values returns random numbers which are modeled by being uniform over <span class="math inline">\([0,1)\)</span>. (That they can be <code>0</code> but not <code>1</code> is a reality of how computers and mathematical models aren’t always exactly the same, but rather the model is a abstraction of the implementation.)</p>
+<p>The continuous uniform distribution models equally likely outcomes over an interval <span class="math inline">\([a,b]\)</span>. (The endpoints possibly open, as mathematically they have no chance of being selected.) For example, the built-in <code>rand</code> function for Float64 values returns random numbers which are modeled by being uniform over <span class="math inline">\([0,1)\)</span>. (That they can be <code>0</code> but not <code>1</code> is a reality of how computers and mathematical models aren’t always exactly the same, but rather the model is an abstraction of the implementation.)</p>
 <p>The <code>Uniform(a,b)</code> type models these numbers. Here we see <code>rand</code> being used to randomly sample <span class="math inline">\(3\)</span> uniform numbers using a more general interface than the use of <code>rand</code> in base <code>Julia</code>:</p>
 <div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rand</span>(U, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>3-element Vector{Float64}:
- 0.8503731914181489
- 0.3229835570193518
- 0.044463821185537156</code></pre>
+ 0.36709802506384326
+ 0.43451278460732823
+ 0.620105337583204</code></pre>
 </div>
 </div>
 <p>If <span class="math inline">\(U\)</span> is Uniform on <span class="math inline">\([0,1]\)</span> then <span class="math inline">\(Y = aU + b\)</span> is uniform on <span class="math inline">\([b, b+a]\)</span>. The difference in means is shifted by <span class="math inline">\(b + E(U)\)</span>, the difference in standard deviations is scaled by <span class="math inline">\(a\)</span>. We can do the algebra of linear transformations using overloaded operations:</p>
@@ -624,7 +623,7 @@ T = \frac{Z}{\sqrt{Y/\nu}}.
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>T5 <span class="op">=</span> <span class="fu">TDist</span>(<span class="fl">5</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">maximum</span>(abs, <span class="fu">rand</span>(T5, <span class="fl">100</span>)), <span class="fu">maximum</span>(abs, <span class="fu">rand</span>(Z, <span class="fl">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
-<pre><code>(3.0300315074385837, 2.5216209999074044)</code></pre>
+<pre><code>(3.862961862620664, 2.4184712053741104)</code></pre>
 </div>
 </div>
 <p><a href="#fig-qqplots-distributions">Figure&nbsp;<span>7.5</span></a> shows a quantile-normal plot of <span class="math inline">\(T(3)\)</span> in the lower-left graphic. The long tails cause deviations in the pattern of points from a straight line.</p>
@@ -642,7 +641,7 @@ T = \frac{Z}{\sqrt{Y/\nu}}.
 <pre><code>(true, true)</code></pre>
 </div>
 </div>
-<p>For the <span class="math inline">\(T\)</span>-distribution, when the degrees of freedom gets large, say bigger than <span class="math inline">\(100\)</span>, the distribution is well approximated by the normal. Here we see a similar comparison as above. For a quantile-normal plot see the upper-right graphic in <a href="#fig-qqplots-distributions">Figure&nbsp;<span>7.5</span></a>.</p>
+<p>For the <span class="math inline">\(T\)</span>-distribution, when the degrees of freedom gets large, say bigger than <span class="math inline">\(100\)</span>, the distribution is well approximated by the normal. In the following code, we see a similar comparison as above to compare the difference. For a quantile-normal plot see the upper-right graphic in <a href="#fig-qqplots-distributions">Figure&nbsp;<span>7.5</span></a>.</p>
 <div class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>T100 <span class="op">=</span> <span class="fu">TDist</span>(<span class="fl">100</span>)</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length<span class="op">=</span><span class="fl">100</span>)</span>

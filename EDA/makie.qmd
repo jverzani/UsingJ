@@ -1,5 +1,6 @@
 # The `AlgebraOfGraphics` package
 
+
 The `StatsPlots` package has been used to illustrate the standard graphics of exploratory statistics. That package leverages `Plots`, a `Julia` interface to multiple plotting backends. The `GR` one renders the images seen. There are a few alternatives. The `Makie` [@DanischKrumbiegel2021] plotting system along with the `AlgebraOfGraphics` [@AoG] package makes a very compelling one.
 
 The `AlgebraOfGraphics` packages offers a *declarative* style to create statistical graphics. An example from the [documentation](https://aog.makie.org/stable/philosophy/) shows the code to do the following "declare the dataset; declare the analysis; declare the arguments used; declare the grouping and the respective visual attribute; draw the visualization." This is all done through a series of composable commands, illustrated by example below. The Pumas project has a much more extensive [tutorial](https://tutorials.pumas.ai/html/PlottingInJulia/) than is presented here.
@@ -60,7 +61,7 @@ chosen theme.
 The `visual(BoxPlot)` command declares the visualization or
 transformation to be used to view the data.  The `visual` function
 expects a *type* indicating the plot type to use and optional keyword
-argument. In this case `BoxPlot` is the type associated with the
+arguments. In this case, `BoxPlot` is the type associated with the
 `Makie.boxplot` function. At times this type must be qualified, such
 as with `Text`, for annotations.
 
@@ -71,14 +72,17 @@ Both the `mapping` and `visual` calls can be used to set attributes:
 
 The attributes are those for the underlying plotting function. For `visual(BoxPlot)`, these can be seen at the help page for `boxplot`, displayed with the command `?boxplot`.
 
-The `mapping` calls shows two uses of the mini language for data manipulation. The basic form is `source => function => target` and works very much like the DataFrames mini language does for `select` or `transform`, but unlike those, the function is *always* applied by row. This makes some transformations, such as $z$-scores not possible within this call -- transformations requiring the entire column need to be done within the values passed to `data`. The abbreviated forms are just `source`, as used with the `color=:species` argument; `source => function`; and `source => target`, such as `:bill_length_mm => "bill length (mm)"` used to rename the variable for labeling purposes. When the source involves more than one column selector, tuples should be used to group them. A few functions are provided to bypass the usual mapping of the data. (For example, `color` maps levels of a factor to a color ramp behind the scenes.) Among these are `nonnumeric` to pass a numeric variable to a value expecting a categorical variables and `verbatim` to avoid this mapping. The latter, `=> verbatim`, will be necessary to add when annotating a figure.
+The `mapping` calls shows two uses of the mini language for data manipulation. The basic form is `source => function => target` and works very much like the DataFrames mini language does for `select` or `transform`, but unlike those, the function is *always* applied by row. This makes some transformations, such as $z$-scores not possible within this call -- transformations requiring the entire column need to be done within the values passed to `data`. The abbreviated forms are just `source`, as used with the `color=:species` argument; `source => function`; and `source => target`, such as `:bill_length_mm => "bill length (mm)"` used to rename the variable for labeling purposes. When the source involves more than one column selector, tuples should be used to group them.
 
-The object `p` can be rendered to the screen with the `draw` method resulting in @fig-basic-boxplot-penguin. Just `draw(p)` will render the graphic, the following also shows how the `figure` keyword argument can be used to set attributes using a named tuple, in this case the figure size. Similarly `axis` values can be modified in this manner.
+A few functions are provided to bypass the usual mapping of the data. (For example, `color` maps levels of a factor to a color ramp behind the scenes.) Among these are `nonnumeric` to pass a numeric variable to a value expecting a categorical variable and `verbatim` to avoid this mapping. The latter, `=> verbatim`, will be necessary to add when annotating a figure.
+
+The object `p` can be rendered to the screen with the `draw` method resulting in @fig-basic-boxplot-penguin. Just `draw(p)` will render the graphic, the following also shows how the `figure` keyword argument can be used to set attributes using a named tuple, in this case the figure size. Similarly `axis` values can be modified in this manner. In the following, we set a title attribute for the axis.
 
 ```{julia}
 #| label: fig-basic-boxplot-penguin
 #| fig-cap: Boxplots of bill length for the three penguin species in `penguins`.
-draw(p; figure=(resolution=(600,400),) )
+draw(p; figure=(;resolution=(600,400)),
+     axis=(; title="Bill length"))
 ```
 
 This is the basic pattern where different choices are combined, or merged, with the `*` operation. The pieces can be re-purposed. In the following, we make use of this data:
@@ -100,7 +104,7 @@ p1 = d * visual(BoxPlot) *
     mapping(1 => one, :bill_length_mm => "Bill length (mm)");
 ```
 
-The mini language is used above two different ways: with a function to create the single value for `x` (`AlgebraOfGraphics` will treat this to a factor, so `one` isn't needed, just some single-valued function) *and* with a target for labeling the `y` variable. As mentioned, such transformation can also have be done within the data frame passed to `data`.
+The mini language is used above two different ways: with a function to create the single value for `x` (`AlgebraOfGraphics` will treat this to a factor, so `one` isn't needed, just some single-valued function) *and* with a target for labeling the `y` variable. As mentioned, such transformations can also  be done within the data frame before it is passed to `data`, which is necessary for some types of transformations.
 
 To add another layer, in this case a scatter plot, we can *add* the plotting objects:
 
@@ -468,3 +472,47 @@ draw!(f[2,1], p3)
 draw!(f[2,2], p4)
 f
 ```
+
+## Customizing plots through `axis`
+
+There are a numerous customizations available when drawing a plot. We discuss a small handful of them here. See the [PumasAI](https://tutorials.pumas.ai/html/PlottingInJulia/04-AoG-Custom.html) tutorial and the documentation for more details.
+
+
+The `draw` command allows the passing of values to the `axis` mechanism of `Makie`. This allows customization of various features such as the title, the ticks, the aspect ration, and the grids.
+
+`Makie` plots are themeable. In the above we used `set_aog_theme!()`. This theme sets a number of defaults for the axis attributes:
+
+```
+Axis = (
+        xgridvisible=false,
+        ygridvisible=false,
+        topspinevisible=false,
+        rightspinevisible=false,
+        bottomspinecolor=:darkgray,
+        leftspinecolor=:darkgray,
+        xtickcolor=:darkgray,
+        ytickcolor=:darkgray,
+        xticklabelfont=lightfont,
+        yticklabelfont=lightfont,
+        xlabelfont=mediumfont,
+        ylabelfont=mediumfont,
+        titlefont=mediumfont,
+    )
+```
+
+To override these or pass other attributes on to the rendering, the `axis` keyword argument accepts a named tuple of values. So, for example, to set the graphics title, we would see `axis=(; title="Some title")`, to instruct the labels in a barplot on the `x` axis to be rotated, we would see `axis=(; xticklabelrotation = pi/2)`. Of course these would typically combined, as above.
+
+The following lists some useful attributes. A complete list is in the [Makie](https://docs.makie.org/dev/api/#Axis) docs for the `Axis` constructor.
+
+
+The aspect ratio for a graphic is adjustable through the `aspect` attribute.
+
+The following labeling attributes can be adjusted: `title`, `subtitle`, `xlabel`, `ylabel`. These take a string (or an observable) for the value to display. This value can be adjusted, for example, there are `titlealign`, `titlecolor`, `titlefont`, `titlesize`, and `titlevisible` attributes. Similar attributes exist for the other labels.
+
+An axis has ticks. These are often numbers. For the ticks on an `x` axis there are attributes `xticks`, `xtickcolor`, `xtickformat`, `xticksize`, and `xtickwidth`. Similarly with `y`. There are also minor ticks, adjustable with, for example, `xminorticks`, `xminortickcolor`, `xminorticksize`, etc.
+
+For ticks representing categorical values, labels are used. Attributes for tick labels include: `xticklabelalign`, `xticklabelcolor`, `xticklabelfont`, `xticklabelrotation`, and `xticklabelsize`.
+
+The displayed grid is adjustable through attributes like `xgridcolor`, `xgridstyle`, `xgridvisible`, `xgridwidth`, along with "`minor`" versions.
+
+For 3 dimension plots, the `Axis3` object is used for display. This has similarly named attributes for `z` values.

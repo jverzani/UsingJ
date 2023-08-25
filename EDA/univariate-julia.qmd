@@ -33,10 +33,10 @@ whale_matrix = [74 122 235 111 292 111 211 133 156 79]
 
 
 ::: {.callout-note}
-##### Space saving measure
+##### Space-saving measure
 
 For purposes of printing only, we use `show` or the trailing `|> show` (which uses the chaining operation to call the `show` function) in the following to format how a vector is printed.
-This is only a space saving measure and wouldn't normally be done when interacting with `Julia`.^[For some case, where `show` takes too much horizontal space, `permutedims` is used for a similar purpose, as may elide some values.]
+This is only a vertical-space-saving measure and wouldn't normally be done when interacting with `Julia`.^[For some cases, where `show` takes too much horizontal space, `permutedims` is used for a similar purpose, as it may elide some values.]
 
 ```{julia}
 show(whale)
@@ -50,7 +50,7 @@ $2$-dimensional array. `Julia` has a general $N$-dimensional array
 type that these are specializations of.  For a matrix, one uses space
 to separate row elements and semicolons to separate rows. Vectors are
 useful for storing data; matrices can be used to store data, as will
-be seen through exmaple, but are widely used to represent mathematical
+be seen through example, but are widely used to represent mathematical
 values, as they have an associated algebra that can compactly
 represent many operations (we will see a data frame is more idiomatic
 for storing rectangular data); arrays are not used in our discussion.
@@ -118,7 +118,7 @@ In particular, all of these  combinations with `missing` yield `missing`, as the
 ::: {.callout-note}
 ##### Also nothing and something
 
-In `Julia` there is also `nothing`. The semantics are a bit different, and `missing` is the designed choice for data. (The `nothing` value is useful for general programming purposes.) For floating point values, there is also `NaN`, or not a number. This too is often used, as a sentinel value, to indicate missingness, though `missing` is idiomatic. The `something` function is used to skip over its arguments until a non-`nothing` value is found. The `coalesce` function does a similar thing with `missing` values.
+In `Julia` there is also `nothing`. The semantics are a bit different, and `missing` is the designed choice for data. (The `nothing` value is useful for general programming purposes.) For floating point values, there is also `NaN`, or not a number. This too is often used as a sentinel value, to indicate missingness, though `missing` is idiomatic. The `something` function is used to skip over its arguments until a non-`nothing` value is found. The `coalesce` function does a similar thing with `missing` values.
 :::
 
 To work with missing data, it can be removed or skipped over. The `skipmissing` function provides a wrapper around an object which when iterated over, will skip the missing values. For example:
@@ -270,7 +270,7 @@ The extraction of values from a vector, as above, necessitates the allocation of
 view(whale, [3,4,6])
 ```
 
-The `end` and `begin` keywords do not work with `view`^[Though `:` does, as it is a function, not a keywoard.], though the `lastindex` and `firstindex` functions do:
+The `end` and `begin` keywords do not work with `view`^[Though `:` does, as it is a function, not a keywoard.]; the `lastindex` and `firstindex` functions do:
 
 ```{julia}
 view(whale, firstindex(whale)+1:lastindex(whale)-1) |> show
@@ -319,7 +319,7 @@ We also see that as `whale_copy` points to the same container, it too was modifi
 ::: {.callout-note}
 ##### Mutation
 
-When a vector is passed to a function, if there is no copy made (as opposed to a simple naming), then changes to the vector in the function will effect the original vector as the container used in the body of the function isn't changed. Functions which *modify* an argument that is passed to them (conventionally the first one) are *usually* named with a trailing `!`.
+When a vector is passed to a function, if there is no copy made (as opposed to a simple naming), then changes to the vector in the function will effect the original vector as the container used in the body of the function isn't changed. Functions which *modify* an argument that is passed to them (usually the first one) are *conventionally* named with a trailing `!`, though this has no semantic implication.
 
 :::
 
@@ -327,19 +327,19 @@ When a vector is passed to a function, if there is no copy made (as opposed to a
 Multiple values can be assigned at once. For example, if the data was mis-arranged chronologically, we might have:
 
 ```{julia}
-whale[[1,2,3]] = [235, 74, 122]
+whale[ [1,2,3] ] = [235, 74, 122]
 show(whale)
 ```
 
 The above modified the original container, so these changes would also be reflected in `whale_copy`.
 
 `Julia` does not recycle values to be assigned by default, where
-recycling involves some rules where the space rferenced on the
+recycling involves some rules where the space referenced on the
 left-hand side of an assignment does not match in size the space
 needed to store the right-hand side of an assignment.  *Broadcasted
 assignment* (cf. `?.=`) can produce a similar behavior. Broadcasted
 assignment expands the right-hand side to match the space expected on
-the left and then does the assignment. For example, if we wanted
+the left side (when possible) and then does the assignment. For example, if we wanted
 to use a sentinel value to indicate unknown data for the first 3
 values, we might have:
 
@@ -495,7 +495,14 @@ sqrt.(whale)  |> show
 
 Broadcasting works with functions of multiple arguments and multiple shapes.
 
-The use of multiple shapes allows scalars and vectors to be broadcast over and is used in `whale .- mean(whale)`. But vector and *row* vectors can also be broadcast over, So `[1,2] .+ [3,4]` does vector addition, `[1,2] .+ [3 4]` pads out the vector to a matrix, the row vector to a matrix, then adds entry-by-entry:
+The use of multiple shapes allows scalars and vectors to be broadcast over and is used in `whale .- mean(whale)`. With this, the standard deviation could be computed with:
+
+```{julia}
+sqrt( sum((whale .- mean(whale)).^2)/(length(whale) - 1) )
+```
+
+
+Vector and *row* vectors can also be broadcast over, So `[1,2] .+ [3,4]` does vector addition, `[1,2] .+ [3 4]` pads out the vector to a matrix, the row vector to a matrix, then adds entry-by-entry:
 
 ```{julia}
 (v=[1,2], rv=[3 4], va = [1,2] .+ [3,4], ma = [1, 2] .+ [3 4], ck=[1 1; 2 2] + [3 4; 3 4])
@@ -541,7 +548,7 @@ The above illustrates that addition of an integer and a floating point yields a 
 ::: {.callout-note}
 ##### Type stability
 
-`Julia` programmers try to make functions "type stable," if possible, as this generally leads to more performant code, once compiled. A consequence is addition of numbers, like `1 + 1.0` will *always* be a floating point value, even if in the case of these particular *values* an integer could be the answer. That is the output type of `+` here is determined by the input *types*, not the input *values*.
+`Julia` programmers try to make functions "type stable," if possible, as this generally leads to more performant code, once compiled. A consequence is addition of numbers, like `1 + 1.0` will *always* be the wider type (here a floating point value), even if in the case of these particular *values* an integer could be the answer. That is the output type of `+` here is determined by the input *types*, not the input *values*.
 
 :::
 
@@ -573,7 +580,7 @@ The string type in `Julia` can hold Unicode data, such as non-ASCII letters and 
 
 ::: {.callout-note}
 ##### Entering Unicode
-In the REPL Unicode values may be entered using $\LaTeX$ [shortcuts](https://docs.julialang.org/en/v1/manual/unicode-input/), e,g., `\alpha[tab]` to produce $\alpha$. Many interfaces also allow this.
+In the REPL Unicode values may be entered using LaTeX [shortcuts](https://docs.julialang.org/en/v1/manual/unicode-input/), e,g., `\alpha[tab]` to produce $\alpha$. Many interfaces also allow this.
 :::
 
 Double quotes are used to create a string. Triple, double quotes can be used to create multi-line strings.
@@ -728,7 +735,8 @@ The same command can be used to consolidate labels. For example, suppose we want
 
 ```{julia}
 replace!(x, (["Tall, 12oz", "Venti, 16oz"] .=> "regular sized")...)
-replace(x, "Grande, 20oz" => "Really big")
+replace!(x, "Grande, 20oz" => "Really big")
+x
 ```
 
 Categorical data, like numeric data, can also be combined with `vcat`, say. If ordered, as much as possible, an order will attempt to be matched.
@@ -772,13 +780,13 @@ To create such Boolean vectors, the comparison operators are typically used *com
 
 ```{julia}
 whale = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
-whale[ whale .>= 200]
+whale[ whale .>= 200 ]
 ```
 
 Or, this example -- which shows the mathematically natural chaining of comparison operators --  filters out only the values in $[100, 125)$:
 
 ```{julia}
-whale[ 100 .<= whale .< 125]
+whale[ 100 .<= whale .< 125 ]
 ```
 
 
@@ -942,7 +950,7 @@ The `mad` function from `StatsBase` has signature `mad(x; center=median(x), norm
 mad(whale; center=mean(whale))
 ```
 
-(We use a semicolon to separate positional arguments from keyword arguments, as that is needed to define a keyword, but commas can be used to call a keyword argument. What is important is the keywords come last.)
+(We use a semicolon to separate positional arguments from keyword arguments, as that is needed to define a keyword, but commas can be used to call a keyword argument. What is important is that any keywords come last when a function is called.)
 
 Functions, as defined above, are methods of a  `generic function`. That is, there can be more than one method for a given name. (There are over 200 methods for the generic function named `+` in base `Julia` -- and packages can extend this even more.) To direct or *dispatch* a call to the appropriate method, `Julia` considers the number and types of its positional arguments. That is, like `+`, functions can be defined differently for integers and floating point values.
 
@@ -1091,7 +1099,7 @@ The $z$-score is a different measure of position. It measures differences from t
 zs = (whale .- mean(whale)) / std(whale)
 ```
 
-A rule of thumb, based on a certain bell-shaped distribution, is that values larger than 3 in absolute value are unusual, none of which are seen in this data.
+A rule of thumb, based on a certain bell-shaped distribution, is that values larger than $3$ in absolute value are unusual, none of which are seen in this data.
 
 The $z$-score is the typical form of *standardization* and is also supported directly through either of the following:
 
@@ -1114,9 +1122,9 @@ $$
 \bar{x} = \frac{1}{n} \sum_{i=1}^n x_i.
 $$
 
-A property of the mean is when we *center* by the mean, i.e. take the transformation $y_i = x_i - \bar{x}$, then the mean of the $y_i$ is just $0$. Put another way, the mean is the point where the differences to the left and right of the mean even out when added.
+A property of the mean is when the data is *centered* by the mean, i.e. take the transformation $y_i = x_i - \bar{x}$, then the mean of the $y_i$ is just $0$. Put another way, the mean is the point where the differences to the left and right of the mean even out when added.
 
-The standard deviation, as a sense of scale, has the property that if we center and *then scale* by the standard deviation, the center will be $0$ and the scale will be $1$. That is, the $z$-scores have mean $0$ (as we've centered) and standard deviation $1$ (as we've scaled) -- the $z$ scores speak to the "shape" or distribution of values of a data set.
+The standard deviation, as a sense of scale, has the property that if the data is  centered and *then scaled* by the standard deviation, the center will be $0$ and the scale will be $1$. That is, the $z$-scores have mean $0$ (as they data is centered) and standard deviation $1$ (as the data is scaled) -- the $z$ scores speak to the "shape" or distribution of values of a data set.
 
 These measures are sensitive -- or not *resistant* -- to one or more *outlying* values. For example, the average wealth of people in a bar changes dramatically if someone like a pre-crash Elon Musk walks in. The standard deviation is similar. So measures based on position are better when data is *skewed*, especially if heavily skewed. For these, the median and IQR are not impacted greatly by one large value. That is they are resistant to outliers. The extreme values (the minimum and maximum) are less so. As such, the range of the data is a poor measure of spread, the range of the middle quartiles (the IQR) a much more resistant measure of spread.
 
@@ -1156,9 +1164,9 @@ kurtosis(whale)
 ```
 
 
-These numeric summaries are helpful, but to best see **shape of a distribution** graphical summaries are suggested.
+These numeric summaries are helpful, but to best see the **shape of a distribution** graphical summaries are suggested.
 
-A stem or stem-and-leaf plot is useful summary of a data set that can be computed easily by hand for modest-sized data. In short, numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.
+A stem or stem-and-leaf plot is a useful summary of a data set that can be computed easily by hand for modest-sized data. In short, numbers are coded in terms of a stem and a leaf. The stems are not repeated, so the data can be more compactly displayed. The data is organized so that the extrema, the median, and the shape of the data can be quickly gleaned.
 
 A stem-and-leaf plot function is not part of the `StatsBase` package.^[Stem-and-leaf plots are very useful for organizing data by hand, but better graphics can be used to illustrate data and its distribution on the computer.] This one, below, is modified from a RosettaCode [submission](https://rosettacode.org/wiki/Stem-and-leaf_plot#Julia). It is simplified by assuming non-negative data. Essentially, it finds the right place to split a number into two values, a stem and a leaf. Then it displays each.
 
@@ -1181,13 +1189,13 @@ function stemleaf(a::Array{T,1}, leafsize=1) where {T<:Real}
 end
 ```
 
-For the `whale` data, which is spread out over a wide range, we use a leaf size of 10:
+For the `whale` data, which is spread out over a wide range, we use a leaf size of $10$:
 
 ```{julia}
 stemleaf(whale, 10) |> print
 ```
 
-We can identify `0|7` which is `0*100 + 70` or 70 as the "smallest" value. The *actual* smallest value is $74$, but the data is rounded for this graphic so that just two digits (the stem and leaf) can represent all the values. Similarly 290  is identified as the largest values (which is actually 292).
+We can identify `0|7` which is `0*100 + 70` or $70$ as the "smallest" value. The *actual* smallest value is $74$, but the data is rounded for this graphic so that just two digits (the leaf always is represented by one, the stem may use more than one) can represent all the values. Similarly $290$  is identified as the largest values (which is actually $292$).
 
 For graphical summaries of data, we will introduce the `StatsPlots` package, which adds to the `Plots` package recipes for many statistical graphics. In later chapters we will use a different plotting package, but for now, the `StatsPlots` package provides easy to use and understand methods to produce the desired graphics.
 

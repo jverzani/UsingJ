@@ -103,6 +103,13 @@ Grouped boxplots are made in a similar manner to the last example using `boxplot
 @df iris boxplot(:Species, :PetalWidth; legend=false)
 ```
 
+An article from [fivethirtyeight.com](https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/) contained the boxplots in @fig-five-thirty-eight. The graphic used does not show the traditional "1.5IQR" whiskers, rather it extends the box using shading.
+
+
+![Crossword times by method](xword-boxplots.png){#fig-five-thirty-eight fig-alt="A version of a box-and-whisker plot for comparing the time that a very fast crossword puzzler takes when done on the computer and the paper. The various summary statistics, such as the median, are all less on the computer.
+"}
+
+
 ::: {.callout-note}
 ##### Ode to the boxplots
 
@@ -140,6 +147,17 @@ p2 = @df iris density(:PetalWidth, group=:Species);
 #| fig-cap: Density plots of `PetalWidth` and `PetalWidth` by `Species`. The left graphic suggests multiple modes, which are revealed in the right graphic.
 plot(p1, p2, layout=(@layout [a b]))#, size=fig_size_2)
 ```
+
+### Histograms across groups
+
+The density plot is, perhaps, less familiar than a histogram, but makes a better graphic when comparing two or more distributions, as the individual graphics don't overlap. There are attempts to use the histogram, and they can be effective. In @fig-xword-histograms, taken from an article on [fivethirtyeight.com](https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/) on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overalpping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In `StatsPlots`, the `grouped hist` function can produce similar graphics.
+
+::: {#fig-xword-histograms}
+
+![Crossword times by day](xword-histogram.png)
+
+Dotplots for solving times of various New York Times crossword puzzled grouped by day of the puzzle.
+:::
 
 
 ### Quantile comparisons
@@ -267,7 +285,7 @@ The expression "correlation is not causation" is a common one, due to efforts by
 
 We mentioned that the Pearson correlation is a measure of a linear association and the Spearman rank correlation a measure of monotonic association. We now discuss some basic *trend lines* that highlight the association in paired data, where there is response variable.
 
-We use the language *explanatory* variable to describe the $x$ variable, and *response* variable to describe the $y$ variable, with the understanding that $x$ might be experimentally controlled and $y$ a random measured response. The "line" is an explanation of how the $y$ values vary *on average* as the $x$ values vary by the experimenter.
+We use the language *explanatory* variable to describe the $x$ variable, and *response* variable to describe the $y$ variable, with the understanding that $x$ might be experimentally controlled and $y$ a random, measured response. The "line" is an explanation of how the $y$ values vary *on average* as the $x$ values vary by the experimenter.
 
 
 There are many choices for how to identify a trend line, though we will show one such way that is the most commonly used. To set it in a mathematical setting, a line can be parameterized by two values, $y = \beta_0 + \beta_1 x$. Use the value $\hat{y}_i = \beta_0 + \beta_1 x_i$, which is the $y$ value of the point on the line corresponding to $x_i$. The residual amount is usually defined by $e_i = y_i - \hat{y}_i$. That is the vertical distance from the data point to the line. See @fig-two-models for a visualization. One could argue that the distance to the line might be better than the vertical distance, but this choice leads to a very useful mathematical characterization.
@@ -353,7 +371,7 @@ y_2 & = \beta_0 + \beta_1 x_2\\
 y_n & = \beta_0 + \beta_1 x_n\\
 \end{align*}
 
-There are 2 unknowns, $\beta_0$ and $\beta_1$. *Were* there two equations ($n=2$), we could solve by substitution to find an expression for these in terms of $(x_1,y_1)$ and $(x_2, y_2)$. We algebraically solve this below with the help of a symbolic math package:
+There are $2$ unknowns, $\beta_0$ and $\beta_1$. *Were* there two equations ($n=2$), we could solve by substitution to find an expression for these in terms of $(x_1,y_1)$ and $(x_2, y_2)$. We algebraically solve this below with the help of a symbolic math package:
 
 ```{julia}
 using SymPy
@@ -540,7 +558,7 @@ In the definition of `loess_line!` and @fig-robust-regression a `predict` method
 
 The language comes from the usage of statistical models.
 
-The explanatory "variable", in general, may consist of 0, 1, or more variables. Examples with 0 or 1 for `lm` were given. It is not hard to envision in the `iris` data that the petal length might be influenced by the species, the petal width, and even details of the sepal sizes. The word explanatory hints that the $y$ values should be somehow explained by the covariates. Of course, statistical data is typically subject to variability, so even if all covariates are equal, different responses need not be the same. A statistical model may account for this by expressing a relationship:
+The explanatory "variable", in general, may consist of $0$, $1$, or more variables. Examples with $0$ or $1$ for `lm` were given. It is not hard to envision in the `iris` data that the petal length might be influenced by the species, the petal width, and even details of the sepal sizes. The word explanatory hints that the $y$ values should be somehow explained by the covariates. Of course, statistical data is typically subject to variability, so even if all covariates are equal, different responses need not be the same. A statistical model may account for this by expressing a relationship:
 
 > response = predicted + error
 
@@ -632,7 +650,7 @@ end
 
 The `hat` function computes a matrix that arises in the regression model, its diagonal entries are returned by `hatvalues`. These are used to scale the residuals to produce the *standardized residuals*, computed by `rstandard`. The generic `leverage`, defined in `StatsBase`, is intended to compute what `hatvalues` does, but it currently doesn't have a method defined in `GLM`.
 
-The 4 basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In @fig-diagnostic-plots the 4 graphics are shown for the "setosa" species data with PetalWidth modeled by PetalLength.
+The four basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In @fig-diagnostic-plots the four graphics are shown for the "setosa" species data with PetalWidth modeled by PetalLength.
 
 
 
@@ -728,7 +746,7 @@ There is an *automated* group of transformations called  *power transformations*
 
 ```{julia}
 #| label: fig-box-cox-animals
-#| fig-cap: The `animals` data after both the `Body` and `Brain` variables have been transformed through the Box-Cox method. This data set has 3 outliers that pull the `lm` regression line downward, but do not impact the robust regression line, which more accurately captures the trend for all but the 3 outliers (which happen to be dinosaur species).
+#| fig-cap: The `animals` data after both the `Body` and `Brain` variables have been transformed through the Box-Cox method. This data set has three outliers that pull the `lm` regression line downward, but do not impact the robust regression line, which more accurately captures the trend for all but the three outliers (which happen to be dinosaur species).
 import BoxCoxTrans
 transform!(animals, [:Brain,:Body] .=> BoxCoxTrans.transform .=> [:bcBrain, :bcBody])
 

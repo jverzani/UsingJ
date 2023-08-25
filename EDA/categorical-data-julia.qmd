@@ -7,26 +7,37 @@ We will use the following, by now standard, packages in this chapter:
 ```{julia}
 using StatsBase, StatsPlots
 using DataFrames, Chain, CategoricalArrays
-import RDatasets: dataset
+using RDatasets
 ```
 
 
 ## Univariate categorical data
 
-We first start with a single categorical variable before turning our attention to one or more.
+We first start with a single categorical variable before turning our attention to the case of one or more such variables.
 
 ### Tabulations
 
 Let's consider a data set from R's `MASS` package on a student survey; in particular the `Smoke` variable, which is stored as a categorical variable. The `levels` method reports 4 levels for this variable:
 
 ```{julia}
+using RDatasets
 survey = dataset("MASS", "survey")
 smokes = survey.Smoke
 levels(smokes)
 ```
 
 How frequent is each?  We would need to tabulate to answer that
-question. This can be done by grouping and applying the `nrow` function from `DataFrames`:
+question.
+
+The `countmap` function from the `StatsBase` package counts occurrences in each level, returning a dictionary:
+
+```{julia}
+countmap(smokes)
+```
+
+There are numerous alternatives.
+
+Using a data frames approach, this tabulation can be done by grouping and applying the `nrow` function:
 
 ```{julia}
 combine(groupby(survey, :Smoke), nrow)
@@ -56,14 +67,14 @@ tbl = freqtable(smokes)
 
 Named vectors are from the `NamedArrays` package and offer indexing by name, similar to a data frame.
 
-Either way (and there are others), this shows for this data set, even in the 90s "Never" is by far the most common response for past smoking habits, and it shows there is 1 missing response.
+Any of these approaches show for this data set that even in the $90$s "Never" is by far the most common response for past smoking habits, and that there is one missing response.
 
 
 ### Visualizations
 
 Tabulations can be visualized beyond using a table.
 
-A bar chart represents the above table using bars proportional to the counts. The `bar` function makes a bar chart for the labels in `x` and the given data. For this example, we have either have to add "missing" to the levels, or, as is done here, excise it from the data set.
+A bar chart represents the above tablulations using bars proportional to the counts. The `bar` function makes a bar chart for the labels in `x` and the given data. For this example, we have either have to add "missing" to the levels, or, as is done here, excise it from the data set.
 
 
 ```{julia}
@@ -72,7 +83,7 @@ A bar chart represents the above table using bars proportional to the counts. Th
 bar(levels(smokes), tbl[1:end-1]; legend=false)
 ```
 
-Another common graphic is to use a dot, not a bar, to represent the value. Still another graphic is the pie charts; common in the business world, but not favorites within introductory statistics.
+Another common graphic is to use a dot, not a bar, to represent the value. Still another graphic is the pie chart; common in the business world, but not a favorite within introductory statistics.
 
 
 ## Paired categorical data
@@ -147,13 +158,13 @@ end
 
 ### Conditional distributions of two-way tables
 
-At first glance, there does not seem to be much difference in the smoking variable between the identified genders. As tables may have many more counts in a given row or column, it can be helpful to take proportions of the rows or columns to compare. The `FreqTables` package provides the `prop` function to do so. By default, it takes a proportion of all the data;  pass in `margins=1` to get proportions for each row, `margins=2` to get proportions for each column. For example, to compare the distribution of `Smokes` for each level of `Sex`, we take proportions across each row:
+At first glance, there does not seem to be much difference in the smoking variable between the identified genders. As tables may have many more counts in a given row or column, it can be helpful to take proportions of the rows or columns to compare. The `FreqTables` package provides the `prop` function to do so. By default, it takes a proportion of all the data;  the keyword `margins=1` is used to see proportions for each row, `margins=2` to see proportions for each column. For example, to compare the distribution of `Smokes` for each level of `Sex`, we take proportions across each row:
 
 ```{julia}
 prop(tbl; margins=1)  # check `sum(prop(tbl; margins=1); dims=2)` returns 1
 ```
 
-There does not seem to be big differences between the rows, indicating that the gender doesn't seem to have an effect on the smoking prevalency.
+There does not seem to be large differences between the rows, perhaps indicating that the gender doesn't seem to have an effect on the smoking prevalency, though surveyed females were more likely to have never smoked and less likely to to be regular smokers compared to their male counterparts.
 
 
 What about the exercise variable?
@@ -172,7 +183,7 @@ Finding the row (or column) proportions as above finds the *conditional distribu
 The task of finding row proportions with a data frame can be similarly addressed by applying a transform to each row. The following uses a percentage scale:
 
 ```{julia}
-perc(x,Σ) = round(100 * x / Σ, digits=1)
+perc(x, Σ) = round(100 * x / Σ, digits=1)
 perc(x::Missing, Σ) = x
 perc(r) = map(x -> perc(x,sum(skipmissing(r))), r)
 

@@ -70,7 +70,7 @@ $$
 $$
 
 
-The parameter $\sigma^2$ can be estimated. We have the *residuals* are given in vector form by $\hat{e} = Y - \hat{Y}$. Here $\hat{Y} = \hat{H}Y$ where $\hat{H} = X(X'X)^{-1}X'$ is called the "hat" matrix and comes from $\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y$.
+The parameter $\sigma^2$ can be estimated. We have the *residuals* are given in vector form by $\hat{e} = Y - \hat{Y}$. Here $\hat{Y} = \hat{H}Y$. The product $\hat{H} = X(X'X)^{-1}X'$ is called the "hat" matrix and comes from $\hat{Y} = X\hat{\beta} = X((X'X)^{-1}X'Y) = (X(X'X)^{-1}X')Y$.
 
 The hat matrix has the property of a *projection matrix* taking values in an $n$ dimensional space and projecting onto a subspace described by the columns of the $X$ matrix. This allows a geometric interpretation of the least-squares formulation.^[This geometric interpretation of projection gives insight into the presence of an $F$ statistic later in this discussion. The *normal* equations are so named, as the imply the residual vector, $Y - \hat{Y}$ is perpendicular (also known as normal) to the columns, as vectors, of $X$.]
 

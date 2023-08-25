@@ -23,9 +23,9 @@ These notes are a work in progress. Feel free to click the "edit this page" butt
 
 ## Installing and running Julia
 
-`Julia` can be downloaded from [julialang.org](https://julialang.org/). The language is evolving rapidly. The latest official release is recommended. These notes should work with any version since `v"1.6.0"`, though post `v"1.9.0"` there are significant speedups with external packages that make the user experience even better.
+`Julia` can be downloaded from [julialang.org](https://julialang.org/). The language is evolving rapidly. The latest official release is recommended. These notes should work with any version since `v"1.6.0"`. It is recommended to use a version `v"1.9.0"` or later, as there are significant speedups with external packages that make the user experience even better.
 
-Once downloaded and installed the `Julia` installation will provide a *command line* for interactive usage and a binary to run scripts. It is envisioned most users will use an alternative interface, though `Julia` has an excellent REPL for command-line usages.
+Once downloaded and installed the `Julia` installation will provide a *command line* for interactive usage and a binary to run scripts. It is envisioned most users will use an alternative interface, though `Julia` has an excellent REPL for command-line usage.
 
 Some alternatives to the REPL for interacting with `Julia` are:
 

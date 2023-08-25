@@ -1,4 +1,4 @@
-version: "0.0.2"
+version: "0.0.3"
 
 project:
   type: book
@@ -11,6 +11,7 @@ book:
   repo-url: https://github.com/jverzani/UsingJ
   repo-branch: master
   repo-actions: [edit, issue]
+  google-analytics: "G-KS515LKBGZ"
 #  downloads: pdf
   page-footer:
     right: |
@@ -55,6 +56,7 @@ format:
 #    colorlinks: true
 #    include-in-header: packages.tex
 #    include-before-body: definitions.tex
+
 
 execute:
   warning: false

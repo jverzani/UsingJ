@@ -310,7 +310,7 @@ An OG package
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <code>DataFrames</code> package dates back to 2012, at least, and must be one of <code>Julia</code>’s oldest packages. Julia was on version <code>0.1</code> then. It is also under continual development and has a comprehensive set of documentation and tutorials. This introduction attempts to illustrate some basic usage; consult the provided documentation for additional details and applications.</p>
+<p>The <code>DataFrames</code> package dates back to 2012, at least, and must be one of <code>Julia</code>’s oldest packages. Julia was on version <code>0.1</code> then. It is also under continual development and has a comprehensive set of documentation and tutorials. <span class="citation" data-cites="JSSv107i04">Bouchet-Valat and KamiÅski (<a href="../references.html#ref-JSSv107i04" role="doc-biblioref">2023</a>)</span> has an excellent overview including comparisons to other implementations in other languages and context for certain design decisions. This introduction attempts to illustrate some basic usage; consult the provided documentation for additional details and applications.</p>
 </div>
 </div>
 <section id="data-frame-construction" class="level3" data-number="3.1.1">
@@ -1366,11 +1366,11 @@ The Lego Group
 <span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">tally</span>(v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="88">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Int64}
- 1 │ 14
- 2 │ 6
- 3 │ 10
- 4 │ 12
- 5 │ 8</code></pre>
+ 1 │ 12
+ 2 │ 13
+ 3 │ 11
+ 4 │ 9
+ 5 │ 5</code></pre>
 </div>
 </div>
 <p>Using <code>map</code>, we can provide an alternate, oft used view for tallying:</p>
@@ -1386,11 +1386,11 @@ The Lego Group
 <span id="cb113-9"><a href="#cb113-9" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(prison_count, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="89">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Any}
- 1 │ "┼┼┼┼ ┼┼┼┼ ||||"
- 2 │ "┼┼┼┼ |"
- 3 │ "┼┼┼┼ ┼┼┼┼ "
- 4 │ "┼┼┼┼ ┼┼┼┼ ||"
- 5 │ "┼┼┼┼ |||"</code></pre>
+ 1 │ "┼┼┼┼ ┼┼┼┼ ||"
+ 2 │ "┼┼┼┼ ┼┼┼┼ |||"
+ 3 │ "┼┼┼┼ ┼┼┼┼ |"
+ 4 │ "┼┼┼┼ ||||"
+ 5 │ "┼┼┼┼ "</code></pre>
 </div>
 </div>
 </div>
@@ -1408,16 +1408,16 @@ The Lego Group
 <span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="90">
 <pre><code>10-element Dictionaries.Dictionary{Int64, Int64}
- 0 │ 566
- 1 │ 1
- 2 │ 358
- 3 │ 55567
- 4 │ 46
- 5 │ 35
- 6 │ 348
- 7 │ 68
- 8 │ 4689
- 9 │ 2347</code></pre>
+  0 │ 69
+  2 │ 359
+  3 │ 22377
+  4 │ 1157
+  5 │ 36
+  6 │ 679
+  7 │ 44
+  8 │ 145
+  9 │ 368
+ 10 │ 0</code></pre>
 </div>
 </div>
 </div>
@@ -1712,6 +1712,9 @@ The Lego Group
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-JSSv107i04" class="csl-entry" role="doc-biblioentry">
+Bouchet-Valat, M., and KamiÅski, B. (2023), <span>“DataFrames.jl: Flexible and fast tabular data in julia,”</span> <em>Journal of Statistical Software</em>, 107, 1â32. <a href="https://doi.org/10.18637/jss.v107.i04">https://doi.org/10.18637/jss.v107.i04</a>.
+</div>
 <div id="ref-JSSv040i01" class="csl-entry" role="doc-biblioentry">
 Wickham, H. (2011), <span>“The split-apply-combine strategy for data analysis,”</span> <em>Journal of Statistical Software</em>, 40, 1–29. <a href="https://doi.org/10.18637/jss.v040.i01">https://doi.org/10.18637/jss.v040.i01</a>.
 </div>

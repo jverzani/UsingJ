@@ -1,6 +1,7 @@
-version: "0.0.3"
+version: "0.0.4"
+jupyter: julia-1.9
 
-project:
+Project:
   type: book
 
 book:

@@ -180,7 +180,7 @@ p2 = p + data((x=xs, y=repeat([ys[2]], n))) * visual(Scatter, color=:red) * mapp
 for i in 2:N
     xs = rand(P, n)
     push!(xbars, mean(xs))
-    p2 += data((x=xs, y=repeat([ys[1+i]], n))) * visual(Scatter, color=:blue, markersize=3) * mapping(:x, :y)
+    global p2 += data((x=xs, y=repeat([ys[1+i]], n))) * visual(Scatter, color=:blue, markersize=3) * mapping(:x, :y)
 end
 p2a = data((x=xbars, y=zeros(N), color=vcat(:red, repeat([:blue],N-1)))) *
     visual(Scatter, marker=:cross, markersize=12) * mapping(:x, :y, color=:color)

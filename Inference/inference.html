@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="inference_files/libs/clipboard/clipboard.min.js"></script>
+<script src="inference_files/libs/quarto-html/quarto.js"></script>
+<script src="inference_files/libs/quarto-html/popper.min.js"></script>
+<script src="inference_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="inference_files/libs/quarto-html/anchor.min.js"></script>
+<link href="inference_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="inference_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="inference_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="inference_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="inference_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="inference" class="level1">
+<h1>Inference</h1>
+<p>A goal of statistics is to use data to characterize the process that generated the data.</p>
+<p>To discuss, we first load some useful packages:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">Distributions</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AlgebraOfGraphics</span>, <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="larger-data-sets" class="level2">
+<h2 class="anchored" data-anchor-id="larger-data-sets">Larger data sets</h2>
+<p>Suppose <span class="math inline">\(x_1, x_2, \dots, x_n\)</span> is sample. If we assume these are realizations from some iid random sample <span class="math inline">\(X_1, X_2, \dots, X_n\)</span> from some population then when <span class="math inline">\(n\)</span> is <em>large</em> we expect the shape of the population to be well described.</p>
+<p>The density plots in <a href="#fig-densityplots-population-density">Figure&nbsp;1</a> show a population, a random sample of a certain size from that population, and an density plot found from the random sample. As the sample size gets larger, the density plot resembles more the underlying population.</p>
+<div id="fig-densityplots-population-density" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<p><img src="inference_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" data-execution_count="4" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="5">
+<p><img src="inference_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" data-execution_count="5" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="6">
+<p><img src="inference_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" data-execution_count="6" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="7">
+<p><img src="inference_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: A population pdf drawn in red, a sample of size n marked with dots, and a sample density. As n increases, the sample density is an improved estimate for the population pdf.</figcaption><p></p>
+</figure>
+</div>
+<p>To quantify this, we use the <em>empirical cdf</em> defined as</p>
+<p><span class="math display">\[
+F_n(a) = \frac{\#\{i: x_i \leq a\}}{n}.
+\]</span></p>
+<p>That is, the proportion of the sample data less than or equal to <span class="math inline">\(a\)</span>. This estimates the cdf of the population. The <code>ecdf</code> function from <code>StatsBase</code> returns a function. For example, we have for this population given as a mixture of normal distributions:</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">MixtureModel</span>(Normal[</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fl">1</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Normal</span>(<span class="fl">1</span>, <span class="fl">2</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Normal</span>(<span class="fl">2.0</span>, <span class="fl">3</span>)], [<span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">rand</span>(Y, <span class="fl">1000</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Fₙ <span class="op">=</span> <span class="fu">ecdf</span>(xs)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">findmax</span>(<span class="fu">abs</span>(<span class="fu">cdf</span>(Y,x) <span class="op">-</span> <span class="fu">Fₙ</span>(x)) <span class="cf">for</span> x <span class="kw">in</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">1000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>(0.02180623231041745, 495)</code></pre>
+</div>
+</div>
+<p>The maximum distance between cumulative distributions functions is a useful statistic in itself, which we don’t pursue. Rather, we show in <a href="#fig-cumulative-empirical">Figure&nbsp;2</a> the empirical cdf and the theoretical cdf for this simulation.</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Fₙ <span class="op">=</span> <span class="fu">ecdf</span>(<span class="fu">rand</span>(Y, <span class="fl">1000</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">1000</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">data</span>((x<span class="op">=</span>xs, y<span class="op">=</span><span class="fu">cdf</span>.(Y,xs), y′<span class="op">=</span><span class="fu">Fₙ</span>.(xs)))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> d <span class="op">*</span> <span class="fu">visual</span>(Lines; color<span class="op">=:</span>black) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> p <span class="op">+</span> d <span class="op">*</span> <span class="fu">visual</span>(Lines; color<span class="op">=:</span>red) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y′)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div id="fig-cumulative-empirical" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="inference_files/figure-html/fig-cumulative-empirical-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: A cumulative distribution of a mixture model with an empirical cdf generated by a random sample of size 1000.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="confidence-intervals">Confidence intervals</h2>
+<p>When there is a much smaller sample size, one can still <em>infer</em> things about the underlying population <strong>if</strong> additional assumptions on the population are made. In general, the stronger the assumptions, the more that can be said.</p>
+<section id="confidence-interval-for-a-population-mean" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-interval-for-a-population-mean">Confidence interval for a population mean</h3>
+<p>For example, suppose you have a data set with <span class="math inline">\(n\)</span> elements, <span class="math inline">\(x_1, x_2, \dots, x_n\)</span>, <em>and</em> you assume that:</p>
+<ul>
+<li><p>the data can be modeled as realizations of some iid collection of random variables, <span class="math inline">\(X_1, X_2, \dots, X_n\)</span> and</p></li>
+<li><p>the population of the random variables is <span class="math inline">\(Normal(\mu, \sigma)\)</span>.</p></li>
+</ul>
+<p>With these assumptions the basic facts of probability allow statements about <span class="math inline">\(\mu\)</span> based on the data set.</p>
+<p>We know the statistic:</p>
+<p><span class="math display">\[
+Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} = \frac{\bar{X} - \mu}{SD(\bar{X})}
+\]</span></p>
+<p>has a <span class="math inline">\(Normal(0,1)\)</span> distribution. For any <span class="math inline">\(\alpha\)</span> with <span class="math inline">\(0 &lt; \alpha &lt; 1/2\)</span>, we can solve for values <span class="math inline">\(z_{\alpha/2}\)</span> and <span class="math inline">\(z_{1-\alpha/2}\)</span> satisfying:</p>
+<p><span class="math display">\[
+P(z_{\alpha/2} &lt; Z &lt; z_{1 - \alpha/2}) = 1 - \alpha.
+\]</span></p>
+<p>(That is between the <span class="math inline">\(z\)</span> values lies <span class="math inline">\((1-\alpha)\cdot 100\)</span>% of the area under the pdf for <span class="math inline">\(Normal(0,1)\)</span>.)</p>
+<p>By the symmetry of the normal distribution, we have <span class="math inline">\(z_{\alpha/2} = - z_{1-\alpha/2}\)</span>.</p>
+<p>Rearranging this, we have with probability <span class="math inline">\(1 - \alpha\)</span> the following inequality occurs:</p>
+<p><span class="math display">\[
+\bar{X} - z_{1-\alpha/2}\cdot SD(\bar{X}) &lt; \mu &lt; \bar{X} + z_{1-\alpha/2}\cdot SD(\bar{X})
+\]</span></p>
+<p>Now, the data set is just one possible realization of these random variables, which may or may not be unusual, we can’t say. However, we can say the process that produced this data set will produce values where <span class="math inline">\((1-\alpha)\cdot 100\)</span>% of the time</p>
+<p><span class="math display">\[
+\bar{x} - z_{1-\alpha/2}\cdot SD(\bar{x}) &lt; \mu &lt; \bar{x} + z_{1-\alpha/2}\cdot SD(\bar{x}).
+\]</span></p>
+<p>Since a data set is a single realization, and probability speaks to the frequency of many realizations, we can’t say for our lone data set that there is a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% chance this occurs, rather the language adopted is to say the interval <span class="math inline">\((\bar{x} - z_{1-\alpha/2}\cdot \sigma/\sqrt{n}, \bar{x} + z_{1-\alpha/2}\cdot \sigma/\sqrt{n})\)</span> is a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% <em>confidence interval</em> for an unknown parameter <span class="math inline">\(\mu\)</span>.</p>
+<blockquote class="blockquote">
+<p>For a data set drawn from iid random sample with a <span class="math inline">\(Normal(\mu,\sigma)\)</span> population a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% confidence interval is given by <span class="math inline">\(\bar{x} \pm z_{1-\alpha/2}\cdot \sigma/\sqrt{n}\)</span>, where <span class="math inline">\(z_{1-\alpha/2}=-z_{\alpha/2}\)</span> satisfies <span class="math inline">\(P(z_{\alpha/2} &lt; Z &lt; z_{1-\alpha/2})\)</span>, <span class="math inline">\(Z\)</span> being a standard normal random variable.</p>
+</blockquote>
+<p><a href="#fig-ci-works">Figure&nbsp;3</a> illustrates confidence intervals based on several independent random samples. Occasionally – with a probability controlled by <span class="math inline">\(\alpha\)</span> – the intervals do not cover the true population mean.</p>
+<div class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div id="fig-ci-works" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="inference_files/figure-html/fig-ci-works-output-1.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: 50 simulated confidence intervals. The true mean is <span class="math inline">\(\mu=0\)</span>, the confidence level is <span class="math inline">\(0.90\)</span>. On average, 10 out of 100 of these confidence intervals will not cover the mean. For this simulation, we expect 5 or so to miss, but the exact count may differ, as each is random.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="exm-Example" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1 (Confidence interval for the mean) </strong></span>Consider the task of the beverage dispenser service person. While they may enjoy great benefits and the opportunity to work out of an office, do they get a chance to practice statistics? Well, possibly. Consider the task of calibrating an automatic coffee dispenser. Suppose the engineers have managed to control the variance of the pour so that <span class="math inline">\(\sigma = 0.5\)</span> oz. The <span class="math inline">\(8\)</span> oz. cups should not overflow, but should look full when done. As such, the technician aims for a mean dispense of around <span class="math inline">\(7\)</span> oz, but not including <span class="math inline">\(7.5\)</span>. To gauge this, they run the machine <span class="math inline">\(6\)</span> times and collect data using a calibrated glass. Assume this data set is from a <span class="math inline">\(N(\mu,\sigma=1/2)\)</span> population:</p>
+<pre><code>7.9  7.2  7.1  7.0  7.0  7.1</code></pre>
+<p>A <span class="math inline">\(95\)</span>% confidence interval for <span class="math inline">\(\mu\)</span> is given by:</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">7.9</span>,  <span class="fl">7.2</span>,  <span class="fl">7.1</span>,  <span class="fl">7.0</span>,  <span class="fl">7.0</span>,  <span class="fl">7.1</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fu">length</span>(xs)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>σ <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>α <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>za <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fl">1</span>), <span class="fl">1</span> <span class="op">-</span> α <span class="op">+</span> (α<span class="op">/</span><span class="fl">2</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> σ <span class="op">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mean</span>(xs) <span class="op">-</span> za<span class="op">*</span>SE, <span class="fu">mean</span>(xs) <span class="op">+</span> za<span class="op">*</span>SE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>(6.816590693637058, 7.616742639696278)</code></pre>
+</div>
+</div>
+<p>That <span class="math inline">\(7.5\)</span> is included may be problematic, as larger pours than <span class="math inline">\(8\)</span> oz are possible with these assumptions, so the technician calibrates the machine a bit less aggressively.</p>
+</div>
+<p>The assumption of a normal population is used to say the <em>distribution</em> of <span class="math inline">\(\bar{X}\)</span> is normal. This would be true if the population weren’t normal <em>but</em> the sample size, <span class="math inline">\(n\)</span>, were sufficiently large. The important part is having assumptions that allows the sampling distribution of a useful statistic to be known.</p>
+<hr>
+<p>The above assumes an unknown mean (<span class="math inline">\(\mu\)</span>) but a <em>known</em> standard deviation. If that assumption isn’t realistic, something similar can be said. Consider the <span class="math inline">\(T\)</span>-statistic:</p>
+<p><span class="math display">\[
+T = \frac{\bar{X} - \mu}{SE(\bar{X})},
+\]</span></p>
+<p>Under the assumptions above (iid sample, normal population), the standard error is <span class="math inline">\(S/\sqrt{n}\)</span> and the distribution of <span class="math inline">\(T\)</span> is the <span class="math inline">\(T\)</span>-distribution with <span class="math inline">\(n-1\)</span> degrees of freedom.</p>
+<blockquote class="blockquote">
+<p>For a data set of size <span class="math inline">\(n\)</span> drawn from an iid random sample with a <span class="math inline">\(Normal(\mu,\sigma)\)</span> population a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% confidence interval is given by <span class="math inline">\(\bar{x} \pm t_{1-\alpha/2}\cdot s/\sqrt{n}\)</span>, where <span class="math inline">\(t_{\alpha/2} = -t_{1-\alpha/2}\)</span> satisfies <span class="math inline">\(1-\alpha = P(t_{\alpha/2} &lt; T_{n-1} &lt; t_{1-\alpha/2})\)</span>, <span class="math inline">\(T_{n-1}\)</span> being <span class="math inline">\(T\)</span> distributed with <span class="math inline">\(n-1\)</span> degrees of freedom.</p>
+</blockquote>
+<div id="exm-t-test" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2 (Confidence interval for the mean, no assumption on <span class="math inline">\(\sigma\)</span>) </strong></span>Returning to the coffee-dispenser technician, a cappuccino dispenser has two sources of variance for the amount poured – the coffee and the foam. This is harder to engineer precisely, so is assumed unknown in the calibration process. Suppose the technician again took <span class="math inline">\(6\)</span> samples to gauge the value of <span class="math inline">\(\mu\)</span>.</p>
+<p>With no assumptions on the value of <span class="math inline">\(\mu\)</span> <em>or</em> <span class="math inline">\(\sigma\)</span>. A <span class="math inline">\(95\)</span>% confidence interval for <span class="math inline">\(\mu\)</span> would be computed by:</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">7.9</span>,  <span class="fl">7.2</span>,  <span class="fl">7.1</span>,  <span class="fl">7.0</span>,  <span class="fl">7.0</span>,  <span class="fl">7.1</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fu">length</span>(xs)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="fu">std</span>(xs)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>α <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>za <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">TDist</span>(n<span class="op">-</span><span class="fl">1</span>), <span class="fl">1</span> <span class="op">-</span> α <span class="op">+</span> (α<span class="op">/</span><span class="fl">2</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> s <span class="op">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>(<span class="fu">mean</span>(xs) <span class="op">-</span> za<span class="op">*</span>SE, <span class="fu">mean</span>(xs) <span class="op">+</span> za<span class="op">*</span>SE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>(6.856683216914592, 7.576650116418743)</code></pre>
+</div>
+</div>
+<p>These computations – and many others – are carried out by functions in the <code>HypothesisTests</code> package. For example, we could have computed the values above through:</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">HypothesisTests</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(<span class="fu">OneSampleTTest</span>(xs))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>(6.856683216914592, 7.576650116418743)</code></pre>
+</div>
+</div>
+<p>Of some note, while often the extra assumption of a known standard deviation will lead to smaller confidence intervals, that is not guaranteed, as seen in this data set.</p>
+</div>
+<div id="exm-two-dependent-samples" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3 (Dependent samples) </strong></span>A method to reduce variability between samples is to match treatments. A classic data set is <code>shoes</code>, which collected shoe wear data from 10 boys, each given two different shoes to wear.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">RDatasets</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>shoes <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"MASS"</span>, <span class="st">"shoes"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(shoes, <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+
+<div><div style="float: left;"><span>2×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">A</th><th style="text-align: left;">B</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">13.2</td><td style="text-align: right;">14.0</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">8.2</td><td style="text-align: right;">8.8</td></tr></tbody></table></div>
+</div>
+</div>
+<p>Some boys are assumed to be harder on shoes than others, so by matching the two types, it is expected that the <em>difference</em> in the shoe wear per boy could be attributed to the material. That is, if <span class="math inline">\(X_1, \dots, X_{n}\)</span> models the one material and <span class="math inline">\(Y_1, \dots, Y_n\)</span> the other, the difference <span class="math inline">\(Z_i = X_i - Y_i\)</span> should model the difference between the materials. Assuming this data is an iid random sample from a <span class="math inline">\(Normal(\mu, \sigma)\)</span> population, we can find a <span class="math inline">\(90\)</span>% confidence interval for the mean difference:</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> <span class="fu">combine</span>(shoes, [<span class="op">:</span>A,<span class="op">:</span>B] <span class="op">=&gt;</span> <span class="fu">ByRow</span>(<span class="op">-</span>) <span class="op">=&gt;</span> <span class="op">:</span>Z)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(<span class="fu">OneSampleTTest</span>(ds.Z); level<span class="op">=</span><span class="fl">0.90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>(-0.634426399199845, -0.18557360080015525)</code></pre>
+</div>
+</div>
+<p>That this does not contain <span class="math inline">\(0\)</span>, suggests a difference in the mean wear between shoes.</p>
+</div>
+<hr>
+<p>The above illustrates a pattern: a sampling statistic (a <em>pivotal quantity</em>) which includes an unknown population parameter with a known sampling distribution independent of the parameters allows the formulation of confidence interval.</p>
+</section>
+<section id="confidence-interval-for-a-difference-of-means" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-interval-for-a-difference-of-means">Confidence interval for a difference of means</h3>
+<p>For two iid random samples, <span class="math inline">\(X_1, X_2, \dots, X_{n_1}\)</span> and <span class="math inline">\(Y_1, Y_2, \dots, Y_{n_2}\)</span> from two normal populations <span class="math inline">\(Normal(\mu_1, \sigma_1)\)</span> and <span class="math inline">\(Normal(\mu_2, \sigma_2)\)</span> we may have sample data. From that data, the question of the difference between <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span> can be considered.</p>
+<p>With the assumption that the two samples are themselves independent, the standard deviation for <span class="math inline">\(\bar{X} - \bar{Y}\)</span> can be computed as:</p>
+<p><span class="math display">\[
+SD(\bar{X} - \bar{Y}) = \sigma_{\bar{X} - \bar{Y}} = \sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}.
+\]</span></p>
+<p>Let the <span class="math inline">\(T\)</span> statistic be</p>
+<p><span class="math display">\[
+T = \frac{(\bar{X} - \bar{Y}) - (\mu_1 - \mu_2)}{SE(\bar{X} - \bar{Y})} = \frac{\text{observed}-\text{expected}}{SE}.
+\]</span></p>
+<p>The distribution of <span class="math inline">\(T\)</span> and the formula for <span class="math inline">\(SE\)</span> depends on assumptions made:</p>
+<ul>
+<li>If both <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span> are assumed known, <span class="math inline">\(SE(\bar{X} - \bar{Y}) = SD(\bar{X} - \bar{Y})\)</span>, and <span class="math inline">\(T\)</span> has a normal distribution.</li>
+<li>If it is <em>assumed</em> <span class="math inline">\(\sigma = \sigma_1 = \sigma_2\)</span>, but if no value is assumed, then the data can be pooled to estimate <span class="math inline">\(\sigma\)</span>, the common standard deviation, to get <span class="math inline">\(SE(\bar{X} - \bar{Y}) = s_p\sqrt{1/n_1 + 1/n_2}\)</span> and <span class="math inline">\(T\)</span> has a <span class="math inline">\(T\)</span> distribution with <span class="math inline">\(n_1 + n_2 - 2\)</span> degrees of freedom. The pooled standard deviation is the square root of <span class="math inline">\((s_1^2(n_1-1) + s_2^2(n_2-1))/(n_1+n_2-2)\)</span>.</li>
+<li>If it is <strong>not</strong> <em>assumed</em> <span class="math inline">\(\sigma = \sigma_1 = \sigma_2\)</span> (though it secretly could be), then the standard error is <span class="math inline">\(\sqrt{s_1^2/n_1 + s_2^2/n_2}\)</span>. The distribution of <span class="math inline">\(T\)</span> is <em>approximately</em> <span class="math inline">\(T\)</span>-distributed with an effective degrees of freedom given by the <a href="https://en.wikipedia.org/wiki/Welch%E2%80%93Satterthwaite_equation">Welch-Satterhwaite</a> equation, which is always between than the smaller of <span class="math inline">\(n_1-1\)</span> and <span class="math inline">\(n_2-1\)</span> and <span class="math inline">\(n_1 + n_2 - 2\)</span>.</li>
+</ul>
+<div id="exm-two-sample-t-test" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4 (Confidence interval for the difference of means) </strong></span>Suppose the coffee-dispenser technician is tasked with calibrating two machines. Again they take samples from the two machines, in this case:</p>
+<pre><code>Machine 1: 7.0, 7.8, 7.7, 7.6, 8.3
+Machine 2: 6.2, 8.0, 6.8, 7.0, 7.3, 7.9, 7.1</code></pre>
+<p>Do the machines output the same amount <em>on average</em>? To answer this, we consider a confidence interval for <span class="math inline">\(\mu_1 - \mu_2\)</span>.</p>
+<p>If the two machines are assumed to have the same variance, we can compute a 90% confidence interval with:</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">7.0</span>, <span class="fl">7.8</span>, <span class="fl">7.7</span>, <span class="fl">7.6</span>, <span class="fl">8.3</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> [<span class="fl">6.2</span>, <span class="fl">8.0</span>, <span class="fl">6.8</span>, <span class="fl">7.0</span>, <span class="fl">7.3</span>, <span class="fl">7.9</span>, <span class="fl">7.1</span>]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(<span class="fu">EqualVarianceTTest</span>(xs, ys); level<span class="op">=</span><span class="fl">0.90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>(-0.10761090026945175, 1.0961823288408845)</code></pre>
+</div>
+</div>
+<p>That <span class="math inline">\(0\)</span> is in this interval gives evidence that the two means are equal. The sample means do differ:</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(xs), <span class="fu">mean</span>(ys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>(7.6800000000000015, 7.185714285714285)</code></pre>
+</div>
+</div>
+<p>But the variability is such, the confidence interval makes it conceivable that the population means are the same. Perhaps were more data available, a difference would be seen, as the variablity is generally smaller for larger sample sizes.</p>
+<p>If the machines are from different vendors, or dispense different beverages, perhaps the assumption of equal variances is not appropriate. The <code>UnequalVarianceTTest</code> method is available for this comparison. The calling pattern is identical:</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(<span class="fu">UnequalVarianceTTest</span>(xs, ys); level<span class="op">=</span><span class="fl">0.90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>(-0.07723849812971084, 1.0658099267011436)</code></pre>
+</div>
+</div>
+<p>The default for such tests in other languages, such as <code>R</code>, is to <em>not</em> assume equal variances.</p>
+</div>
+<hr>
+<div id="tbl-T-based-tests" class="anchored">
+<table class="table">
+<caption>Table&nbsp;1: Different constructors for <span class="math inline">\(T\)</span>-statistic based confidence intervals</caption>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OneSampleZTest</td>
+<td>Inference on population mean for one sample, known population standard deviation</td>
+</tr>
+<tr class="even">
+<td>OneSampleTTest</td>
+<td>Inference on population mean for one sample, unknown population standard deviation</td>
+</tr>
+<tr class="odd">
+<td>EqualVarianceTTest</td>
+<td>Inference on difference of population means for independent samples assuming equal population standard deviations</td>
+</tr>
+<tr class="even">
+<td>UnequalVarianceTTest</td>
+<td>Inference on difference of population means for independent samples <em>not</em> assuming equal population standard deviations</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="confidence-interval-for-a-proportion" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-interval-for-a-proportion">Confidence interval for a proportion</h3>
+<p>A very common use of confidence intervals is found in the reporting of polls, particularly political polls, where it may be typical to see a statement such as “Candidate A is ahead of her opponent in the polls by 5 percentatge points with a <em>margin of error</em> of 5 percent” or “The favorability rating of President B is 54% with a 5 percent margin of error.” These are descriptions of confidence intervals, though both leave the confidence level unspecified. When unspecified, it can usually be roughly inferred from the margin of error, as will be seen.</p>
+<p>A model for a poll where a person chose one of two options is to use a Bernoulli random variable, <span class="math inline">\(X_i\)</span>, to describe the response. The number of <span class="math inline">\(1\)</span>s in a fixed number of <span class="math inline">\(n\)</span> respondents can give a proportion. <em>If</em> one can assume the <span class="math inline">\(X_i\)</span> are iid random samples from a <span class="math inline">\(Bernoulli(p)\)</span> population, then the number of <span class="math inline">\(1\)</span>s can be viewed as a realization of a <span class="math inline">\(Binomial(n,p)\)</span> distribution. That is, this statistic will have a known distribution.</p>
+<p>Before pursuing, let’s note that the assumption implies a few things about the sampling process carried out by the pollster:</p>
+<ul>
+<li><p>The population <span class="math inline">\(p\)</span> is the proportion of the entire voting population (supposedly of size <span class="math inline">\(N\)</span>) that would respond with a code of <span class="math inline">\(1\)</span>. A <em>census</em> could find <span class="math inline">\(p\)</span>, but random sampling is used as censuses are typically <em>much more</em> work to carry out.</p></li>
+<li><p>The <em>independent</em> assumption technically requires sampling <em>with replacement</em>, where a person could be asked <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, <em>or more</em> times the question. But <em>practically</em> if <span class="math inline">\(N\)</span> is much greater than <span class="math inline">\(n\)</span> this isn’t necessary and <em>sampling without replacement</em> can be used.</p></li>
+<li><p>The <em>identically distributed</em> assumption requires the sampling to be representative. For example, if it is a state-wide population, a sample concentrated on one, possibly partisan, district would not be expected to be identically distributed from the population. Such sampling would likely introduce a <em>bias</em>.</p></li>
+</ul>
+<p>Assuming, a survey is <em>reasonably</em> described by a <span class="math inline">\(Binomial(n,p)\)</span> distribution, the <code>BinomialTest</code> can be used to identify a confidence interval for a given confidence level.</p>
+<p>The <code>BinomialTest</code> function can take either two numbers <code>x</code> and <code>n</code> representing the number of <span class="math inline">\(1\)</span>s in <span class="math inline">\(n\)</span> sample, or a vector of <code>true</code>s and <code>false</code>s with <code>true</code> being a “<span class="math inline">\(1\)</span>”.</p>
+<div id="exm-Binomial-test" class="theorem example">
+<p><span class="theorem-title"><strong>Example 5 (A political poll) </strong></span>A poll was taken of 1429 likely voters, with 707 indicating support for candidate A and 722 for candidate B. Let <span class="math inline">\(p\)</span> be the population proportion of voters for candidate A. Find a 95% confidence interval for <span class="math inline">\(p\)</span>.</p>
+<p>Assuming the poll was collected in such a way that a binomial model would apply to the data, we have:</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fl">707</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="fl">722</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> A <span class="op">+</span> B</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>ci <span class="op">=</span> <span class="fu">confint</span>(<span class="fu">BinomialTest</span>(A, n); level <span class="op">=</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>(0.4685125690214495, 0.521012196604416)</code></pre>
+</div>
+</div>
+<p>As <span class="math inline">\(0.50\)</span> is in this interval, there is no suggestion candidate A can’t win. (And indeed, they did in this case). The report on this poll would be the sample proportion and a margin of error. The margin of error is the width of the interval divided by two:</p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">last</span>(ci) <span class="op">-</span> <span class="fu">first</span>(ci)) <span class="op">*</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>0.02624981379148325</code></pre>
+</div>
+</div>
+<p>A bit under 3 percentage points. A rough guide is 3 percentage points is around 1,000 people polled, a larger margin of error (MOE) is fewer people polled, a smaller one is more than 1,000 polled. Why this is so is expanded on in a bit.</p>
+<p>The <code>BinomialTest</code> has several different ways to compute the margin of error, or the confidence interval. These are passed to the <code>method</code> argument of <code>confint</code> as symbols. The default is <code>:clopper_pearson</code> which is based on the binomial distribution. The value <code>:wald</code> uses a normal approximation to the binomial, which may be very inaccurate when <span class="math inline">\(p\)</span> is close to <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>. There are others (cf.&nbsp;<code>?confint(:BinomialTest)</code>).</p>
+<p>The default one can be understood through the <code>quantile</code> function, and is <em>essentially</em> given through:</p>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>.(<span class="fu">Binomial</span>(n, A<span class="op">/</span>n), [alpha<span class="op">/</span><span class="fl">2</span>, <span class="fl">1</span> <span class="op">-</span> alpha<span class="op">/</span><span class="fl">2</span>]),  ci <span class="op">.*</span> n</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>([670, 744], (669.5044611316513, 744.5264289477104))</code></pre>
+</div>
+</div>
+<p>For confidence intervals calculated through the normal approximation, an explicit formula for the margin of error, based on the standard deviation of the binomial distribution, is available:</p>
+<p><span class="math display">\[
+MOE = z_{1-\alpha/2} \cdot \sqrt{p(1-p)/n} =  z_{1-\alpha/2} SE(\hat{p}).
+\]</span></p>
+<p>As <span class="math inline">\(p\)</span> is unknown, the standard error is used with <span class="math inline">\(\hat{p}\)</span> approximating <span class="math inline">\(p\)</span>.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ci <span class="op">=</span> <span class="fu">confint</span>(<span class="fu">BinomialTest</span>(A, n); level <span class="op">=</span> <span class="fl">0.95</span>, method<span class="op">=:</span>wald)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>z_a <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">Normal</span>(<span class="fl">0</span>,<span class="fl">1</span>), <span class="fl">1</span><span class="op">-</span>alpha<span class="op">/</span><span class="fl">2</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>phat <span class="op">=</span> A<span class="op">/</span>n</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> <span class="fu">sqrt</span>(phat <span class="op">*</span> (<span class="fl">1</span><span class="op">-</span>phat)<span class="op">/</span>n)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>z_a <span class="op">*</span> SE, (<span class="fu">last</span>(ci) <span class="op">-</span> <span class="fu">first</span>(ci))<span class="op">/</span><span class="fl">2</span>  <span class="co"># compare to that computed with :wald</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>(0.025922569857879177, 0.025922569857879163)</code></pre>
+</div>
+</div>
+<p>This formula allows one to estimate the sample size, <span class="math inline">\(n\)</span>, needed to achieve a certain margin of error, though an estimate for <span class="math inline">\(p\)</span> can be used, taking <span class="math inline">\(p=1/2\)</span> gives a conservative number as <span class="math inline">\(p(1-p)\)</span> is largest for that value. For example, to see what a 3% margin of error with a 95% confidence level would need in terms of a sample, we have, solving for <span class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[
+n = p(1-p)\cdot \left(\frac{z_{1-\alpha/2}}{MOE}\right)^2 \leq \frac{1}{4}\left(\frac{z_{1-\alpha/2}}{MOE}\right)^2.
+\]</span></p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>MOE <span class="op">=</span> <span class="fl">0.03</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>z_a <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">Normal</span>(<span class="fl">0</span>,<span class="fl">1</span>), <span class="fl">1</span><span class="op">-</span>alpha<span class="op">/</span><span class="fl">2</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">/</span><span class="fl">2</span> <span class="op">*</span> (<span class="fl">1</span><span class="op">-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>) <span class="op">*</span> (z_a <span class="op">/</span> MOE)<span class="op">^</span><span class="fl">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>1067.071894637261</code></pre>
+</div>
+</div>
+<p>A bit more than 1000 in this case ensures that the MOE will be no more than <span class="math inline">\(0.03\)</span>; it could be much less if it was expected that <span class="math inline">\(p\)</span> is far from <span class="math inline">\(1/2\)</span>.</p>
+</div>
+</section>
+<section id="confidence-interval-for-a-difference-of-proportions" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-interval-for-a-difference-of-proportions">Confidence interval for a difference of proportions</h3>
+<p>For two sample proportions, <span class="math inline">\(\hat{p}_1 = x_1/n_1\)</span> and <span class="math inline">\(\hat{p}_2=x_2/n_2\)</span>, the <span class="math inline">\(T\)</span> statistic:</p>
+<p><span class="math display">\[
+T = \frac{(\hat{p}_1 - \hat{p}_2) - (p_1 - p_2)}{SE(\hat{p}_1 - \hat{p}_2)}
+\]</span></p>
+<p>has a standard normal distribution if the <span class="math inline">\(n\)</span> values are both large enough. This allows a confidence interval for <span class="math inline">\(p_1 - p_2\)</span> to be given by:</p>
+<p><span class="math display">\[
+(\hat{p}_1 - \hat{p}_2) - z_{1-\alpha/2} \cdot SE(\hat{p}_1 - \hat{p}_2) &lt; p_1 - p_2 &lt; (\hat{p}_1 - \hat{p}_2) + z_{1-\alpha/2} \cdot SE(\hat{p}_1 - \hat{p}_2),
+\]</span></p>
+<p>where <span class="math inline">\(SE(\hat{p}_1 - \hat{p}_2) = \sqrt{\hat{p}_1(1-\hat{p}_1)/n_1 + \hat{p}_2(1-\hat{p_2})/n_2}\)</span>.</p>
+<div id="exm-two-sample-prop" class="theorem example">
+<p><span class="theorem-title"><strong>Example 6 (Difference of population proportions) </strong></span>Did some external event cause people to reexamine their choice for a political race? Suppose polls taken several weeks apart yielded:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Candidate A</th>
+<th>Candidate B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Oct</td>
+<td>289</td>
+<td>259</td>
+</tr>
+<tr class="even">
+<td>Nov</td>
+<td>513</td>
+<td>493</td>
+</tr>
+</tbody>
+</table>
+<p>Compute a <span class="math inline">\(90\)</span>% confidence interval.</p>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>x1, x2 <span class="op">=</span> <span class="fl">289</span>, <span class="fl">513</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>n1, n2 <span class="op">=</span> x1 <span class="op">+</span> <span class="fl">259</span>, x2 <span class="op">+</span> <span class="fl">493</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>phat1, phat2 <span class="op">=</span> x1<span class="op">/</span>n1, x2<span class="op">/</span>n2</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">phat1*</span>(<span class="fl">1</span><span class="op">-</span>phat1)<span class="op">/</span>n1 <span class="op">+</span> <span class="fu">phat2*</span>(<span class="fl">1</span><span class="op">-</span>phat2)<span class="op">/</span>n2)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.10</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>za <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">Normal</span>(<span class="fl">0</span>,<span class="fl">1</span>), <span class="fl">1</span> <span class="op">-</span> alpha<span class="op">/</span><span class="fl">2</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>(phat1 <span class="op">-</span> phat2) <span class="op">.+</span> [<span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span>] <span class="op">*</span> za <span class="op">*</span> SE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>2-element Vector{Float64}:
+ -0.026187674280803125
+  0.06105148412248293</code></pre>
+</div>
+</div>
+<p>That <span class="math inline">\(0\)</span> is in this, suggests the possibility that there was no change in the polls.</p>
+</div>
+</section>
+<section id="confidence-interval-for-a-population-standard-deviation" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-interval-for-a-population-standard-deviation">Confidence interval for a population standard deviation</h3>
+<p>Under a normal population assumption for an iid random sample, <span class="math inline">\((n-1)S^2/\sigma^2\)</span> has a <span class="math inline">\(Chisq(n-1)\)</span> distribution. Solving <span class="math inline">\(\chi^2_{\alpha/2} &lt; (n-1)S^2/\sigma^2 &lt; \chi^2_{1-\alpha/2}\)</span> for <span class="math inline">\(\sigma\)</span> gives a formula for a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% confidence interval for <span class="math inline">\(\sigma^2\)</span>:</p>
+<p><span class="math display">\[
+\frac{(n-1)S^2}{\chi^2_{1-\alpha/2}} &lt; \sigma^2 &lt; \frac{(n-1)S^2}{\chi^2_{\alpha/2}}.
+\]</span></p>
+<p>To use this, suppose our data is</p>
+<pre><code>1.2, -5.2, -8.4, 3.1, -2.1, 3.8</code></pre>
+<p>We can give a <span class="math inline">\(90\)</span>% CI by:</p>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">1.2</span>, <span class="op">-</span><span class="fl">5.2</span>, <span class="op">-</span><span class="fl">8.4</span>, <span class="fl">3.1</span>, <span class="op">-</span><span class="fl">2.1</span>, <span class="fl">3.8</span>]</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>n, s² <span class="op">=</span> <span class="fu">length</span>(xs), <span class="fu">var</span>(xs)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.10</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>cl, cr <span class="op">=</span> <span class="fu">quantile</span>.(<span class="fu">Chisq</span>(n<span class="op">-</span><span class="fl">1</span>), [alpha<span class="op">/</span><span class="fl">2</span>, <span class="fl">1</span> <span class="op">-</span> alpha<span class="op">/</span><span class="fl">2</span>])</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>(<span class="fu">sqrt</span>((n<span class="op">-</span><span class="fl">1</span>)<span class="op">*</span>s²<span class="op">/</span>cr), <span class="fu">sqrt</span>((n<span class="op">-</span><span class="fl">1</span>)<span class="op">*</span>s²<span class="op">/</span>cl))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>(3.2630536146068865, 10.144128513617867)</code></pre>
+</div>
+</div>
+</section>
+<section id="confidence-interval-for-comparing-population-standard-deviations" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-interval-for-comparing-population-standard-deviations">Confidence interval for comparing population standard deviations</h3>
+<p>The comparison of two sample standard deviations is of interest, as seen in the two-sample <span class="math inline">\(T\)</span> confidence interval, where different formulas are available should there be an assumption of equality. For two <em>independent</em> <strong>normally distributed</strong> iid random samples, the <span class="math inline">\(F\)</span>-statistic can be used to construct a confidence interval, as a scaled ratio of the sample standard deviations will have a certain <span class="math inline">\(F\)</span> distribution. That is, for a given <span class="math inline">\(\alpha\)</span>, the following happens with probability <span class="math inline">\(1-\alpha\)</span>:</p>
+<p><span class="math display">\[
+F_{\alpha/2; n_1-1, n_2-1} &lt; (S_1^2/\sigma_1^2) / (S_2^2/\sigma_2^2) &lt; F_{1 -\alpha/2; n_1-1, n_2-1}
+\]</span></p>
+<p>or, after rearrangement:</p>
+<p><span class="math display">\[
+\frac{S_1^2/S_2^2}{F_{1 -\alpha/2; n_1-1, n_2-1}} &lt; \frac{\sigma^2_1}{\sigma^2_2} &lt;
+\frac{S_1^2/S_2^2}{F_{\alpha/2; n_1-1, n_2-1}}.
+\]</span></p>
+<p>For a single sample, this is used to construct a confidence interval for the ratio of variances (or standard deviations). The <code>VarianceFTest</code> computes the necessary pieces, <em>but</em> the <code>VarianceFTest</code> type does not have a <code>confint</code> method. In the following we <em>extend</em> the <code>confint</code> generic using the above for objects created by <code>VarianceFTest</code>:</p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> HypothesisTests.<span class="fu">confint</span>(F<span class="op">::</span><span class="dt">VarianceFTest</span>; level<span class="op">=</span><span class="fl">0.95</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> level</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    dof1, dof2 <span class="op">=</span> F.df_x, F.df_y</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    fl, fr <span class="op">=</span> <span class="fu">quantile</span>.(<span class="fu">FDist</span>(dof1, dof2), (alpha<span class="op">/</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">-</span>alpha<span class="op">/</span><span class="fl">2</span>))</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    F.F <span class="op">./</span> (fr, fl)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To use this, for example, suppose we have two samples:</p>
+<pre><code>xs:  1.2, -5.2, -8.4,  3.1, -2.1,  3.8
+ys: -1.7, -1.8, -3.3, -6.3,  8.4, -0.1, 2.5, -3.8</code></pre>
+<p>Then a <span class="math inline">\(90\)</span>% confidence interval for <span class="math inline">\(\sigma^2_1/\sigma^2_2\)</span> is given by:</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span>  [<span class="fl">1.2</span>, <span class="op">-</span><span class="fl">5.2</span>, <span class="op">-</span><span class="fl">8.4</span>, <span class="fl">3.1</span>, <span class="op">-</span><span class="fl">2.1</span>, <span class="fl">3.8</span>]</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span>  [<span class="op">-</span><span class="fl">1.7</span>, <span class="op">-</span><span class="fl">1.8</span>, <span class="op">-</span><span class="fl">3.3</span>, <span class="op">-</span><span class="fl">6.3</span>, <span class="fl">8.4</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">2.5</span>, <span class="op">-</span><span class="fl">3.8</span>]</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(<span class="fu">VarianceFTest</span>(xs, ys); level<span class="op">=</span><span class="fl">0.90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>(0.28992354789264896, 5.614264355299279)</code></pre>
+</div>
+</div>
+<p>That this includes <code>1</code> suggest no reason to think the two population variances differ.</p>
+</section>
+<section id="likelihood-ratio-confidence-intervals" class="level3">
+<h3 class="anchored" data-anchor-id="likelihood-ratio-confidence-intervals">Likelihood ratio confidence intervals</h3>
+<p>The confidence intervals so far are based on pivotal quantities with known sampling distributions. A more generally applicable alternative is to use the likelihood function, <span class="math inline">\(L(\theta | x) = f(x | \theta)\)</span>, where the latter is the joint pdf of the data for a given parameter or parameters. The idea of maximizing the likelihood is to choose the value(s) for <span class="math inline">\(\theta\)</span> which maximize the probability of seeing the observed data using the choice(s) to estimate <span class="math inline">\(\theta\)</span>.</p>
+<p>The <em>maximum likelihood estimate</em> is an alternative manner to estimate a parameter. Here we apply the method to data that would otherwise be amenable to a a <span class="math inline">\(T\)</span>-test. First we generate some random data:</p>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>μ, σ <span class="op">=</span> <span class="fl">10</span>, <span class="fl">3</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">8</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="fu">Normal</span>(μ, σ)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> <span class="fu">rand</span>(D, n)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>ys <span class="op">|&gt;</span> show</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[7.918166275192764, 10.539158051648759, 11.400538417058709, 7.555601875369558, 1.547706898349972, 8.41392335411949, 7.538364470309029, 8.921851370911972]</code></pre>
+</div>
+</div>
+<p>The likelihood function below uses an assumption on on the data, in particular that it is normally distributed with unknown mean and standard deviation (<span class="math inline">\(y_i \sim Normal(\mu, \sigma)\)</span>). This just happens to match how the random data was generated, but typically is an assumption about the data. We write the log-likelihood function so it takes two values the unknown parameters and the data:</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">loglik</span>(θ, data)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># yᵢ ~ N(μ, σ) is model</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    μ, σ <span class="op">=</span> θ</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> <span class="fu">Normal</span>(μ, σ)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="fu">first</span>(data)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    ll <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> yᵢ <span class="op">∈</span> y</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">+=</span> <span class="fu">logpdf</span>(D, yᵢ)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    ll</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>loglik (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>Above, we use <code>logpdf</code> to compute the logarithm of the probability density function, as an alternative to <code>log(pdf(D, yᵢ))</code>.</p>
+<p>To maximize the data, we will use the <code>ProfileLikelihood</code> package, which relies on the <code>Optim</code> package to perform the optimization:</p>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">ProfileLikelihood</span>, <span class="bu">Optim</span>, <span class="bu">OptimizationOptimJL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The optimization needs an initial guess, <span class="math inline">\(\theta_0\)</span>, defined below. We also specify names to the parameters, when we set up a “problem” below:</p>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>θ₀ <span class="op">=</span> [<span class="fl">5.0</span>, <span class="fl">2.0</span>]</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>nms <span class="op">=</span> [<span class="op">:</span>μ, <span class="op">:</span>σ]</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>dat <span class="op">=</span> (ys,) <span class="co"># data is a container</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>prob <span class="op">=</span> <span class="fu">LikelihoodProblem</span>(loglik, θ₀;</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>                         data <span class="op">=</span> dat,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                         syms <span class="op">=</span> nms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">LikelihoodProblem</span>. In-place: <span style="color:rgb(86,182,194)">true
+</span>θ₀: 2-element Vector{Float64}
+     μ: 5.0
+     σ: 2.0</pre>
+</div>
+</div>
+</div>
+<p>This problem is solved by <code>mle</code>, which needs an optimization algorithm. We use the <code>NelderMead</code> one, which is easier to specify, as we don’t need to set up means to take a gradient:</p>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">mle</span>(prob, Optim.<span class="fu">NelderMead</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">LikelihoodSolution</span>. retcode: <span style="color:rgb(86,182,194)">Success
+</span>Maximum likelihood: -19.482356731739785
+Maximum likelihood estimates: 2-element Vector{Float64}
+     μ: 7.979378609758597
+     σ: 2.763131216804945</pre>
+</div>
+</div>
+</div>
+<p>As seen above, the <code>sol</code> object outputs the estimate for <span class="math inline">\(\mu\)</span>. We can compare to <code>mean(ys)</code> and <code>std(ys)</code>; the mean agrees (the standard deviation has a different divisor, so is systematically different, but could be aligned given the sample size):</p>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(ys), <span class="fu">std</span>(ys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>(7.979413839120031, 2.953886480885067)</code></pre>
+</div>
+</div>
+<p>The reason to use the <code>ProfileLikelihood</code> package to do the optimization, is we can then find <span class="math inline">\(95\)</span>% confidence levels for the parameters using a method implemented therein. The profile generation requires a specification of upper and lower bounds for the parameters:</p>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>lb <span class="op">=</span> [<span class="op">-</span><span class="fl">100.0</span>, <span class="fl">0.0</span>]</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>ub <span class="op">=</span> [ <span class="fl">100.0</span>, <span class="fl">100.0</span>]  <span class="co"># -100 &lt; μ &lt; 100; 0 &lt; σ &lt; 100</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>resolutions <span class="op">=</span> [<span class="fl">200</span>, <span class="fl">200</span>]</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>param_ranges <span class="op">=</span> <span class="fu">construct_profile_ranges</span>(sol, lb, ub, resolutions)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> <span class="fu">profile</span>(prob, sol; param_ranges<span class="op">=</span>param_ranges)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">ProfileLikelihoodSolution</span>. MLE retcode: <span style="color:rgb(86,182,194)">Success
+</span>Confidence intervals: 
+     95.0% CI for μ: (5.8101390944467886, 10.14846273551349)
+     95.0% CI for σ: (1.8128950062714275, 4.959125486619269)</pre>
+</div>
+</div>
+</div>
+<p>We can compare the confidence interval identified for <span class="math inline">\(\mu\)</span> to that identified through the <span class="math inline">\(T\)</span> statistic:</p>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(<span class="fu">OneSampleTTest</span>(ys), level <span class="op">=</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>(5.509902940980954, 10.448924737259109)</code></pre>
+</div>
+</div>
+<p>The two differ – they use different sampling distributions and methods – though simulations will show both manners create CIs capturing the true mean at the rate of the confidence level.</p>
+<p>The above example does not showcase the advantage of the maximimum likelihood methods, but hints at a systematic way to find confidence intervals, which for some cases is optimal, and is more systematic then finding some pivotal quantity (e.g.&nbsp;the <span class="math inline">\(T\)</span>-statistic under a normal population assumption).</p>
+</section>
+</section>
+<section id="hypothesis-tests" class="level2">
+<h2 class="anchored" data-anchor-id="hypothesis-tests">Hypothesis tests</h2>
+<p>A confidence interval is a means to estimate a population parameter with an appreciation for the variability involved in random sampling. However, sometimes a different language is sought. For example, we might hear a newer product is <em>better</em> than an old one, or amongst two different treatments there is a <em>difference</em>. These aren’t comments about the specific value. The language of hypothesis tests affords the flexibility to incorporate this language.</p>
+<p>The basic setup is similar to a courtroom trial in the United States – as seen on TV:</p>
+<ul>
+<li>a defendant is judged by a jury with an <em>assumption of innocence</em></li>
+<li>presentation of evidence is given</li>
+<li>the jury weighs the evidence <em>assuming</em> the defendant is innocent.</li>
+<li>If it is a civil trial a <em>preponderence of evidence</em> is enough for the jury to say the defendent is guilty (not innocent); if a criminal trial the standard is if the evidence is “beyond a reasonable doubt” then the defendent is deemed not innocent. Otherwise the defendant is said to be “not guilty,” though really it should be that they weren’t “proven” to be guilty.</li>
+</ul>
+<p>In a hypothesis or significance test for parameters, the setup is similar:</p>
+<ul>
+<li>a null hypothesis of “no difference” is assumed; an alternative hypothesis is specified.</li>
+<li>data is collected</li>
+<li>a test statistic is used to summarize the data. Then a probability is computed that accounts for the assumption of the null hypothesis and the data, computing the probability that the random values would be as or more <em>extreme</em> than observed in the data <em>assuming</em> the null hypothesis is true</li>
+<li>if that probability is small, then one might conclude the null hypothesis is incorrect; otherwise there is no evidence to say it isn’t correct, small would depend on the context of application.</li>
+</ul>
+<p>To illustrate hypothesis tests, suppose a company claims their new product is <em>more effective</em> than the current standard. Further, suppose this effectiveness can be measured by a single number, though there is randomness to any single measurement. Over time the old product is known to have a mean of <span class="math inline">\(70\)</span> in this measurement.</p>
+<p>Then the null and <em>alternative</em> hypotheses would be:</p>
+<p><span class="math display">\[
+H_0: \mu = 70 \quad H_A: \mu &gt; 70,
+\]</span></p>
+<p>where a bigger number is considered better. The null is an assumption of “no change,” the alternative points in the direction of the claim (better, in this case).</p>
+<p>To test this, data would be collected. Suppose in this case 8 measurements of the new product were taken with these values:</p>
+<pre><code>73.0, 66.1, 76.7, 68.0, 60.8, 81.8, 73.5, 75.2</code></pre>
+<p>Assume these are realizations of an iid random sample from a normal population, then the sample mean would be an estimate for the population mean of the new product:</p>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">73.0</span>, <span class="fl">66.1</span>, <span class="fl">76.7</span>, <span class="fl">68.0</span>, <span class="fl">60.8</span>, <span class="fl">81.8</span>, <span class="fl">73.5</span>, <span class="fl">75.2</span>]</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<pre><code>71.8875</code></pre>
+</div>
+</div>
+<p>This is more than 70, but the skeptic says half the time a sample mean would be more than 70 if the null hypothesis <em>were</em> true. Is it really indicative of “better?” For that question, a sense of how extreme this observed value is under an assumption of the null hypotheses is used.</p>
+<p>To test this, we characterize the probability a sample mean would be even more than our observed one, <strong>were</strong> we to repeat this sampling many times:</p>
+<blockquote class="blockquote">
+<p>The <span class="math inline">\(p\)</span>-value is the probability the test statistic is as or <em>more extreme</em> than the observed value under the null hypothesis.</p>
+</blockquote>
+<p>For this problem the <span class="math inline">\(p\)</span>-value is the probability the sample mean is <code>mean(xs)</code> or more assuming the <em>null hypothesis</em>. Centering by <span class="math inline">\(\mu\)</span> and scaling by the standard error, this is:</p>
+<p><span class="math display">\[
+P(\frac{\bar{X} - \mu}{SE(\bar{X})} &gt; \frac{\bar{x} - \mu}{s/\sqrt{n}} \mid H_0).
+\]</span></p>
+<p>That is, large values of <span class="math inline">\(\bar{X}\)</span> are not enough to be considered statistically significant, rather large values measured in terms of the number of standard errors are.</p>
+<p>This scaling and an assumption that the data is from a normal population makes this a statement about a <span class="math inline">\(T\)</span>-distributed random variable, namely:</p>
+<div class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fu">length</span>(xs)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> <span class="fu">std</span>(xs) <span class="op">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>obs <span class="op">=</span> (<span class="fu">mean</span>(xs) <span class="op">-</span> <span class="fl">70</span>) <span class="op">/</span> SE</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>p_value <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">TDist</span>(n<span class="op">-</span><span class="fl">1</span>), obs)  <span class="co"># 1 - P(T ≤ obs) = P(T &gt; obs)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>0.22361115388017372</code></pre>
+</div>
+</div>
+<p>Is this <span class="math inline">\(p\)</span>-value suggestive that the null hypothesis is not a valid explanation of the variation seen in the data?</p>
+<p>The jury has guidance, depending on the type of trial, here there is also guidance in terms of a stated <em>significance level</em>. This is done in advance, but is typically just <span class="math inline">\(\alpha = 0.05\)</span>. So if the <span class="math inline">\(p\)</span>-value is less than <span class="math inline">\(\alpha\)</span> the null hypothesis is suggested to be incorrect; if not there is no evidence to conclude the null hypothesis is incorrect. Since here the <span class="math inline">\(p\)</span>-value is much greater than <span class="math inline">\(\alpha = 0.05\)</span>, we would say there is no evidence to <em>reject</em> the null hypothesis.</p>
+<p>The mechanics here are standard and encapsulated in the <code>OneSampleTTest</code> constructor. The <code>pvalue</code> method allows the specification of the type of “tail”. In this case, as the alternative hypothesis is <span class="math inline">\(H_A: \mu &gt; 70\)</span>, the tail is “<code>:right</code>”:</p>
+<div class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(<span class="fu">OneSampleTTest</span>(xs, <span class="fl">70</span>); tail<span class="op">=:</span>right)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="38">
+<pre><code>0.22361115388017377</code></pre>
+</div>
+</div>
+<p>Had the alternative been <span class="math inline">\(H_A: \mu \neq 70\)</span>, the <span class="math inline">\(p\)</span>-value would be computed differently as then very big or very small values of the observed test statistic would be evidence against the null hypothesis. In this case, the tail is <code>:both</code>, which is the default:</p>
+<div class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(<span class="fu">OneSampleTTest</span>(xs, <span class="fl">70</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>0.44722230776034755</code></pre>
+</div>
+</div>
+<section id="design-of-structures-in-hypothesistests" class="level4">
+<h4 class="anchored" data-anchor-id="design-of-structures-in-hypothesistests">Design of structures in HypothesisTests</h4>
+<p>The <code>HypothesisTests</code> package was first published in 2015 and uses a calling style where the main functions match the underlying types. In particular, the <code>OneSampleTTest</code> method creates a structure, also called <code>OneSampleTTest</code>. It is illustrative of the other tests in the <code>HypothesisTests</code> package. This structure does not keep the data, only sufficient statistics of the data to generate the various summaries. In this case, these are <code>n</code>, <code>xbar</code> (<span class="math inline">\(\bar{x}\)</span>), <code>df</code> (<span class="math inline">\(n-1)\)</span>, <code>stderr</code> (<span class="math inline">\(SE\)</span>), <code>t</code> (<code>(mean(xs)-mu)/stderr</code>), and <code>μ0</code> (the null hypothesis). The design is the default show method summarizes most of what may be of interest, specialized methods, like <code>confint</code> and <code>pvalue</code> allow customization and access to the specific values. The default <code>show</code> method for this test is:</p>
+<div class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">OneSampleTTest</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>One sample t-test
+-----------------
+Population details:
+    parameter of interest:   Mean
+    value under h_0:         0
+    point estimate:          71.8875
+    95% confidence interval: (66.34, 77.43)
+
+Test summary:
+    outcome with 95% confidence: reject h_0
+    two-sided p-value:           &lt;1e-07
+
+Details:
+    number of observations:   8
+    t-statistic:              30.6644467681273
+    degrees of freedom:       7
+    empirical standard error: 2.3443273098512263</code></pre>
+</div>
+</div>
+<p>A default value for the null was chosen (<code>h_0</code>), a default level for the confidence interval (<code>0.95</code>), and a default choice of tail was made for the computed <span class="math inline">\(p\)</span>-value.</p>
+</section>
+<section id="equivalence-between-hypothesis-tests-and-confidence-intervals" class="level4">
+<h4 class="anchored" data-anchor-id="equivalence-between-hypothesis-tests-and-confidence-intervals">Equivalence between hypothesis tests and confidence intervals</h4>
+<p>For many tests, such as the one-sample <span class="math inline">\(T\)</span>-test, there is an equivalence between a two-sided significance test with significance level <span class="math inline">\(\alpha\)</span> and a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% confidence interval – no surprise given the same <span class="math inline">\(T\)</span>-statistic is employed by both.</p>
+<p>For example, consider a two-sided significance test of <span class="math inline">\(H_0: \mu=\mu_0\)</span>. Let <span class="math inline">\(\alpha\)</span> be the level of significance: we “reject” the null hypothesis if the <span class="math inline">\(p\)</span>-value is less than <span class="math inline">\(\alpha\)</span>. An iid random sample is summarized by the observed value of the <span class="math inline">\(T\)</span>-statistic, <span class="math inline">\((\bar{x} - \mu_0)/(s/\sqrt{n})\)</span>. Let <span class="math inline">\(t^* = t_{1-\alpha/2}\)</span> be the quantile, then if the <span class="math inline">\(p\)</span>-value is less than <span class="math inline">\(\alpha\)</span>, we must have the observed value in absolute value is greater than <span class="math inline">\(t^*\)</span>. That is</p>
+<p><span class="math display">\[
+| \frac{\bar{x} - \mu_0}{s/\sqrt{n}}| &gt; t^*.
+\]</span></p>
+<p>Algebraically, this implies that either <span class="math inline">\(\mu_0 &lt; \bar{x} - t^* s/\sqrt{n}\)</span> or <span class="math inline">\(\mu_0 &gt; \bar{x} + t^* s/\sqrt{n}\)</span>. That is, the value of <span class="math inline">\(\mu_0\)</span> is not in the <span class="math inline">\((1-\alpha)\cdot 100\)</span>% CI based on the sample.</p>
+<blockquote class="blockquote">
+<p>Rejecting the null hypothesis <span class="math inline">\(H_0: \mu=\mu_0\)</span> is equivalent to <span class="math inline">\(\mu_0\)</span> not being in the corresponding confidence interval.</p>
+</blockquote>
+<p>The reverse is also true: any <span class="math inline">\(\mu_0\)</span> not in the <span class="math inline">\((1-\alpha)\cdot 100\)</span>% CI would have a two-tailed test of <span class="math inline">\(H_0: \mu=\mu_)\)</span> rejected at the <span class="math inline">\(\alpha\)</span> significance level.</p>
+</section>
+<section id="alternative-hypotheses" class="level4">
+<h4 class="anchored" data-anchor-id="alternative-hypotheses">Alternative hypotheses</h4>
+<p>The null hypothesis is also described as one of “no effect,” the alternative hypothesis the “research hypothesis.” The <span class="math inline">\(p\)</span>-value is computed under the null hypothesis. The alternative hypothesis may take different forms: it could be a specification of a point, as will be seen in the next section on power; a one-tailed directional hypothesis, useful to capture expressions like “better;” two-tailed directional, useful to capture expressions like “different;” and non-directional, useful for indicating anything save the null hypothesis. The distinction between the last two is more clear when the null hypothesis speaks to more than one variable, such as is the case when describing, say, different probabilities for a multinomial distribution.</p>
+<p>In <code>HypothesisTests</code>, for the <span class="math inline">\(T\)</span> tests and many others, the alternative is specified to <code>pvalue</code> through the <code>tail</code> argument with a value of <code>:both</code>, <code>:right</code>, or <code>:left</code>. Some tests have non-drectional alternatives and no argument. In the case of a <span class="math inline">\(T\)</span>-test, with a symmetric sampling distribution, symmetry relates the values, so knowing one can be used to figure out the other two.</p>
+</section>
+<section id="type-i-error" class="level4">
+<h4 class="anchored" data-anchor-id="type-i-error">Type-I error</h4>
+<p>The computation of a <span class="math inline">\(p\)</span>-value is the result of a significance test. Often this value is compared to a <em>significance level</em>, <span class="math inline">\(\alpha\)</span>: if the <span class="math inline">\(p\)</span>-value is less than <span class="math inline">\(\alpha\)</span> the difference of the test statistic from the null hypothesis is <em>statistically significant</em>. In other language, we may “reject” the null hypothesis when the <span class="math inline">\(p\)</span>-value is less than <span class="math inline">\(\alpha\)</span> and “accept” the null if not.</p>
+<p>The <span class="math inline">\(p\)</span>-value is computed under the null hypothesis being true. The <span class="math inline">\(p\)</span>-value depends on a random sample. How often, on average, would this <span class="math inline">\(p\)</span>-value be less than <span class="math inline">\(\alpha\)</span>? Why, <span class="math inline">\(\alpha\cdot 100\)</span> percent of the time, as <span class="math inline">\(\alpha = P(\text{reject} | H_0)\)</span>.</p>
+<p>We can see this through a simulation. Let’s look at the <span class="math inline">\(T\)</span> statistic for a sample of size <span class="math inline">\(10\)</span> from a <span class="math inline">\(Normal(0,1)\)</span> population:</p>
+<div class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> <span class="fu">Normal</span>(<span class="fl">0</span>,<span class="fl">1</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">10</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">5000</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> [<span class="fu">pvalue</span>(<span class="fu">OneSampleTTest</span>(<span class="fu">rand</span>(Z, n))) for _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N]</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(ps <span class="op">.&lt;</span> <span class="fl">0.01</span>)<span class="op">/</span>N, <span class="fu">sum</span>(ps <span class="op">.&lt;</span> <span class="fl">0.05</span>)<span class="op">/</span>N, <span class="fu">sum</span>(ps <span class="op">.&lt;</span> <span class="fl">0.10</span>)<span class="op">/</span>N</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="41">
+<pre><code>(0.0106, 0.0508, 0.0972)</code></pre>
+</div>
+</div>
+<p>The proportions in the 5000 samples roughly match the threshold specified (<span class="math inline">\(\alpha = 0.01\)</span>, <span class="math inline">\(0.05\)</span>, <span class="math inline">\(0.10\)</span>).</p>
+<p>There are some cases where a <em>conservative</em> sampling distribution is used. (For example, with a two sample test of means with no assumption of equal variances, a conservative degrees of freedom is sometimes suggested.) Conservative means that “rejecting” the null (or finding <span class="math inline">\(p\)</span> value less than <span class="math inline">\(\alpha\)</span>) will occur on average less than <span class="math inline">\(\alpha\cdot 100\)</span> percent of the time.</p>
+</section>
+<section id="power" class="level4">
+<h4 class="anchored" data-anchor-id="power">Power</h4>
+<p>Consider a significance test for the population mean with this null and alternative hypothesis:</p>
+<p><span class="math display">\[
+H_0: \mu=0, \quad H_A: \mu=1.
+\]</span></p>
+<p>That is the alternative is fully specified, unlike, say, <span class="math inline">\(H_A: \mu &gt; 0\)</span>.</p>
+<p>When a small <span class="math inline">\(p\)</span> value is found, the language of “rejecting” the null hypothesis is used, whereas for large <span class="math inline">\(p\)</span> values, “accept” is used. If we “reject” when the <span class="math inline">\(p\)</span>-value is less than <span class="math inline">\(\alpha\)</span>, then the probability of making a mistake when the <em>null hypothesis</em> is <em>actually</em> true is <span class="math inline">\(\alpha\)</span>. This is called a <em>Type-I error</em>. In the above, as the alternative is a fixed value of the parameter, we could also compute the probability of “accepting” when the <em>alternative</em> hypothesis is <em>actually</em> true. When this error occurs, a <em>Type-II error</em> happens.</p>
+<p>For example, a sample of size <span class="math inline">\(n=4\)</span> from a <span class="math inline">\(Normal(\mu, 1)\)</span> distribution would have a standard error of <span class="math inline">\(1/\sqrt{4} = 1/2\)</span>. Without thinking too much, were the sample mean close to <span class="math inline">\(0\)</span> we would accept the null, were it bigger than <span class="math inline">\(1\)</span> we would reject the null. Precisely, if we set <span class="math inline">\(\alpha = 0.05\)</span>, then we can compute under the null hypothesis a critical value for which if <span class="math inline">\(\bar{x}\)</span> is less we “accept” and if more we “reject”:</p>
+<div class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>sigma <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">4</span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>SD <span class="op">=</span> sigma <span class="op">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>zc <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">Normal</span>(<span class="fl">0</span>, SD), <span class="fl">1</span> <span class="op">-</span> alpha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<pre><code>0.8224268134757359</code></pre>
+</div>
+</div>
+<p>This is computed under the null hypothesis. In this case, we can compute under the alternative hypothesis, as it is fully specified, the probability of “accepting” when the alternative is true. This probability is traditional called <span class="math inline">\(\beta\)</span> and depends on the exact specification of the alternative. For this specific one we have:</p>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>mu_a <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cdf</span>(<span class="fu">Normal</span>(mu_a,  SD), zc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="43">
+<pre><code>0.36123996868766456</code></pre>
+</div>
+</div>
+<p>The left graphic in <a href="#fig-power-figure">Figure&nbsp;4</a> shows the sampling distribution under the null hypothesis centered at <span class="math inline">\(0,\)</span> and the sampling distribution under the alternative hypothesis, centered at <span class="math inline">\(1\)</span>. The shaded area representing <span class="math inline">\(\beta\)</span> is much bigger than <span class="math inline">\(\alpha\)</span>.</p>
+<p>The value for <span class="math inline">\(\beta\)</span> is pretty large, over a third, so with such a small sample, it is difficult to detect a difference of <span class="math inline">\(1 = \mu_A - \mu_0\)</span>. The basic expectation is: the smaller the difference, the larger the sample is needed to have “<span class="math inline">\(\beta\)</span>” be small.</p>
+<p>The <em>power</em> is <span class="math inline">\(1-\beta\)</span>. It may be specified ahead of time, as in: what size <span class="math inline">\(n\)</span> is needed to have power <span class="math inline">\(0.80\)</span> with a difference of means being <span class="math inline">\(1\)</span>.</p>
+<p>To solve this, we would need to solve</p>
+<pre><code>1 - beta = 1 - cdf(Normal(mu_a, sigma/sqrt(n)),
+    quantile(Normal(0, sigma/sqrt(n)), 1 - alpha))</code></pre>
+<p>For this problem we could do this with the following approach, where we first define a function to get the <span class="math inline">\(\beta\)</span> value for a given <span class="math inline">\(n\)</span> and set of assumptions:</p>
+<div class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">get_beta</span>(n)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>    H0 <span class="op">=</span> <span class="fu">Normal</span>(<span class="fl">0</span>, sigma<span class="op">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>    HA <span class="op">=</span> <span class="fu">Normal</span>(mu_a, sigma<span class="op">/</span><span class="fu">sqrt</span>(n))</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>    critical_point <span class="op">=</span> <span class="fu">quantile</span>(H0, <span class="fl">1</span> <span class="op">-</span> alpha)</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> <span class="fu">cdf</span>(HA, critical_point)</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="44">
+<pre><code>get_beta (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>This is then solved for a value of <code>n</code> where the power for a given <code>n</code> matches the desired power. To do so, we equate the values and, here, note a sign change between <span class="math inline">\(2\)</span> and <span class="math inline">\(100\)</span>:</p>
+<div class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>beta <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>power <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> beta</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(n) <span class="op">=</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">get_beta</span>(n)) <span class="op">-</span> power</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="fl">2</span>), <span class="fu">f</span>(<span class="fl">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+<pre><code>(-0.3912027802061293, 0.19999999999999996)</code></pre>
+</div>
+</div>
+<p>Somewhere between <span class="math inline">\(2\)</span> and <span class="math inline">\(100\)</span> lies the answer, and using a zero finding algorithm, a value of <span class="math inline">\(7\)</span> can be seen to produce a power greater than or equal to <span class="math inline">\(0.80\)</span>.</p>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Roots</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">find_zero</span>(f, (<span class="fl">2</span>, <span class="fl">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="46">
+<pre><code>6.182557232019764</code></pre>
+</div>
+</div>
+<p>(We round up in calculations involving sample size.)</p>
+<div id="fig-power-figure" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" data-execution_count="46" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="47">
+<p><img src="inference_files/figure-html/cell-47-output-1.svg" class="img-fluid figure-img"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" data-execution_count="47" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output cell-output-display" data-execution_count="48">
+<p><img src="inference_files/figure-html/cell-48-output-1.svg" class="img-fluid figure-img"></p>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Illustration of power computation. A significance level <span class="math inline">\(\alpha\)</span> is chosen; under <span class="math inline">\(H_0\)</span> this allows the identification of a critical point. Under <span class="math inline">\(H_A\)</span>, that same critical point is used to find the area in the the “acceptance” region. This probability is <span class="math inline">\(\beta\)</span>. The power is <span class="math inline">\(1-\beta\)</span>. Adjusting the sample size, <span class="math inline">\(n\)</span>, will narrow the two bell curves allowing <span class="math inline">\(\beta\)</span> to be set to a specified value. The left-hand figure uses <span class="math inline">\(n=4\)</span>, the right hand one uses <span class="math inline">\(n=7\)</span>.</figcaption><p></p>
+</figure>
+</div>
+<p>The computation above was made easier as we used the standard deviation in our test statistic with <span class="math inline">\(\sigma = 1\)</span>. To find a sample size for a <span class="math inline">\(T\)</span>-test, we turn to a package, as the underlying sampling distributions are a bit different, especially under <span class="math inline">\(H_A\)</span>.</p>
+<p>Let the <em>effect size</em>, or standardized mean difference, be the <em>absolute effect size</em> (the difference between the mean specified under <span class="math inline">\(H_0\)</span> and that under <span class="math inline">\(H_A\)</span>) divided by the standard deviation of the population. This value is termed “small” when around <span class="math inline">\(0.20\)</span>, medium when around <span class="math inline">\(0.50\)</span>, and large when <span class="math inline">\(0.80\)</span> or more. In the above computation, it would be <span class="math inline">\(1 = (1 - 0)/1\)</span>.</p>
+<p>The power, <span class="math inline">\(1-\beta\)</span>, depends on the value of <span class="math inline">\(\alpha\)</span>, the sample size, and the effect size. Specifying 3 of these 4 values allows the fourth to be numerically identified.</p>
+<p>The <code>PowerAnalyses</code> package carries out several different power computations. For the one test we are illustrating, the <code>OneSampleTTest</code>, the name conflicts with a related, but different method in the <code>HypothesisTests</code> package, as <code>PowerAnalyses</code> does not extend <code>HypothesisTests</code>. We use <code>import</code> instead of <code>using</code>, and then qualify with the module name each function used.</p>
+<div class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">PowerAnalyses</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For example, to identify the sample size needed for a right-tailed test with <span class="math inline">\(\alpha = 0.05,\)</span> <span class="math inline">\(\beta = 0.20,\)</span> and the effect size is small (<span class="math inline">\(0.30\)</span>) we have:</p>
+<div class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>effect_size <span class="op">=</span> <span class="fl">0.3</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>power <span class="op">=</span> <span class="fl">0.80</span></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> PowerAnalyses.<span class="fu">OneSampleTTest</span>(PowerAnalyses.one_tail)</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>PowerAnalyses.<span class="fu">get_n</span>(T; alpha<span class="op">=</span>alpha, es<span class="op">=</span>effect_size, power<span class="op">=</span>power)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="50">
+<pre><code>70.06790520005853</code></pre>
+</div>
+</div>
+<p>We see a smaller <span class="math inline">\(n\)</span> is needed to have the same power with a larger effect size.</p>
+<div class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>effect_size <span class="op">=</span> <span class="fl">0.8</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>PowerAnalyses.<span class="fu">get_n</span>(T; alpha<span class="op">=</span>alpha, es<span class="op">=</span>effect_size, power<span class="op">=</span>power)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<pre><code>11.144239681013328</code></pre>
+</div>
+</div>
+<p>There are other power computations provided in the package, but this one illustrates a key point: with large enough sample sizes, any effect size can be discerned. That is the difference is <em>statistically significant</em>. However, that does not mean it is <em>practically significant</em>.</p>
+<p>An example from the <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3444174">NIH</a> describes a “Physicians Health Study of aspirin to prevent myocardial infarction. In more than <span class="math inline">\(22,000\)</span> subjects over an average of <span class="math inline">\(5\)</span> years, aspirin was associated with a reduction in MI (although not in overall cardiovascular mortality) that was highly statistically significant: <span class="math inline">\(p &lt; .00001\)</span>. The study was terminated early due to the conclusive evidence, and aspirin was recommended for general prevention. However, the effect size was … <em>extremely small</em>. As a result of that study, many people were advised to take aspirin who would not experience benefit yet were also at risk for adverse effects. Further studies found even smaller effects, and the recommendation to use aspirin has since been modified.</p>
+</section>
+<section id="one-sample-z-test" class="level3">
+<h3 class="anchored" data-anchor-id="one-sample-z-test">One sample Z test</h3>
+<p>The one-sample <span class="math inline">\(Z\)</span> test is similar to the one-sample <span class="math inline">\(T\)</span> test though the <em>known</em> population standard deviation is used in the test statistic, so the standard normal distribution is the sample distribution.</p>
+<p>For example, consider again the coffee-dispenser technician. They wish to test the hypothesis</p>
+<p><span class="math display">\[
+H_0: \mu = 7.5, \quad H_A: \mu &lt; 7.5
+\]</span></p>
+<p>assuming the distribution is <span class="math inline">\(Normal(\mu, 1/2)\)</span>. The test statistic used would be <span class="math inline">\((\bar{x}-\mu)/(\sigma/\sqrt{n})\)</span>. The data collected is</p>
+<pre><code>7.9  7.2  7.1  7.0  7.0  7.1</code></pre>
+<p>The test can be carried out through the following, which shows evidence to reject the null in favor of the alternative.</p>
+<div class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">7.9</span>,  <span class="fl">7.2</span>,  <span class="fl">7.1</span>,  <span class="fl">7.0</span>,  <span class="fl">7.0</span>,  <span class="fl">7.1</span>]</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> <span class="fu">OneSampleZTest</span>(xs, <span class="fl">7.5</span>)</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(Z, tail<span class="op">=:</span>left)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>0.02152440439927433</code></pre>
+</div>
+</div>
+<p>(The statistician may say, if the mean is <span class="math inline">\(7.5\)</span> and the standard deviation is <span class="math inline">\(0.5\)</span>, then anything more than 1 standard deviation from the mean will overflow an <span class="math inline">\(8\)</span>oz cup. But the technicians know that the normal distribution is only a generalization and that the values are <em>always</em> within <span class="math inline">\(0.5\)</span> oz of the calibration mean.)</p>
+</section>
+<section id="the-sign-test" class="level3">
+<h3 class="anchored" data-anchor-id="the-sign-test">The sign test</h3>
+<p>The Wilcoxon signed-rank test is an alternative to the <span class="math inline">\(Z\)</span> and <span class="math inline">\(T\)</span> tests. Unlike those, there is no distribution assumption on the population <em>except</em> that it be symmetric. For symmetric distributions with reasonable tails, the median and mean are identical, so this is often termed a test of the median. The test is implemented in the <code>SignedRankTest</code> function. Unlike other tests, we use the null <span class="math inline">\(H_0: M = 0\)</span>, so we subtract off the tested median before proceeding.</p>
+<p>Returning to the coffee-dispenser technician who took 6 samples and is testing if the center of the data is centered at <span class="math inline">\(7.5\)</span> or <em>something different</em>, we have:</p>
+<div class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">7.9</span>,  <span class="fl">7.2</span>,  <span class="fl">7.1</span>,  <span class="fl">7.0</span>,  <span class="fl">7.0</span>,  <span class="fl">7.1</span>]</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> <span class="fu">SignedRankTest</span>(xs <span class="op">.-</span> <span class="fl">7.5</span>)</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(M, tail<span class="op">=:</span>both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="53">
+<pre><code>0.15625</code></pre>
+</div>
+</div>
+<p>This <span class="math inline">\(p\)</span>-value is large, there is no suggestion that <span class="math inline">\(H_0\)</span> does not hold.</p>
+</section>
+<section id="one-sample-test-of-proportions" class="level3">
+<h3 class="anchored" data-anchor-id="one-sample-test-of-proportions">One sample test of proportions</h3>
+<p>A test of survey data where one of two answers are possible can be carried out using the binomial model, assuming the sample data is representative.</p>
+<p>For example, suppose it is known that in any given semester, 50% of matriculating students will have a lower semester GPA than their cumulative GPA. A researcher tests if college transfer students are different with <span class="math inline">\(p\)</span> representing the population proportion whose lower semester GPA will be worse than their cumulative one. The test is:</p>
+<p><span class="math display">\[
+H_0: p = 0.50, \quad H_A: p &gt; 0.50
+\]</span></p>
+<p>They collect data and find of 500 transfer students identified, 290 had lower GPAs than their accumulated GPA. Is this data statistically significant?</p>
+<div class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>x, n <span class="op">=</span> <span class="fl">290</span>, <span class="fl">500</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="fu">BinomialTest</span>(x, n, p)</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(B, tail<span class="op">=:</span>right)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<pre><code>0.00020020776841988704</code></pre>
+</div>
+</div>
+<p>The notion of “transfer shock” anticipates first semester fall off exceeding typical rates; it is known that on average this difference in performance goes away after transfer students become more familiar with their new environment.</p>
+</section>
+<section id="two-sample-test-of-center" class="level3">
+<h3 class="anchored" data-anchor-id="two-sample-test-of-center">Two-sample test of center</h3>
+<p>A two-sample test of center can test if the population means or medians are equal. The latter could be done with the signed-rank test. Here we illustrate a test of the population means based on the <span class="math inline">\(T\)</span>-statistic:</p>
+<p><span class="math display">\[
+T = \frac{(\bar{X}_1 - \bar{X}_2) - (\mu_1 - \mu_2)}{SE(\bar{X}_1 - \bar{X}_2)}.
+\]</span></p>
+<p>The null hypothesis will be <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span>, the alternative is either direction or both. The <span class="math inline">\(SE\)</span> will depend on an assumption of equal population variances or not (<code>EqualVarianceTTest</code> or <code>UnequalVarianceTTest</code>). The basic pattern to find the corresponding <span class="math inline">\(p\)</span>-value is identical.</p>
+<p>For example, consider the coffee-dispenser technician seeing if two machines have an equal calibration. The hypotheses would be:</p>
+<p><span class="math display">\[
+H_0: \mu_1 = \mu_2, \quad H_A:  \mu_1 \neq \mu_2
+\]</span></p>
+<p>The collected data is:</p>
+<pre><code>Machine 1: 7.0, 7.8, 7.7, 7.6, 8.3
+Machine 2: 6.2, 8.0, 6.8, 7.0, 7.3, 7.9, 7.1</code></pre>
+<p>Without assuming equal variances, the test could be carried out with:</p>
+<div class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">7.0</span>, <span class="fl">7.8</span>, <span class="fl">7.7</span>, <span class="fl">7.6</span>, <span class="fl">8.3</span>]</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> [<span class="fl">6.2</span>, <span class="fl">8.0</span>, <span class="fl">6.8</span>, <span class="fl">7.0</span>, <span class="fl">7.3</span>, <span class="fl">7.9</span>, <span class="fl">7.1</span>]</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fu">UnequalVarianceTTest</span>(xs, ys)</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(T)  <span class="co"># use default tail=:both</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>0.14802700278100428</code></pre>
+</div>
+</div>
+<p>The data does not suggest a statistically significant difference between the two machines.</p>
+</section>
+<section id="two-sample-test-of-proportions" class="level3">
+<h3 class="anchored" data-anchor-id="two-sample-test-of-proportions">Two-sample test of proportions</h3>
+<p>For a comparison of two population proportions, we do the math using the test statistic:</p>
+<p><span class="math display">\[
+Z = \frac{(\hat{p}_1 - \hat{p}_2) - (p_1 - p_2)}{SE(\hat{p}_1 - \hat{p}_2)},
+\]</span></p>
+<p>which for large enough <span class="math inline">\(n\)</span> will have a standard normal distribution, assuming the sampling is well modeled by independent, binomial random variables.</p>
+<p>Suppose, we are interested in comparing two randomly chosen groups of transfer students at different institutions. We are testing if the GPA on the first semester after transfer falls off from the accumulated average. The test hypotheses are:</p>
+<p><span class="math display">\[
+H_0: p_1 = p_2, \quad, H_A: p_1 \neq p_2.
+\]</span></p>
+<p>The test statistic involves <span class="math inline">\(SE\)</span> where the <span class="math inline">\(SD\)</span> is <span class="math inline">\(\sqrt{p_1(1-p_1)/n_1 + p_2(1-p_2)/n_2}\)</span>. The null hypothesis states <span class="math inline">\(p_1=p_2\)</span>, but not what that value is, so the <span class="math inline">\(SE\)</span> is found by estimating <span class="math inline">\(p_1=p_2\)</span> by <em>pooling</em> the data.</p>
+<p>The collected data is:</p>
+<pre><code>             x      n
+School A    120    200
+School B    100    190</code></pre>
+<p>We proceed to compute the observed value of the test statistic:</p>
+<div class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>x1, n1 <span class="op">=</span> <span class="fl">120</span>, <span class="fl">200</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>x2, n2 <span class="op">=</span> <span class="fl">100</span>, <span class="fl">190</span></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>phat1, phat2 <span class="op">=</span> x1<span class="op">/</span>n1, x2<span class="op">/</span>n2</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>phat <span class="op">=</span> (x1 <span class="op">+</span> x2)<span class="op">/</span>(n1 <span class="op">+</span> n2) <span class="co"># pooled</span></span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">phat*</span>(<span class="fl">1</span><span class="op">-</span>phat) <span class="op">*</span> (<span class="fl">1</span><span class="op">/</span>n1 <span class="op">+</span> <span class="fl">1</span><span class="op">/</span>n2))</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>Z_obs <span class="op">=</span> (phat1 <span class="op">-</span> phat2)<span class="op">/</span>SE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
+<pre><code>1.4667724206855928</code></pre>
+</div>
+</div>
+<p>This is a two-tailed test, so the <span class="math inline">\(p\)</span>-value incorporates potential test statistics more than <code>Z_obs</code> or <em>less than</em> <code>-Z_obs</code>. (The minus sign comes, as <code>Z_obs</code> is positive.) Since the sampling distribution is a symmetric (standard normal) we have:</p>
+<div class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>p_value <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">Normal</span>(<span class="fl">0</span>,<span class="fl">1</span>), Z_obs))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<pre><code>0.14243797452124007</code></pre>
+</div>
+</div>
+<p>This being larger than <span class="math inline">\(\alpha = 0.05\)</span>, suggests no reason to reject the null hypothesis.</p>
+</section>
+<section id="test-of-variances" class="level3">
+<h3 class="anchored" data-anchor-id="test-of-variances">Test of variances</h3>
+<p>The question of two, independent, <em>normally distributed</em>, samples having equal variances can be tested through an <span class="math inline">\(F\)</span>-test and is implemented in <code>VarianceFTest</code>.</p>
+<p>For example, consider a test for equal variances over two levels of some treatment with hypotheses:</p>
+<p><span class="math display">\[
+H_0: \sigma_1 = \sigma_2, \quad H_A: \sigma_1 \neq \sigma_2
+\]</span></p>
+<p>The <span class="math inline">\(F\)</span> test considers the ratio <span class="math inline">\(\sigma_1^2/\sigma_2^2\)</span>, so these hypotheses may also have been specified in terms of ratios.</p>
+<p>Suppose two independent samples were collected from normally distributed populations, giving:</p>
+<pre><code>xs: -2.1, -1.8, 1.3,  -0.9, 1.7,  -2.0, -1.6, 3.8, -0.8, 5.5
+ys:  7.6,  6.4, 7.2,  16.1, 6.6,  10.7, 11.0, 9.4</code></pre>
+<p>We enter the data and then pass this to the test:</p>
+<div class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="op">-</span><span class="fl">2.1</span>, <span class="op">-</span><span class="fl">1.8</span>, <span class="fl">1.3</span>, <span class="op">-</span><span class="fl">0.9</span>, <span class="fl">1.7</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.6</span>, <span class="fl">3.8</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">5.5</span>]</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> [<span class="fl">7.6</span>, <span class="fl">6.4</span>, <span class="fl">7.2</span>, <span class="fl">16.1</span>, <span class="fl">6.6</span>, <span class="fl">10.7</span>, <span class="fl">11.0</span>, <span class="fl">9.4</span>]</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>F <span class="op">=</span> <span class="fu">VarianceFTest</span>(xs, ys)</span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(F, tail<span class="op">=:</span>both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<pre><code>0.566171938952384</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Robustness of the F test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <span class="math inline">\(F\)</span>-test of variance, unlike, say, tests for the population mean, are sensitive to departures from the assumption of a normally distributed population. For this case, this was first noticed by Pearson (cf. <span class="citation" data-cites="Box_non_normality_10.1093/biomet/40.3-4.318">(<a href="#ref-Box_non_normality_10.1093/biomet/40.3-4.318" role="doc-biblioref">BOX 1953</a>)</span>). The more robust <code>LeveneTest</code> constructor implements Levene’s test for comparing two <em>or</em> more variances for equality.</p>
+</div>
+</div>
+</section>
+<section id="test-of-correlation" class="level3">
+<h3 class="anchored" data-anchor-id="test-of-correlation">Test of correlation</h3>
+<p>Suppose <span class="math inline">\((X_1, Y_1), (X_2, Y_2), \dots, (X_n, Y_n)\)</span> are <em>jointly</em> normally distributed. The Pearson correlation coefficient was given by:</p>
+<p><span class="math display">\[
+r = \frac{1}{n-1} \sigma \left(\frac{X_i-\bar{X}}{s_X}\right) \cdot \left(\frac{Y_i - \bar{Y}}{s_Y}\right).
+\]</span></p>
+<p>The exact sampling <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient#Testing_using_Student's_t-distribution">distribution function of <span class="math inline">\(r\)</span></a> is known and involves the parameter <span class="math inline">\(\rho\)</span>, the population correlation. Under the null hypothesis <span class="math inline">\(\rho=0\)</span>, the distribution is a <span class="math inline">\(T\)</span>-distribution with <span class="math inline">\(n-2\)</span> degrees of freedom. This allows the testing of <span class="math inline">\(0\)</span> correlation, which under this assumption is a test of independence.</p>
+<p>For example, to test if these two normally distributed pairs of numbers are independent:</p>
+<pre><code>x: -1.41  -0.8  -1.28  0.68   0.16  -1.28
+y: -0.34  -0.24  0.29  0.83  -0.77  -0.66</code></pre>
+<p>we have:</p>
+<div class="cell" data-execution_count="58">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="op">-</span><span class="fl">1.41</span>,  <span class="op">-</span><span class="fl">0.8</span>, <span class="op">-</span><span class="fl">1.28</span>, <span class="fl">0.68</span>, <span class="fl">0.16</span>, <span class="op">-</span><span class="fl">1.28</span>]</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> [<span class="op">-</span><span class="fl">0.34</span>, <span class="op">-</span><span class="fl">0.24</span>, <span class="fl">0.29</span>, <span class="fl">0.83</span>, <span class="op">-</span><span class="fl">0.77</span>, <span class="op">-</span><span class="fl">0.66</span>]</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fu">length</span>(x)</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>r_obs <span class="op">=</span> <span class="fu">cor</span>(x, y)</span>
+<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">*</span> <span class="fu">ccdf</span>(<span class="fu">TDist</span>(n<span class="op">-</span><span class="fl">2</span>), <span class="fu">abs</span>(r_obs))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<pre><code>0.7244958336991354</code></pre>
+</div>
+</div>
+<p>For testing other values, the Fischer approximation proves useful, namely that</p>
+<p><span class="math display">\[
+F(r) = \frac{1}{2}\ln\left(\frac{1 +r}{1-r}\right) = \tanh^{-1}(r)
+\]</span></p>
+<p>has an <em>approximate</em> normal distribution with mean <span class="math inline">\(F(\rho)\)</span> and standard error <span class="math inline">\(1/\sqrt{n-3}\)</span>.</p>
+<p>This can be used to generate confidence intervals, leading to a <span class="math inline">\((1-\alpha)\cdot 100\)</span>% CI for <span class="math inline">\(\rho\)</span> expressed through <span class="math inline">\(\tanh^{-1}(r) - z_{1-\alpha/2} SE &lt; \tanh^{-1}(\rho) &lt; \tanh^{-1}(r) + z_{1-\alpha/2} SE\)</span>.</p>
+<p>For the previous data, a <span class="math inline">\(95\)</span>% percent confidence interval for <span class="math inline">\(\rho\)</span> could be constructed with:</p>
+<div class="cell" data-execution_count="59">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fu">cor</span>(x, y)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fu">length</span>(x)</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>za <span class="op">=</span> <span class="fu">quantile</span>(<span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fl">1</span>), <span class="fl">1</span> <span class="op">-</span> alpha<span class="op">/</span><span class="fl">2</span>)</span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fu">sqrt</span>(n<span class="op">-</span><span class="fl">3</span>)</span>
+<span id="cb103-6"><a href="#cb103-6" aria-hidden="true" tabindex="-1"></a>MOE <span class="op">=</span> za <span class="op">*</span> SE</span>
+<span id="cb103-7"><a href="#cb103-7" aria-hidden="true" tabindex="-1"></a>lo′, hi′ <span class="op">=</span> <span class="fu">atanh</span>(r) <span class="op">.+</span> (<span class="op">-</span>MOE, MOE)</span>
+<span id="cb103-8"><a href="#cb103-8" aria-hidden="true" tabindex="-1"></a>lo, hi <span class="op">=</span> <span class="fu">tanh</span>(lo′), <span class="fu">tanh</span>(hi′)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="60">
+<pre><code>(-0.6252789868635364, 0.9103466950735963)</code></pre>
+</div>
+</div>
+<p>This is very wide, as the sample size is small, leading to an <span class="math inline">\(SE\)</span> value over <span class="math inline">\(1/2\)</span>.</p>
+</section>
+<section id="goodness-of-fit-test" class="level3">
+<h3 class="anchored" data-anchor-id="goodness-of-fit-test">Goodness of fit test</h3>
+<p>Comparing categorical counting data to a specified multinomial model is done through a Chi-squared test. The expected count in each category is <span class="math inline">\(E_i=n p_i\)</span>, the count modeled by <span class="math inline">\(X_i\)</span> and the statistic is <span class="math inline">\(\sum (X_i-E_i)^2/E_i\)</span>.</p>
+<div id="exm-benfords-law" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7 (Benford’s law) </strong></span>Data to study <a href="https://chance.amstat.org/2021/04/benfords-law/">Benford’s law</a> appeared in the linked article. The authors compiled data from COVID websites to get counts on the number of confirmed cases across many data sources. The first digit of each was tallied, and produced this data:</p>
+<pre><code>  1    2    3    4    5    6    7    8    9
+2863 1342 1055  916  744  673  580  461  377</code></pre>
+<p>To test if the data follow Benford’s law (<span class="math inline">\(P(X=k) = \log_{10}(k+1) - \log_{10}(k)\)</span>) we have this as the null for <span class="math inline">\(p_k\)</span> with an alternative of not so.</p>
+<div class="cell" data-execution_count="60">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">2863</span>, <span class="fl">1342</span>, <span class="fl">1055</span>,  <span class="fl">916</span>,  <span class="fl">744</span>,  <span class="fl">673</span>,  <span class="fl">580</span>,  <span class="fl">461</span>,  <span class="fl">377</span>]</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">9</span></span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>pks <span class="op">=</span> <span class="fu">log</span>.(<span class="fl">10</span>, ks <span class="op">.+</span> <span class="fl">1</span>) <span class="op">-</span> <span class="fu">log</span>.(<span class="fl">10</span>, ks)</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>χ² <span class="op">=</span> <span class="fu">ChisqTest</span>(xs, pks)</span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>(pvalue<span class="op">=</span><span class="fu">pvalue</span>(χ²), tstat<span class="op">=</span>χ².stat, df<span class="op">=</span>χ².df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="61">
+<pre><code>(pvalue = 2.6484734636062243e-12, tstat = 71.34745744533376, df = 8)</code></pre>
+</div>
+</div>
+<p>This small <span class="math inline">\(p\)</span>-value suggests the law does not exactly apply, though the general form of the law (monotonically decreasing probabilities) is certainly suggested.</p>
+<p>You may be interested in applying this empirical law to the spending patterns of a certain <a href="https://www.politico.com/news/2023/01/25/george-santos-199-expenses-00079334">congressman</a>.</p>
+</div>
+<div id="exm-stressful-event" class="theorem example">
+<p><span class="theorem-title"><strong>Example 8 </strong></span>In <span class="citation" data-cites="CressieRead_10.2307_2345686">(<a href="#ref-CressieRead_10.2307_2345686" role="doc-biblioref">Cressie and Read 1984</a>)</span>, data on time passage and memory recall is provided. Following Haberman, a log-linear time trend is used to estimate the <span class="math inline">\(p_i\)</span>: <span class="math inline">\(\log(p_i) = \alpha + \beta\cdot i\)</span>.</p>
+<p>That is, we will test:</p>
+<p><span class="math display">\[
+H_0: \log(p_i) = \alpha + \beta \cdot i, \quad H_A: \text{not so}
+\]</span></p>
+<p>The values for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are estimated from the data. Haberman used <span class="math inline">\(\alpha \approx -2.1873, \beta \approx -0.0838\)</span>. (Their method is not quite the same, but close to, fitting a linear model to <span class="math inline">\(\log(\hat{p}_i) = \alpha + \beta i\)</span>.)</p>
+<p>Using this we can get the <span class="math inline">\(\chi^2\)</span> statistic as follows, with the data read from the article:</p>
+<div class="cell" data-execution_count="61">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">15</span>, <span class="fl">11</span>, <span class="fl">14</span>, <span class="fl">17</span>, <span class="fl">5</span>, <span class="fl">11</span>, <span class="fl">10</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span>]</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>alpha, beta <span class="op">=</span> <span class="op">-</span><span class="fl">2.1873</span>, <span class="op">-</span><span class="fl">0.0838</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> <span class="fu">exp</span>.(alpha <span class="op">.+</span> <span class="fu">beta*</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">18</span>))</span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>ps <span class="op">/=</span> <span class="fu">sum</span>(ps) <span class="co"># make sum to exactly 1</span></span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>χ² <span class="op">=</span> <span class="fu">ChisqTest</span>(xs, ps)</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a>χ².stat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="62">
+<pre><code>22.716840144539344</code></pre>
+</div>
+</div>
+<p>We don’t show the <span class="math inline">\(p\)</span> value – yet – as we need to consider an adjusted degrees of freedom. There are <span class="math inline">\(s=2\)</span> parameters estimated from the data, so the degrees of freedom of this test statistic are <span class="math inline">\(18 - 2 - 1 = 15\)</span>. The <span class="math inline">\(p\)</span>-value is found by computing the area to the <em>right</em> of the observed value, giving:</p>
+<div class="cell" data-execution_count="62">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">Chisq</span>(<span class="fl">18</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">-</span> <span class="fl">1</span>), χ².stat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="63">
+<pre><code>0.09033970932839053</code></pre>
+</div>
+</div>
+<p>This data set was used by <span class="citation" data-cites="CressieRead_10.2307_2345686">(<a href="#ref-CressieRead_10.2307_2345686" role="doc-biblioref">Cressie and Read 1984</a>)</span> to illustrate the power-divergence statistic, which has a varying parameter <span class="math inline">\(\lambda\)</span>. The Chi-squared test is <span class="math inline">\(\lambda = 1\)</span>; a maximum-likelihood test is <span class="math inline">\(\lambda=0\)</span>; a value of <span class="math inline">\(\lambda=2/3\)</span> is recommended by Cressie and Read as a robust general purpose value. We can test these, as follows:</p>
+<div class="cell" data-execution_count="63">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Dict</span>(l <span class="op">=&gt;</span> <span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">Chisq</span>(<span class="fl">18</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">-</span> <span class="fl">1</span>), <span class="fu">PowerDivergenceTest</span>(xs; lambda<span class="op">=</span>l, theta0<span class="op">=</span>ps).stat)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>     <span class="cf">for</span> l <span class="kw">in</span> [<span class="fl">0</span>, <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="64">
+<pre><code>Dict{Float64, Float64} with 4 entries:
+  0.0      =&gt; 0.0560191
+  0.666667 =&gt; 0.0824898
+  5.0      =&gt; 0.00204456
+  1.0      =&gt; 0.0903397</code></pre>
+</div>
+</div>
+<p>The value of <span class="math inline">\(\lambda=5\)</span> was used to show that larger values increase the size of the test statistic for this data, making the <span class="math inline">\(p\)</span>-values smaller under the asymptotic distribution. The value (of <span class="math inline">\((X_i/E_i)\)</span>) for <span class="math inline">\(i=13\)</span> is nearly <span class="math inline">\(2\)</span>; powers over <span class="math inline">\(1\)</span> make this one term dominate the value of the statistic. Something similar happens for powers much less than <span class="math inline">\(1\)</span>.</p>
+</div>
+<div id="exm-chisq-two-way" class="theorem example">
+<p><span class="theorem-title"><strong>Example 9 (Two-way tables) </strong></span>Let <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> be two categorical variables summarizing a set of observations. Their counts could be summarized in a two-way table, say, with the <span class="math inline">\(X\)</span> levels across the top, and the <span class="math inline">\(Y\)</span> levels down the side. If there is no relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> we would expect the proportions in each row to be <em>roughly</em> the same for each level of <span class="math inline">\(X\)</span>. If <span class="math inline">\(X\)</span> depends on <span class="math inline">\(Y\)</span>, this would be expected.</p>
+<p>Put differently, if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are not related, the expected count in cell row <span class="math inline">\(i\)</span> column <span class="math inline">\(j\)</span> would be <span class="math inline">\(n \cdot p_{ij}\)</span> <em>or</em> <span class="math inline">\((n \cdot P(Y=i)) \cdot P(X=j)\)</span>, the latter first finds the expected number in the <span class="math inline">\(i\)</span>th level of <span class="math inline">\(Y\)</span> times the probability of the <span class="math inline">\(j\)</span> level of <span class="math inline">\(X\)</span>. That is, under an assumption of no association, the <em>marginal</em> probabilities should determine the cell probabilities.</p>
+<p>Let there be <span class="math inline">\(c\)</span> levels of <span class="math inline">\(X\)</span> and <span class="math inline">\(r\)</span> levels of <span class="math inline">\(Y\)</span>. Viewing the table in a flat manner, there are <span class="math inline">\(k=rc\)</span> different cells. If a multinomial model described the table, then the Chi-squared distribution would asymptotically describe the <span class="math inline">\(\chi^2\)</span> statistic’s sampling distribution. However, as there are <span class="math inline">\(s = (r-1) + (c-1)\)</span> parameters that would need estimating (<span class="math inline">\(r-1\)</span> for the <span class="math inline">\(Y\)</span> probabilities as all <span class="math inline">\(r\)</span> must add to <span class="math inline">\(1\)</span>, for example), the degrees of freedom would be <span class="math inline">\(k-s-1 = rc - (r-1 + c-1) - 1 = (r-1)(c-1)\)</span>.</p>
+<p>Suppose, a survey of many individuals was taken including questions on COVID-19 contraction and primary form of mitigation with the following data:</p>
+<pre><code>Mitigation/Contracted
+                 Yes    No
+Vaccination       10   500
+Isolation          8   250
+Face mask         15   600
+Ivermectin        20    40
+none              20   300</code></pre>
+<p>We enter this two-way table in as a matrix, and then call <code>ChisqTest</code> to do the analysis:</p>
+<div class="cell" data-execution_count="64">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>cnts <span class="op">=</span> [<span class="fl">10</span> <span class="fl">500</span>;</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>        <span class="fl">8</span>  <span class="fl">250</span>;</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>        <span class="fl">15</span> <span class="fl">600</span></span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>        <span class="fl">20</span>  <span class="fl">40</span></span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>        <span class="fl">20</span> <span class="fl">300</span>] <span class="co"># r=5, c=2 -&gt; 5 df.</span></span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>χ² <span class="op">=</span> <span class="fu">ChisqTest</span>(cnts)</span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>(pvalue<span class="op">=</span><span class="fu">pvalue</span>(χ²), tstat<span class="op">=</span>χ².stat, df <span class="op">=</span> χ².df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="65">
+<pre><code>(pvalue = 4.5421259053037854e-30, tstat = 143.7051915805636, df = 4)</code></pre>
+</div>
+</div>
+<p>The small <span class="math inline">\(p\)</span>-value for this made-up data suggests an association between primary mitigation and chance of contraction.</p>
+</div>
+<div id="exm-proportions" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10 (Two-sample test of proportions) </strong></span>The methodology for two-way tables can be used for a two-sample test of proportions. Letting <span class="math inline">\(X\)</span> count the successes and failures and <span class="math inline">\(Y\)</span> the two different surveys.</p>
+<p>Several news articles of the time discussed a divide between “red” and “blue” states and their covid rates based on a politicalization of vaccinations in the United States. <em>Suppose</em> data was collected on whether a person with COVID-19 needed hospitalization was cross-tabulated with their county, classified broadly as “red” or “blue”. The data is</p>
+<pre><code>Type / Hospitalization
+       Yes    No
+Red    100  1000
+Blue    50   750</code></pre>
+<p>Test the data under the hypothesis of no association against an alternative of an association. Again, the contingency table is entered as a matrix and <code>ChisqTest</code> called to perform the analysis:</p>
+<div class="cell" data-execution_count="65">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>cnts <span class="op">=</span> [<span class="fl">100</span> <span class="fl">1000</span>;</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>         <span class="fl">50</span>  <span class="fl">750</span>]</span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>χ² <span class="op">=</span> <span class="fu">ChisqTest</span>(cnts)</span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>(pvalue<span class="op">=</span><span class="fu">pvalue</span>(χ²), tstat<span class="op">=</span>χ².stat, df <span class="op">=</span> χ².df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="66">
+<pre><code>(pvalue = 0.023371321878153804, tstat = 5.140692640692601, df = 1)</code></pre>
+</div>
+</div>
+<p>We compare this to the following direct computation:</p>
+<div class="cell" data-execution_count="66">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>n1, n2 <span class="op">=</span> ns <span class="op">=</span> <span class="fu">map</span>(sum, <span class="fu">eachrow</span>(cnts))</span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>phat1, phat2 <span class="op">=</span> cnts[<span class="op">:</span>, <span class="fl">1</span>] <span class="op">./</span>  ns</span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>phat <span class="op">=</span> <span class="fu">sum</span>(cnts[<span class="op">:</span>,<span class="fl">1</span>]) <span class="op">/</span> <span class="fu">sum</span>(cnts)</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>SE <span class="op">=</span> <span class="fu">sqrt</span>(<span class="fu">phat*</span>(<span class="fl">1</span><span class="op">-</span>phat) <span class="op">*</span> (<span class="fl">1</span><span class="op">/</span>n1 <span class="op">+</span> <span class="fl">1</span><span class="op">/</span>n2))</span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>Zobs <span class="op">=</span> <span class="fu">abs</span>(phat1 <span class="op">-</span> phat2)<span class="op">/</span>SE  <span class="co"># use abs and double right tail</span></span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a>p_value <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fl">1</span>), Zobs))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="67">
+<pre><code>0.023371321878153273</code></pre>
+</div>
+</div>
+<p>One other way to analyze this question is with <a href="https://en.wikipedia.org/wiki/Fisher%27s_exact_test">Fisher’s exact test</a>. For a <span class="math inline">\(2\times 2\)</span> table, the bottom row divides into the top and the ratio of the two resulting numbers is considered (<span class="math inline">\((a/c) / (b/d)\)</span>). If there is no association, this ratio should be close to <span class="math inline">\(1\)</span>. For this data, the Fisher exact test yields a <span class="math inline">\(p\)</span>-value in the same range:</p>
+<div class="cell" data-execution_count="67">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pvalue</span>(<span class="fu">FisherExactTest</span>(<span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">50</span>, <span class="fl">750</span>)) <span class="co"># a,b,c,d</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="68">
+<pre><code>0.027803693593425226</code></pre>
+</div>
+</div>
+<p>Either way, all produced a <span class="math inline">\(p\)</span>-value smaller than the nominal <span class="math inline">\(\alpha=0.05\)</span> level for this manufactured data.</p>
+</div>
+</section>
+<section id="likelihood-ratio-tests" class="level3">
+<h3 class="anchored" data-anchor-id="likelihood-ratio-tests">Likelihood ratio tests</h3>
+<p>Consider again a hypothesis test with a concrete alternative:</p>
+<p><span class="math display">\[
+H_0: \mu = \mu_0, \quad H_A: \mu = \mu_1
+\]</span></p>
+<p>Suppose the population is <span class="math inline">\(Normal(\mu, \sigma)\)</span>. We had a similar setup in the discussion on power, where for a <span class="math inline">\(T\)</span>-test specifying three of a <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, <span class="math inline">\(n\)</span>, or an effect size allows the solving of the fourth using known facts about the <span class="math inline">\(T\)</span>-statistic. The Neyman-Pearson lemma speaks to the <em>uniformly most powerful</em> test under this scenario with a <strong>single</strong> unknown parameter (the mean above, but it could also have been the standard devation, etc.).</p>
+<p>This test can be realized as a likelihood ratio test, which also covers tests of more generality. Suppose the parameters being tested are called <span class="math inline">\(\theta\)</span> which sit in some subset <span class="math inline">\(\Theta_0 \subset \Theta\)</span>. The non-directional alternative would be <span class="math inline">\(\theta\)</span> is in <span class="math inline">\(\Theta \setminus \Theta_0\)</span>.</p>
+<p>A test for this can be based on the <em>likelihood ratio statistic</em>:</p>
+<p><span class="math display">\[
+\lambda = -2 \ln \frac{\sup_{\theta \in \Theta_0} L(\theta, x)}{\sup_{\theta \in \Theta} L(\theta, x)} =
+-2(\ln \sup_{\theta \in \Theta_0} L(\theta, x) - \ln \sup_{\theta \in \Theta} L(\theta, x)).
+\]</span></p>
+<p>The <span class="math inline">\(\sup\)</span> is essentially the maximum value of the function over the set, which above is either the specific set of values in the null or <em>all</em> possible values. The ratio here is in <span class="math inline">\([0,1]\)</span>, the logarithm is then negative, the factor <span class="math inline">\(-2\)</span> means <span class="math inline">\(\lambda\)</span> is in <span class="math inline">\([0, \infty)\)</span>. Under some assumptions, <span class="math inline">\(\lambda\)</span> will have an <em>asymptotically</em> Chi-square distribution with the degrees of freedom given by the dimensionality of <span class="math inline">\(\Theta\)</span>.</p>
+<p>While only in the simple case is the likelihood ratio test guaranteed to be the most powerful, the approach is much more general than the ad hoc tests described previously and mostly agrees with them.</p>
+<p>Let’s consider the case of a survey modeled by a binomial. We test <span class="math inline">\(H_0: p=1/2\)</span> against a two-sided alternative.</p>
+<p>The log-likelihood function, <span class="math inline">\(l(p,x)\)</span>, for the data is simply:</p>
+<div class="cell" data-execution_count="68">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">loglik</span>(θ, data) <span class="co"># both θ, data are containers</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> <span class="fu">first</span>(θ)</span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a>    x, n <span class="op">=</span> data</span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logpdf</span>(<span class="fu">Binomial</span>(n, p), x)</span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="69">
+<pre><code>loglik (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>The test statistic is found by computing <span class="math inline">\(-2 (l(1/2) - l(\hat{p}))\)</span>, where <span class="math inline">\(\hat{p}\)</span> maximizes <span class="math inline">\(l(p,x)\)</span>.</p>
+<p>We use <code>findmax</code> to identify the maximum.</p>
+<p>Suppose our data is 60 of <span class="math inline">\(100\)</span>.</p>
+<div class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>dat <span class="op">=</span> (x<span class="op">=</span><span class="fl">60</span>, n<span class="op">=</span><span class="fl">100</span>)</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">1</span>, length<span class="op">=</span><span class="fl">201</span>)</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a>ls <span class="op">=</span> <span class="fu">loglik</span>.(ps, <span class="fu">Ref</span>(dat))  <span class="co"># don't broadcast over data</span></span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a>l̂, i <span class="op">=</span> <span class="fu">findmax</span>(ls)</span>
+<span id="cb126-5"><a href="#cb126-5" aria-hidden="true" tabindex="-1"></a>p̂ <span class="op">=</span> ps[i]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="70">
+<pre><code>0.6</code></pre>
+</div>
+</div>
+<p>We see <span class="math inline">\(\hat{p} = x/n\)</span> (which could have been shown mathematically). The value of the log-likelihood ratio statistic can be found through:</p>
+<div class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>p₀ <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>ll_obs <span class="op">=</span> <span class="fu">-2*</span>(<span class="fu">loglik</span>(p₀, dat) <span class="op">-</span> l̂)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="71">
+<pre><code>4.027102710137768</code></pre>
+</div>
+</div>
+<p>The <span class="math inline">\(Chisq(1)\)</span> distribution describes this statistic asymptotically. Supposing that to be valid, the <span class="math inline">\(p\)</span>-value is computed by looking at the probability of a more extreme value under the null hypothesis, which are values larger:</p>
+<div class="cell" data-execution_count="71">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">Chisq</span>(<span class="fl">1</span>), ll_obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="72">
+<pre><code>0.04477477232924443</code></pre>
+</div>
+</div>
+<div id="exm-linear-model" class="theorem example">
+<p><span class="theorem-title"><strong>Example 11 (The linear-regression model) </strong></span>The <em>simple</em> linear regression model was given by <span class="math inline">\(y_i = \beta_0 + \beta_1 x_i + e_i\)</span>, where for purposes of modeling, we will take <span class="math inline">\(e_i\)</span> to have a <span class="math inline">\(Normal(0, \sigma)\)</span> distribution. We discuss this model more formally in the subsequent chapter, but here we see we can approach the model using maximum likelihood.</p>
+<p>For a given data set, we test whether <span class="math inline">\(\beta_1=0\)</span> against a two-sided alternative.</p>
+<p>Suppose the data is measured dosages of ivermectin with recovery time for COVID-19 infected patients.</p>
+<pre><code>dose (μg/kg): 100 100 200 200 400 400 600 800
+time (days) :   5   5   6   4   5   8   6   6</code></pre>
+<p>The model has <span class="math inline">\(3\)</span> parameters <span class="math inline">\(\beta_0, \beta_1\)</span> and <span class="math inline">\(\sigma\)</span>, the standard deviation. We have the log-likelihood function given by:</p>
+<div class="cell" data-execution_count="72">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">loglik</span>(θ, data)</span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># yᵢ ~ N(β₀ + β₁⋅x, σ) is model</span></span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>    β₀, β₁, σ <span class="op">=</span> θ</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>    y, x <span class="op">=</span> data</span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>    ll <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (yᵢ,xᵢ) <span class="op">∈</span> <span class="fu">zip</span>(y, x)</span>
+<span id="cb133-8"><a href="#cb133-8" aria-hidden="true" tabindex="-1"></a>        μᵢ <span class="op">=</span> β₀ <span class="op">+</span> β₁ <span class="op">*</span> xᵢ</span>
+<span id="cb133-9"><a href="#cb133-9" aria-hidden="true" tabindex="-1"></a>        D <span class="op">=</span> <span class="fu">Normal</span>(μᵢ, σ)</span>
+<span id="cb133-10"><a href="#cb133-10" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">+=</span> <span class="fu">logpdf</span>(D, yᵢ)</span>
+<span id="cb133-11"><a href="#cb133-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb133-12"><a href="#cb133-12" aria-hidden="true" tabindex="-1"></a>    ll</span>
+<span id="cb133-13"><a href="#cb133-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="73">
+<pre><code>loglik (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>We have the data entered as:</p>
+<div class="cell" data-execution_count="73">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [<span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">200</span>, <span class="fl">400</span>, <span class="fl">400</span>, <span class="fl">600</span>, <span class="fl">800</span>]</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> [<span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">6</span>, <span class="fl">6</span>];</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We use the <code>ProfileLikelihood</code> package to model this. First we set up the model using an initial guess at the maximum likelihood estimators:</p>
+<div class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>dat <span class="op">=</span> (y, x)</span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a>θ₀ <span class="op">=</span> [<span class="fl">5.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]</span>
+<span id="cb136-3"><a href="#cb136-3" aria-hidden="true" tabindex="-1"></a>nms <span class="op">=</span> [<span class="op">:</span>β₀, <span class="op">:</span>β₁, <span class="op">:</span>σ]</span>
+<span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a>prob <span class="op">=</span> <span class="fu">LikelihoodProblem</span>(loglik, θ₀;</span>
+<span id="cb136-5"><a href="#cb136-5" aria-hidden="true" tabindex="-1"></a>                         data <span class="op">=</span> dat,</span>
+<span id="cb136-6"><a href="#cb136-6" aria-hidden="true" tabindex="-1"></a>                         syms <span class="op">=</span> nms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="75">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">LikelihoodProblem</span>. In-place: <span style="color:rgb(86,182,194)">true
+</span>θ₀: 3-element Vector{Float64}
+     β₀: 5.0
+     β₁: 0.0
+     σ: 1.0</pre>
+</div>
+</div>
+</div>
+<p>We solve the problem through:</p>
+<div class="cell" data-execution_count="75">
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> <span class="fu">mle</span>(prob, Optim.<span class="fu">NelderMead</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="76">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">LikelihoodSolution</span>. retcode: <span style="color:rgb(86,182,194)">Success
+</span>Maximum likelihood: -11.466321890403758
+Maximum likelihood estimates: 3-element Vector{Float64}
+     β₀: 4.948881523162539
+     β₁: 0.0019318326444597892
+     σ: 1.0144493565817676</pre>
+</div>
+</div>
+</div>
+<p>We see a small estimated value for <span class="math inline">\(\beta_1\)</span>. Is it statistically significant? For this, we choose to profile the value, and rely on the relationship between confidence intervals and significance tests: if the 95% CI for <span class="math inline">\(\beta_1\)</span> includes <span class="math inline">\(0\)</span>, then the significance test would not reject the null.</p>
+<div class="cell" data-execution_count="76">
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>lb <span class="op">=</span> [<span class="op">-</span><span class="fl">100.0</span>, <span class="op">-</span><span class="fl">100.0</span>, <span class="fl">0.0</span>]</span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>ub <span class="op">=</span> [ <span class="fl">100.0</span>,  <span class="fl">100.0</span>, <span class="fl">100.0</span>]  <span class="co"># -100 &lt; β₀, β₁ &lt; 100; 0 &lt; σ &lt; 100</span></span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>resolutions <span class="op">=</span> [<span class="fl">200</span>, <span class="fl">200</span>, <span class="fl">200</span>]</span>
+<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a>param_ranges <span class="op">=</span> <span class="fu">construct_profile_ranges</span>(sol, lb, ub, resolutions)</span>
+<span id="cb138-5"><a href="#cb138-5" aria-hidden="true" tabindex="-1"></a>prof <span class="op">=</span> <span class="fu">profile</span>(prob, sol; param_ranges<span class="op">=</span>param_ranges)</span>
+<span id="cb138-6"><a href="#cb138-6" aria-hidden="true" tabindex="-1"></a>prof[<span class="op">:</span>β₁]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="77">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">Profile likelihood</span> for parameter<span style="color:rgb(86,182,194)"> β₁</span>. MLE retcode: <span style="color:rgb(86,182,194)">Success
+</span>MLE: 0.0019318326444597892
+95.0% CI for β₁: (-0.009936997524490673, 0.01380030329166489)</pre>
+</div>
+</div>
+</div>
+<p>We can visualize the log-likelihood over the value in the <span class="math inline">\(95\)</span>% confidence interval with the following:</p>
+<div class="cell" data-execution_count="77">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">0.02</span>, <span class="fl">0.02</span>, length<span class="op">=</span><span class="fl">100</span>); ys <span class="op">=</span> prof[<span class="op">:</span>β₁].(xs)</span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">data</span>((x<span class="op">=</span>xs, y<span class="op">=</span>ys)) <span class="op">*</span> <span class="fu">visual</span>(Lines) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y)</span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">+=</span> <span class="fu">mapping</span>([sol[<span class="op">:</span>β₁]]) <span class="op">*</span> <span class="fu">visual</span>(VLines)</span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a>ci <span class="op">=</span> [<span class="fu">extrema</span>(prof.confidence_intervals[<span class="fl">2</span>])<span class="op">...</span>]</span>
+<span id="cb139-5"><a href="#cb139-5" aria-hidden="true" tabindex="-1"></a>p <span class="op">+=</span> <span class="fu">data</span>((x<span class="op">=</span>ci, y <span class="op">=</span> prof[<span class="op">:</span>β₁].(ci))) <span class="op">*</span> <span class="fu">visual</span>(Lines) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y)</span>
+<span id="cb139-6"><a href="#cb139-6" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="78">
+<p><img src="inference_files/figure-html/cell-78-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+<p>Were a significance test desired, the test statistic requires one more optimization calculuation, this time the maximum log likelihood under <span class="math inline">\(H_0\)</span>, which assumes a fixed value of <span class="math inline">\(\beta_1\)</span>:</p>
+<div class="cell" data-execution_count="78">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">loglik₀</span>(θ, data)</span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># yᵢ ~ N(β₀ + β₁⋅x, σ) is model</span></span>
+<span id="cb140-3"><a href="#cb140-3" aria-hidden="true" tabindex="-1"></a>    β₀, σ <span class="op">=</span> θ</span>
+<span id="cb140-4"><a href="#cb140-4" aria-hidden="true" tabindex="-1"></a>    β₁ <span class="op">=</span> <span class="fl">0.0</span>     <span class="co"># H₀: β₁ = 0</span></span>
+<span id="cb140-5"><a href="#cb140-5" aria-hidden="true" tabindex="-1"></a>    y, x <span class="op">=</span> data</span>
+<span id="cb140-6"><a href="#cb140-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb140-7"><a href="#cb140-7" aria-hidden="true" tabindex="-1"></a>    ll <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb140-8"><a href="#cb140-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (yᵢ,xᵢ) <span class="op">∈</span> <span class="fu">zip</span>(y, x)</span>
+<span id="cb140-9"><a href="#cb140-9" aria-hidden="true" tabindex="-1"></a>        μᵢ <span class="op">=</span> β₀ <span class="op">+</span> β₁ <span class="op">*</span> xᵢ</span>
+<span id="cb140-10"><a href="#cb140-10" aria-hidden="true" tabindex="-1"></a>        D <span class="op">=</span> <span class="fu">Normal</span>(μᵢ, σ)</span>
+<span id="cb140-11"><a href="#cb140-11" aria-hidden="true" tabindex="-1"></a>        ll <span class="op">+=</span> <span class="fu">logpdf</span>(D, yᵢ)</span>
+<span id="cb140-12"><a href="#cb140-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb140-13"><a href="#cb140-13" aria-hidden="true" tabindex="-1"></a>    ll</span>
+<span id="cb140-14"><a href="#cb140-14" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="79">
+<pre><code>loglik₀ (generic function with 1 method)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="79">
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>prob₀ <span class="op">=</span> <span class="fu">LikelihoodProblem</span>(loglik₀, [<span class="fl">5.0</span>, <span class="fl">1.0</span>];</span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>                         data <span class="op">=</span> (y, x),</span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a>                         syms <span class="op">=</span> [<span class="op">:</span>β₀, <span class="op">:</span>σ])</span>
+<span id="cb142-4"><a href="#cb142-4" aria-hidden="true" tabindex="-1"></a>sol₀ <span class="op">=</span> <span class="fu">mle</span>(prob₀, Optim.<span class="fu">NelderMead</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="80">
+<div class="ansi-escaped-output">
+<pre><span style="color:rgb(86,182,194)">LikelihoodSolution</span>. retcode: <span style="color:rgb(86,182,194)">Success
+</span>Maximum likelihood: -12.193767351012552
+Maximum likelihood estimates: 2-element Vector{Float64}
+     β₀: 5.62501607088573
+     σ: 1.1110596750702828</pre>
+</div>
+</div>
+</div>
+<p>The likelihood ratio statistic is computed with the difference of the respective maximums, available through the <code>maximum</code> property of the solution:</p>
+<div class="cell" data-execution_count="80">
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>l <span class="op">=</span> <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> (sol₀.maximum <span class="op">-</span> sol.maximum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="81">
+<pre><code>1.4548909212175865</code></pre>
+</div>
+</div>
+<p>This observed value can be turned into a <span class="math inline">\(p\)</span>-value using the asymptotically correct <span class="math inline">\(Chisq(1)\)</span> distribution:</p>
+<div class="cell" data-execution_count="81">
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="op">-</span> <span class="fu">cdf</span>(<span class="fu">Chisq</span>(<span class="fl">1</span>), l)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="82">
+<pre><code>0.22774478131827325</code></pre>
+</div>
+</div>
+<p>There is no evidence in the data to reject the null hypothesis of no effect.</p>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Box_non_normality_10.1093/biomet/40.3-4.318" class="csl-entry" role="doc-biblioentry">
+BOX, G. E. P. (1953), <span>“<span>NON-NORMALITY AND TESTS ON VARIANCES</span>,”</span> <em>Biometrika</em>, 40, 318–335. <a href="https://doi.org/10.1093/biomet/40.3-4.318">https://doi.org/10.1093/biomet/40.3-4.318</a>.
+</div>
+<div id="ref-CressieRead_10.2307_2345686" class="csl-entry" role="doc-biblioentry">
+Cressie, N., and Read, T. R. C. (1984), <span>“<a href="http://www.jstor.org/stable/2345686">Multinomial goodness-of-fit tests</a>,”</span> <em>Journal of the Royal Statistical Society. Series B (Methodological)</em>, [Royal Statistical Society, Wiley], 46, 440–464.
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

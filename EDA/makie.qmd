@@ -81,9 +81,15 @@ The object `p` can be rendered to the screen with the `draw` method resulting in
 ```{julia}
 #| label: fig-basic-boxplot-penguin
 #| fig-cap: Boxplots of bill length for the three penguin species in `penguins`.
-draw(p; figure=(;resolution=(600,400)),
+draw(p; figure=(;size=(600,400)),
      axis=(; title="Bill length"))
 ```
+
+::: {.callout-note}
+### To save a figure to a file
+
+The output of `draw` is used to render to the screen and also to save to a file (as a `.png` or `.svg` file). The pattern `save("filename.[png|svg]", draw(p))` will save the image to the named file using the given extension to specify the format used.
+:::
 
 This is the basic pattern where different choices are combined, or merged, with the `*` operation. The pieces can be re-purposed. In the following, we make use of this data:
 
@@ -312,12 +318,12 @@ Both are shown in @fig-quantileplot-example.
 ::: {#fig-quantileplot-example layout-ncol=2}
 ```{julia}
 #| echo: false
-draw(p1; figure=((resolution=(600, 400),)))
+draw(p1; figure=((size=(600, 400),)))
 ```
 
 ```{julia}
 #| echo: false
-draw(p2; figure=((resolution=(600, 400),)))
+draw(p2; figure=((size=(600, 400),)))
 ```
 
 Quantile-quantile plots. The left graphic uses a reference normal distribution (through `QQNorm`), the right one uses `QQPlot` to compare the distribution of two variables after grouping by `species`.

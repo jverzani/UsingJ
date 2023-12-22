@@ -21,7 +21,7 @@ using DataFrames
 ::: {.callout-note}
 ##### An OG package
 
-The `DataFrames` package dates back to 2012, at least, and must be one of `Julia`'s oldest packages. Julia was on version `0.1` then. It is also under continual development and has a comprehensive set of documentation and tutorials. This introduction attempts to illustrate some basic usage; consult the provided documentation for additional details and applications.
+The `DataFrames` package dates back to 2012, at least, and must be one of `Julia`'s oldest packages. Julia was on version `0.1` then. It is also under continual development and has a comprehensive set of documentation and tutorials. @JSSv107i04 has an excellent overview including comparisons to other implementations in other languages and context for certain design decisions. This introduction attempts to illustrate some basic usage; consult the provided documentation for additional details and applications.
 
 :::
 

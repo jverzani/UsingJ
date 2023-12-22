@@ -545,7 +545,7 @@ import RobustModels
 estimator = RobustModels.MEstimator{RobustModels.TukeyLoss}()
 res_robust = RobustModels.rlm(fm, (w=w′, l=l′), estimator)
 
-plot!(us, RobustModels.predict(res_robust, (l=us,)); linewidth=4, label="rlm")
+plot!(us, RobustModels.predict(res_robust, [one.(us) us]); linewidth=4, label="rlm")
 ```
 
 
@@ -642,7 +642,7 @@ hat(res) = (X = modelmatrix(res); X * inv(crossmodelmatrix(res)) * X')
 hatvalues(res) = diag(hat(res))
 function rstandard(res)
     es = [ei/sqrt(1-hi) for (ei, hi) in zip(residuals(res), hatvalues(res))]
-    s = dispersion(res)
+    s = dispersion(res.model)
     es / s
 end
 ```
@@ -762,7 +762,7 @@ res_robust = RobustModels.rlm(fm, animals, estimator)
 
 us = range(extrema(animals.bcBody)..., length=100)
 plot!(us, GLM.predict(res, (bcBody = us,)), linewidth=4, label="lm")
-plot!(us, RobustModels.predict(res_robust, (bcBody = us,)), linewidth=4, label="rlm")
+plot!(us, RobustModels.predict(res_robust,  [one.(us) us]), linewidth=4, label="rlm")
 ```
 
 

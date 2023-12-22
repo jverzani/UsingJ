@@ -352,6 +352,7 @@ Notice, without the dot an error will be thrown
 
 
 ```{julia}
+#| error: true
 whale[[4,5,6]] = 999  # errors
 ```
 
@@ -426,6 +427,7 @@ The assignment `whale = [74, 122, 235, ...]` assigns a container of a *specific*
 For example, we can't assign a fractional number of whales:
 
 ```{julia}
+#| error: true
 whale[1] = 74.5
 ```
 
@@ -608,13 +610,13 @@ Strings can be combined many different ways.
 The `*` operation is used to combine strings or chars. The basic usage is straight forward:
 
 ```{julia}
-"a" * "bee" * "see"
+out = "a" * "bee" * "see"
 ```
 
 The `^` operation when used with an integer exponent will repeat the argument:^[The expression `s^i` just calls `repeat(s, i)`, for these types.]
 
 ```{julia}
-"dot "^3
+out = "dot "^3
 ```
 
 More generally, `join` will combine an *iterable* of strings or characters. If a delimiter is specified, it will be inserted between values (with an option to indicate the last delimiter differently):
@@ -628,7 +630,7 @@ join(collect(j), ","), join(collect(j), ", ", ", and ")
 
 ```{julia}
 x = "Alice"
-"$x knows that 2 + 2 is equal to $(2+2)"
+out = "$x knows that 2 + 2 is equal to $(2+2)"
 ```
 
 (To include a dollar sign in the string, it can be escape with a leading slash, "`\`", or a `raw` string can be used, as in `raw"$(2+2) is not evaluated"`.)

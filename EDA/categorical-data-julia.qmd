@@ -80,7 +80,7 @@ A bar chart represents the above tablulations using bars proportional to the cou
 ```{julia}
 #| label: fig-basic-bar-plot
 #| fig-cap: Basic barplot.
-bar(levels(smokes), tbl[1:end-1]; legend=false)
+bar(levels(smokes), collect(tbl[1:end-1]); legend=false)
 ```
 
 Another common graphic is to use a dot, not a bar, to represent the value. Still another graphic is the pie chart; common in the business world, but not a favorite within introductory statistics.

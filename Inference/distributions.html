@@ -536,9 +536,9 @@ p: [0.3010299956639812, 0.17609125905568124, 0.12493873660829996, 0.096910013008
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rand</span>(U, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>3-element Vector{Float64}:
- 0.36709802506384326
- 0.43451278460732823
- 0.620105337583204</code></pre>
+ 0.07840854312239087
+ 0.49280532827183554
+ 0.5805794615043689</code></pre>
 </div>
 </div>
 <p>If <span class="math inline">\(U\)</span> is Uniform on <span class="math inline">\([0,1]\)</span> then <span class="math inline">\(Y = aU + b\)</span> is uniform on <span class="math inline">\([b, b+a]\)</span>. The difference in means is shifted by <span class="math inline">\(b + E(U)\)</span>, the difference in standard deviations is scaled by <span class="math inline">\(a\)</span>. We can do the algebra of linear transformations using overloaded operations:</p>
@@ -623,7 +623,7 @@ T = \frac{Z}{\sqrt{Y/\nu}}.
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>T5 <span class="op">=</span> <span class="fu">TDist</span>(<span class="fl">5</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">maximum</span>(abs, <span class="fu">rand</span>(T5, <span class="fl">100</span>)), <span class="fu">maximum</span>(abs, <span class="fu">rand</span>(Z, <span class="fl">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
-<pre><code>(3.862961862620664, 2.4184712053741104)</code></pre>
+<pre><code>(3.6621884154534414, 2.4194746510021092)</code></pre>
 </div>
 </div>
 <p><a href="#fig-qqplots-distributions">Figure&nbsp;<span>7.5</span></a> shows a quantile-normal plot of <span class="math inline">\(T(3)\)</span> in the lower-left graphic. The long tails cause deviations in the pattern of points from a straight line.</p>

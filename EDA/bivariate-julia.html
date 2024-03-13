@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,11 +17,12 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -46,48 +47,20 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -101,8 +74,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -129,7 +101,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -138,8 +116,10 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KS515LKBGZ"></script>
@@ -155,7 +135,35 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -163,11 +171,16 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../EDA/bivariate-julia.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -175,109 +188,120 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">Using Julia for Introductory Statistics</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/jverzani/UsingJ" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/jverzani/UsingJ" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../EDA/univariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></a>
+  <a href="../EDA/univariate-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../EDA/tabular-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></a>
+  <a href="../EDA/tabular-data-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../EDA/bivariate-julia.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></a>
+  <a href="../EDA/bivariate-julia.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../EDA/categorical-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></a>
+  <a href="../EDA/categorical-data-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../EDA/makie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The <code>AlgebraOfGraphics</code> package</span></a>
+  <a href="../EDA/makie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The <code>AlgebraOfGraphics</code> package</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Inference/distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></a>
+  <a href="../Inference/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Inference/inference.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></a>
+  <a href="../Inference/inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../LinearModels/linear-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">The linear regression model</span></a>
+  <a href="../LinearModels/linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">The linear regression model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#multiple-samples" id="toc-multiple-samples" class="nav-link active" data-scroll-target="#multiple-samples"><span class="toc-section-number">4.1</span>  Multiple samples</a>
+  <li><a href="#multiple-samples" id="toc-multiple-samples" class="nav-link active" data-scroll-target="#multiple-samples"><span class="header-section-number">4.1</span> Multiple samples</a>
   <ul class="collapse">
-  <li><a href="#grouped-dot-plots" id="toc-grouped-dot-plots" class="nav-link" data-scroll-target="#grouped-dot-plots"><span class="toc-section-number">4.1.1</span>  Grouped dot plots</a></li>
-  <li><a href="#boxplots-across-groups" id="toc-boxplots-across-groups" class="nav-link" data-scroll-target="#boxplots-across-groups"><span class="toc-section-number">4.1.2</span>  Boxplots across groups</a></li>
-  <li><a href="#violin-and-density-plots" id="toc-violin-and-density-plots" class="nav-link" data-scroll-target="#violin-and-density-plots"><span class="toc-section-number">4.1.3</span>  Violin and density plots</a></li>
-  <li><a href="#histograms-across-groups" id="toc-histograms-across-groups" class="nav-link" data-scroll-target="#histograms-across-groups"><span class="toc-section-number">4.1.4</span>  Histograms across groups</a></li>
-  <li><a href="#quantile-comparisons" id="toc-quantile-comparisons" class="nav-link" data-scroll-target="#quantile-comparisons"><span class="toc-section-number">4.1.5</span>  Quantile comparisons</a></li>
+  <li><a href="#grouped-dot-plots" id="toc-grouped-dot-plots" class="nav-link" data-scroll-target="#grouped-dot-plots"><span class="header-section-number">4.1.1</span> Grouped dot plots</a></li>
+  <li><a href="#boxplots-across-groups" id="toc-boxplots-across-groups" class="nav-link" data-scroll-target="#boxplots-across-groups"><span class="header-section-number">4.1.2</span> Boxplots across groups</a></li>
+  <li><a href="#violin-and-density-plots" id="toc-violin-and-density-plots" class="nav-link" data-scroll-target="#violin-and-density-plots"><span class="header-section-number">4.1.3</span> Violin and density plots</a></li>
+  <li><a href="#histograms-across-groups" id="toc-histograms-across-groups" class="nav-link" data-scroll-target="#histograms-across-groups"><span class="header-section-number">4.1.4</span> Histograms across groups</a></li>
+  <li><a href="#quantile-comparisons" id="toc-quantile-comparisons" class="nav-link" data-scroll-target="#quantile-comparisons"><span class="header-section-number">4.1.5</span> Quantile comparisons</a></li>
   </ul></li>
-  <li><a href="#paired-data" id="toc-paired-data" class="nav-link" data-scroll-target="#paired-data"><span class="toc-section-number">4.2</span>  Paired data</a>
+  <li><a href="#paired-data" id="toc-paired-data" class="nav-link" data-scroll-target="#paired-data"><span class="header-section-number">4.2</span> Paired data</a>
   <ul class="collapse">
-  <li><a href="#numeric-summaries" id="toc-numeric-summaries" class="nav-link" data-scroll-target="#numeric-summaries"><span class="toc-section-number">4.2.1</span>  Numeric summaries</a></li>
-  <li><a href="#trend-lines" id="toc-trend-lines" class="nav-link" data-scroll-target="#trend-lines"><span class="toc-section-number">4.2.2</span>  Trend lines</a></li>
-  <li><a href="#local-regression" id="toc-local-regression" class="nav-link" data-scroll-target="#local-regression"><span class="toc-section-number">4.2.3</span>  Local regression</a></li>
-  <li><a href="#robust-linear-models" id="toc-robust-linear-models" class="nav-link" data-scroll-target="#robust-linear-models"><span class="toc-section-number">4.2.4</span>  Robust linear models</a></li>
-  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="toc-section-number">4.2.5</span>  Prediction</a></li>
-  <li><a href="#assessing-the-residuals" id="toc-assessing-the-residuals" class="nav-link" data-scroll-target="#assessing-the-residuals"><span class="toc-section-number">4.2.6</span>  Assessing the residuals</a></li>
-  <li><a href="#transformations" id="toc-transformations" class="nav-link" data-scroll-target="#transformations"><span class="toc-section-number">4.2.7</span>  Transformations</a></li>
-  <li><a href="#grouping-by-a-categorical-variable" id="toc-grouping-by-a-categorical-variable" class="nav-link" data-scroll-target="#grouping-by-a-categorical-variable"><span class="toc-section-number">4.2.8</span>  Grouping by a categorical variable</a></li>
+  <li><a href="#numeric-summaries" id="toc-numeric-summaries" class="nav-link" data-scroll-target="#numeric-summaries"><span class="header-section-number">4.2.1</span> Numeric summaries</a></li>
+  <li><a href="#trend-lines" id="toc-trend-lines" class="nav-link" data-scroll-target="#trend-lines"><span class="header-section-number">4.2.2</span> Trend lines</a></li>
+  <li><a href="#local-regression" id="toc-local-regression" class="nav-link" data-scroll-target="#local-regression"><span class="header-section-number">4.2.3</span> Local regression</a></li>
+  <li><a href="#robust-linear-models" id="toc-robust-linear-models" class="nav-link" data-scroll-target="#robust-linear-models"><span class="header-section-number">4.2.4</span> Robust linear models</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">4.2.5</span> Prediction</a></li>
+  <li><a href="#assessing-the-residuals" id="toc-assessing-the-residuals" class="nav-link" data-scroll-target="#assessing-the-residuals"><span class="header-section-number">4.2.6</span> Assessing the residuals</a></li>
+  <li><a href="#transformations" id="toc-transformations" class="nav-link" data-scroll-target="#transformations"><span class="header-section-number">4.2.7</span> Transformations</a></li>
+  <li><a href="#grouping-by-a-categorical-variable" id="toc-grouping-by-a-categorical-variable" class="nav-link" data-scroll-target="#grouping-by-a-categorical-variable"><span class="header-section-number">4.2.8</span> Grouping by a categorical variable</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jverzani/UsingJ/edit/master/EDA/bivariate-julia.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/jverzani/UsingJ/edit/master/EDA/bivariate-julia.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></h1>
 </div>
 
 
@@ -290,7 +314,9 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
   </div>
   
 
+
 </header>
+
 
 <p>We now consider two variables measured for the same observation, or bivariate data. The combinations of numeric data or categorical data lead to different means to describe and visualize the sets of data.</p>
 <p>We load our basic suite of packages:</p>
@@ -304,16 +330,93 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"datasets"</span>, <span class="st">"iris"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(iris, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
-
-<div><div style="float: left;"><span>3×5 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">SepalLength</th><th style="text-align: left;">SepalWidth</th><th style="text-align: left;">PetalLength</th><th style="text-align: left;">PetalWidth</th><th style="text-align: left;">Species</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="Float64" style="text-align: left;">Float64</th><th title="CategoricalValue{String, UInt8}" style="text-align: left;">Cat…</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: right;">5.1</td><td style="text-align: right;">3.5</td><td style="text-align: right;">1.4</td><td style="text-align: right;">0.2</td><td style="text-align: left;">setosa</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: right;">4.9</td><td style="text-align: right;">3.0</td><td style="text-align: right;">1.4</td><td style="text-align: right;">0.2</td><td style="text-align: left;">setosa</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: right;">4.7</td><td style="text-align: right;">3.2</td><td style="text-align: right;">1.3</td><td style="text-align: right;">0.2</td><td style="text-align: left;">setosa</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>3×5 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SepalLength</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SepalWidth</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">PetalLength</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">PetalWidth</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Species</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalValue{String, UInt8}">Cat…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: right;">5.1</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: left;">setosa</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>There are 50 cases per species:</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(iris, <span class="op">:</span>Species), nrow)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
-
-<div><div style="float: left;"><span>3×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;"><table class="data-frame table table-sm table-striped" style="margin-bottom: 6px;"><thead><tr class="header"><th class="rowNumber" style="font-weight: bold; text-align: right;">Row</th><th style="text-align: left;">Species</th><th style="text-align: left;">nrow</th></tr><tr class="subheader headerLastRow"><th class="rowNumber" style="font-weight: bold; text-align: right;"></th><th title="CategoricalValue{String, UInt8}" style="text-align: left;">Cat…</th><th title="Int64" style="text-align: left;">Int64</th></tr></thead><tbody><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">1</td><td style="text-align: left;">setosa</td><td style="text-align: right;">50</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">2</td><td style="text-align: left;">versicolor</td><td style="text-align: right;">50</td></tr><tr><td class="rowNumber" style="font-weight: bold; text-align: right;">3</td><td style="text-align: left;">virginica</td><td style="text-align: right;">50</td></tr></tbody></table></div>
+<div><div style="float: left;"><span>3×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Species</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">nrow</th>
+</tr>
+<tr class="odd subheader headerLastRow">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalValue{String, UInt8}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int64">Int64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">setosa</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">versicolor</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: left;">virginica</td>
+<td style="text-align: right;">50</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <section id="multiple-samples" class="level2" data-number="4.1">
@@ -325,7 +428,7 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <section id="grouped-dot-plots" class="level3" data-number="4.1.1">
 <h3 data-number="4.1.1" class="anchored" data-anchor-id="grouped-dot-plots"><span class="header-section-number">4.1.1</span> Grouped dot plots</h3>
 <p>A dot plot is a useful graphic to show the distribution of values on a number line when the data is sufficiently spread out so as not to overlap too much. The basic graphic is <span class="math inline">\(1\)</span>-dimensional, adding a second dimension for the grouping variable allows easy comparisons.</p>
-<p>Here we discuss dot plots for different levels of a factor. In the <code>iris</code> data set, to create plots by each species (<a href="#fig-grouped-dotplot">Figure&nbsp;<span>4.1</span></a>), allowing a comparison of the distribution of the <span class="math inline">\(x\)</span> variable over different levels of a factor. The following illustrates the steps done, but we will see next that such effort is unneeded as the <code>StatsPlots</code> recipes wrap up this data manipulation, in this case with a method for <code>dotplot</code>.</p>
+<p>Here we discuss dot plots for different levels of a factor. In the <code>iris</code> data set, to create plots by each species (<a href="#fig-grouped-dotplot" class="quarto-xref">Figure&nbsp;<span>4.1</span></a>), allowing a comparison of the distribution of the <span class="math inline">\(x\)</span> variable over different levels of a factor. The following illustrates the steps done, but we will see next that such effort is unneeded as the <code>StatsPlots</code> recipes wrap up this data manipulation, in this case with a method for <code>dotplot</code>.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>byspecies <span class="op">=</span> <span class="fu">groupby</span>(iris, <span class="op">:</span>Species)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> StatsPlots.<span class="fu">plot</span>()</span>
@@ -344,8 +447,9 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 </div>
 <p>The <code>@df</code> macro was used as a convenience. This replaces the symbols in the expression with the corresponding column in the specified data frame.</p>
 <div class="cell" data-execution_count="7">
-<div id="fig-grouped-dotplot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-grouped-dotplot" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="8">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-grouped-dotplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -721,15 +825,19 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <circle clip-path="url(#clip093)" cx="2497.67" cy="96.8724" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 <circle clip-path="url(#clip093)" cx="2594.52" cy="96.8724" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.1: Grouped dot plots allow an easy comparison of the distribution of a variable over the levels of a categorical variable. These two use the same data set, but were produced different ways. The left-most was done “by hand” and uses a legend to distinguish the species. The right-most was produced by <code>dotplot</code> with labels used to mark the species.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-grouped-dotplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.1: Grouped dot plots allow an easy comparison of the distribution of a variable over the levels of a categorical variable. These two use the same data set, but were produced different ways. The left-most was done “by hand” and uses a legend to distinguish the species. The right-most was produced by <code>dotplot</code> with labels used to mark the species.
+</figcaption>
 </figure>
 </div>
 </div>
-<p>Putting the categorical variable first, presents a graphic (<a href="#fig-grouped-dotplot-jitter">Figure&nbsp;<span>4.2</span></a>) which uses jittering to disambiguate equal measurements in a species:</p>
+<p>Putting the categorical variable first, presents a graphic (<a href="#fig-grouped-dotplot-jitter" class="quarto-xref">Figure&nbsp;<span>4.2</span></a>) which uses jittering to disambiguate equal measurements in a species:</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@df</span> iris <span class="fu">dotplot</span>(<span class="op">:</span>Species, <span class="op">:</span>PetalWidth; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-grouped-dotplot-jitter" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-grouped-dotplot-jitter" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="9">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-grouped-dotplot-jitter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -918,7 +1026,10 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <circle clip-path="url(#clip182)" cx="2122.79" cy="234.729" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 <circle clip-path="url(#clip182)" cx="2484.67" cy="579.37" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.2: the categorial variable’s position determines the layout chosen for the grouped dot plot. In this figure, the categorical variable was in the <code>x</code> position, and the numeric data was jittered left and right.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-grouped-dotplot-jitter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.2: the categorial variable’s position determines the layout chosen for the grouped dot plot. In this figure, the categorical variable was in the <code>x</code> position, and the numeric data was jittered left and right.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -926,11 +1037,12 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 </section>
 <section id="boxplots-across-groups" class="level3" data-number="4.1.2">
 <h3 data-number="4.1.2" class="anchored" data-anchor-id="boxplots-across-groups"><span class="header-section-number">4.1.2</span> Boxplots across groups</h3>
-<p>Grouped boxplots are made in a similar manner to the last example using <code>boxplot</code> (<a href="#fig-boxplots">Figure&nbsp;<span>4.3</span></a>); we use the categorical variable indicating grouping in the <code>x</code> position:</p>
+<p>Grouped boxplots are made in a similar manner to the last example using <code>boxplot</code> (<a href="#fig-boxplots" class="quarto-xref">Figure&nbsp;<span>4.3</span></a>); we use the categorical variable indicating grouping in the <code>x</code> position:</p>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@df</span> iris <span class="fu">boxplot</span>(<span class="op">:</span>Species, <span class="op">:</span>PetalWidth; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-boxplots" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-boxplots" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="10">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boxplots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -1007,23 +1119,30 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <polyline clip-path="url(#clip272)" style="stroke:#009af9; stroke-linecap:round; stroke-linejoin:round; stroke-width:0; stroke-opacity:1; fill:none" points="2570.51,234.729 1901.47,234.729 1901.47,441.514 2570.51,441.514 2570.51,234.729 2235.99,234.729 "></polyline>
 <polyline clip-path="url(#clip272)" style="stroke:#009af9; stroke-linecap:round; stroke-linejoin:round; stroke-width:0; stroke-opacity:1; fill:none" points="2235.99,96.8724 2068.73,96.8724 2403.25,96.8724 2235.99,96.8724 2235.99,234.729 "></polyline>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.3: a basic boxplot comparing petal width across the different species.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boxplots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: a basic boxplot comparing petal width across the different species.
+</figcaption>
 </figure>
 </div>
 </div>
-<p>An article from <a href="https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/">fivethirtyeight.com</a> contained the boxplots in <a href="#fig-five-thirty-eight">Figure&nbsp;<span>4.4</span></a>. The graphic used does not show the traditional “1.5IQR” whiskers, rather it extends the box using shading.</p>
-<div id="fig-five-thirty-eight" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="xword-boxplots.png" class="img-fluid figure-img" alt="A version of a box-and-whisker plot for comparing the time that a very fast crossword puzzler takes when done on the computer and the paper. The various summary statistics, such as the median, are all less on the computer. "></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.4: Crossword times by method</figcaption><p></p>
+<p>An article from <a href="https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/">fivethirtyeight.com</a> contained the boxplots in <a href="#fig-five-thirty-eight" class="quarto-xref">Figure&nbsp;<span>4.4</span></a>. The graphic used does not show the traditional “1.5IQR” whiskers, rather it extends the box using shading.</p>
+<div id="fig-five-thirty-eight" class="quarto-figure quarto-figure-center quarto-float anchored" alt="A version of a box-and-whisker plot for comparing the time that a very fast crossword puzzler takes when done on the computer and the paper. The various summary statistics, such as the median, are all less on the computer. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-five-thirty-eight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="xword-boxplots.png" class="img-fluid figure-img" alt="A version of a box-and-whisker plot for comparing the time that a very fast crossword puzzler takes when done on the computer and the paper. The various summary statistics, such as the median, are all less on the computer. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-five-thirty-eight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.4: Crossword times by method
+</figcaption>
 </figure>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Ode to the boxplots
 </div>
 </div>
@@ -1034,12 +1153,13 @@ Ode to the boxplots
 </section>
 <section id="violin-and-density-plots" class="level3" data-number="4.1.3">
 <h3 data-number="4.1.3" class="anchored" data-anchor-id="violin-and-density-plots"><span class="header-section-number">4.1.3</span> Violin and density plots</h3>
-<p>A violin plot is like the boxplot, only it is wider where more data is concentrated, and smaller where less is. It uses a sideways density plot to summarize the data, whereas a boxplot only uses the five-number summary. The <code>violin</code> function creates these (<a href="#fig-boxplot-violinplot">Figure&nbsp;<span>4.5</span></a>):</p>
+<p>A violin plot is like the boxplot, only it is wider where more data is concentrated, and smaller where less is. It uses a sideways density plot to summarize the data, whereas a boxplot only uses the five-number summary. The <code>violin</code> function creates these (<a href="#fig-boxplot-violinplot" class="quarto-xref">Figure&nbsp;<span>4.5</span></a>):</p>
 <div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">violin</span>(<span class="op">:</span>Species, <span class="op">:</span>PetalWidth; legend<span class="op">=</span><span class="cn">false</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@df</span> iris <span class="fu">dotplot!</span>(p2, <span class="op">:</span>Species, <span class="op">:</span>PetalWidth; legend<span class="op">=</span><span class="cn">false</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-boxplot-violinplot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-boxplot-violinplot" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="11">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boxplot-violinplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -1234,19 +1354,23 @@ Ode to the boxplots
 <circle clip-path="url(#clip362)" cx="2335.78" cy="234.729" r="14.4" fill="#e26f46" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 <circle clip-path="url(#clip362)" cx="2519.05" cy="579.37" r="14.4" fill="#e26f46" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.5: Illustration of a violin plot with a dotplot overlay for the petal width across the different species.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boxplot-violinplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.5: Illustration of a violin plot with a dotplot overlay for the petal width across the different species.
+</figcaption>
 </figure>
 </div>
 </div>
 <p>As illustrated for univariate data, the <code>density</code> function makes a density plot. There is an option for grouped data.</p>
-<p>As seen below, the grouping variable is a named, not positional argument. In <a href="#fig-density-grouped-density">Figure&nbsp;<span>4.6</span></a> the left plot is done without grouping, the right one with grouping by species. The left plot shows a <em>multi-modal</em> distribution, which suggests, as we already have seen, that there is a mixture of populations in the data. There appear to be two modes, with a hint of a third. The separation between the “setosa” species and the other two is greater than the separation between the two others.</p>
+<p>As seen below, the grouping variable is a named, not positional argument. In <a href="#fig-density-grouped-density" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> the left plot is done without grouping, the right one with grouping by species. The left plot shows a <em>multi-modal</em> distribution, which suggests, as we already have seen, that there is a mixture of populations in the data. There appear to be two modes, with a hint of a third. The separation between the “setosa” species and the other two is greater than the separation between the two others.</p>
 <div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">density</span>(<span class="op">:</span>PetalWidth; legend<span class="op">=</span><span class="cn">false</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">density</span>(<span class="op">:</span>PetalWidth, group<span class="op">=:</span>Species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="12">
-<div id="fig-density-grouped-density" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-density-grouped-density" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="13">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-density-grouped-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -1324,30 +1448,37 @@ Ode to the boxplots
 <path clip-path="url(#clip450)" d="M2377.74 149.653 L2377.74 153.681 Q2375.94 152.755 2373.99 152.292 Q2372.05 151.829 2369.97 151.829 Q2366.79 151.829 2365.2 152.801 Q2363.62 153.774 2363.62 155.718 Q2363.62 157.2 2364.76 158.056 Q2365.89 158.889 2369.32 159.653 L2370.78 159.977 Q2375.31 160.95 2377.21 162.732 Q2379.13 164.491 2379.13 167.663 Q2379.13 171.274 2376.26 173.38 Q2373.41 175.487 2368.41 175.487 Q2366.33 175.487 2364.06 175.07 Q2361.82 174.676 2359.32 173.866 L2359.32 169.468 Q2361.68 170.695 2363.97 171.32 Q2366.26 171.922 2368.51 171.922 Q2371.52 171.922 2373.14 170.903 Q2374.76 169.862 2374.76 167.987 Q2374.76 166.25 2373.58 165.325 Q2372.42 164.399 2368.46 163.542 L2366.98 163.195 Q2363.02 162.362 2361.26 160.649 Q2359.5 158.913 2359.5 155.903 Q2359.5 152.246 2362.09 150.255 Q2364.69 148.264 2369.46 148.264 Q2371.82 148.264 2373.9 148.612 Q2375.98 148.959 2377.74 149.653 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2408.09 160.788 L2408.09 162.871 L2388.51 162.871 Q2388.78 167.269 2391.15 169.584 Q2393.53 171.875 2397.77 171.875 Q2400.22 171.875 2402.51 171.274 Q2404.83 170.672 2407.09 169.468 L2407.09 173.496 Q2404.8 174.468 2402.4 174.977 Q2399.99 175.487 2397.51 175.487 Q2391.31 175.487 2387.67 171.875 Q2384.06 168.264 2384.06 162.107 Q2384.06 155.741 2387.49 152.014 Q2390.94 148.264 2396.77 148.264 Q2402 148.264 2405.03 151.644 Q2408.09 155.001 2408.09 160.788 M2403.83 159.538 Q2403.78 156.042 2401.86 153.959 Q2399.96 151.876 2396.82 151.876 Q2393.25 151.876 2391.1 153.889 Q2388.97 155.903 2388.65 159.561 L2403.83 159.538 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2419.29 141.528 L2419.29 148.889 L2428.07 148.889 L2428.07 152.2 L2419.29 152.2 L2419.29 166.274 Q2419.29 169.445 2420.15 170.348 Q2421.03 171.25 2423.69 171.25 L2428.07 171.25 L2428.07 174.815 L2423.69 174.815 Q2418.76 174.815 2416.89 172.987 Q2415.01 171.135 2415.01 166.274 L2415.01 152.2 L2411.89 152.2 L2411.89 148.889 L2415.01 148.889 L2415.01 141.528 L2419.29 141.528 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2443.71 151.876 Q2440.29 151.876 2438.3 154.561 Q2436.31 157.223 2436.31 161.876 Q2436.31 166.528 2438.27 169.213 Q2440.27 171.875 2443.71 171.875 Q2447.12 171.875 2449.11 169.19 Q2451.1 166.505 2451.1 161.876 Q2451.1 157.269 2449.11 154.584 Q2447.12 151.876 2443.71 151.876 M2443.71 148.264 Q2449.27 148.264 2452.44 151.876 Q2455.61 155.487 2455.61 161.876 Q2455.61 168.241 2452.44 171.875 Q2449.27 175.487 2443.71 175.487 Q2438.14 175.487 2434.96 171.875 Q2431.82 168.241 2431.82 161.876 Q2431.82 155.487 2434.96 151.876 Q2438.14 148.264 2443.71 148.264 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2479.2 149.653 L2479.2 153.681 Q2477.39 152.755 2475.45 152.292 Q2473.51 151.829 2471.42 151.829 Q2468.25 151.829 2466.65 152.801 Q2465.08 153.774 2465.08 155.718 Q2465.08 157.2 2466.21 158.056 Q2467.35 158.889 2470.77 159.653 L2472.23 159.977 Q2476.77 160.95 2478.67 162.732 Q2480.59 164.491 2480.59 167.663 Q2480.59 171.274 2477.72 173.38 Q2474.87 175.487 2469.87 175.487 Q2467.79 175.487 2465.52 175.07 Q2463.27 174.676 2460.77 173.866 L2460.77 169.468 Q2463.14 170.695 2465.43 171.32 Q2467.72 171.922 2469.96 171.922 Q2472.97 171.922 2474.59 170.903 Q2476.21 169.862 2476.21 167.987 Q2476.21 166.25 2475.03 165.325 Q2473.88 164.399 2469.92 163.542 L2468.44 163.195 Q2464.48 162.362 2462.72 160.649 Q2460.96 158.913 2460.96 155.903 Q2460.96 152.246 2463.55 150.255 Q2466.15 148.264 2470.91 148.264 Q2473.27 148.264 2475.36 148.612 Q2477.44 148.959 2479.2 149.653 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2499.15 161.783 Q2493.99 161.783 2492 162.963 Q2490.01 164.144 2490.01 166.991 Q2490.01 169.26 2491.49 170.602 Q2493 171.922 2495.57 171.922 Q2499.11 171.922 2501.24 169.422 Q2503.39 166.899 2503.39 162.732 L2503.39 161.783 L2499.15 161.783 M2507.65 160.024 L2507.65 174.815 L2503.39 174.815 L2503.39 170.88 Q2501.93 173.241 2499.76 174.375 Q2497.58 175.487 2494.43 175.487 Q2490.45 175.487 2488.09 173.264 Q2485.75 171.019 2485.75 167.269 Q2485.75 162.894 2488.67 160.672 Q2491.61 158.45 2497.42 158.45 L2503.39 158.45 L2503.39 158.033 Q2503.39 155.093 2501.45 153.496 Q2499.52 151.876 2496.03 151.876 Q2493.81 151.876 2491.7 152.408 Q2489.59 152.94 2487.65 154.005 L2487.65 150.07 Q2489.99 149.167 2492.19 148.727 Q2494.39 148.264 2496.47 148.264 Q2502.09 148.264 2504.87 151.181 Q2507.65 154.098 2507.65 160.024 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip450)" style="stroke:#e26f46; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="2269.13,209.375 2346.43,209.375 "></polyline>
 <path clip-path="url(#clip450)" d="M2359.32 200.729 L2363.83 200.729 L2371.93 222.489 L2380.03 200.729 L2384.55 200.729 L2374.83 226.655 L2369.04 226.655 L2359.32 200.729 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2412.6 212.628 L2412.6 214.711 L2393.02 214.711 Q2393.3 219.109 2395.66 221.424 Q2398.04 223.715 2402.28 223.715 Q2404.73 223.715 2407.02 223.114 Q2409.34 222.512 2411.61 221.308 L2411.61 225.336 Q2409.32 226.308 2406.91 226.817 Q2404.5 227.327 2402.03 227.327 Q2395.82 227.327 2392.19 223.715 Q2388.58 220.104 2388.58 213.947 Q2388.58 207.581 2392 203.854 Q2395.45 200.104 2401.28 200.104 Q2406.52 200.104 2409.55 203.484 Q2412.6 206.841 2412.6 212.628 M2408.34 211.378 Q2408.3 207.882 2406.38 205.799 Q2404.48 203.716 2401.33 203.716 Q2397.77 203.716 2395.61 205.729 Q2393.48 207.743 2393.16 211.401 L2408.34 211.378 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2434.62 204.711 Q2433.9 204.294 2433.04 204.109 Q2432.21 203.901 2431.19 203.901 Q2427.58 203.901 2425.64 206.262 Q2423.71 208.6 2423.71 212.998 L2423.71 226.655 L2419.43 226.655 L2419.43 200.729 L2423.71 200.729 L2423.71 204.757 Q2425.06 202.396 2427.21 201.262 Q2429.36 200.104 2432.44 200.104 Q2432.88 200.104 2433.41 200.174 Q2433.95 200.22 2434.59 200.336 L2434.62 204.711 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2455.61 201.493 L2455.61 205.521 Q2453.81 204.595 2451.86 204.132 Q2449.92 203.669 2447.83 203.669 Q2444.66 203.669 2443.07 204.641 Q2441.49 205.614 2441.49 207.558 Q2441.49 209.04 2442.63 209.896 Q2443.76 210.729 2447.19 211.493 L2448.65 211.817 Q2453.18 212.79 2455.08 214.572 Q2457 216.331 2457 219.503 Q2457 223.114 2454.13 225.22 Q2451.28 227.327 2446.28 227.327 Q2444.2 227.327 2441.93 226.91 Q2439.69 226.516 2437.19 225.706 L2437.19 221.308 Q2439.55 222.535 2441.84 223.16 Q2444.13 223.762 2446.38 223.762 Q2449.39 223.762 2451.01 222.743 Q2452.63 221.702 2452.63 219.827 Q2452.63 218.09 2451.45 217.165 Q2450.29 216.239 2446.33 215.382 L2444.85 215.035 Q2440.89 214.202 2439.13 212.489 Q2437.37 210.753 2437.37 207.743 Q2437.37 204.086 2439.96 202.095 Q2442.56 200.104 2447.33 200.104 Q2449.69 200.104 2451.77 200.452 Q2453.85 200.799 2455.61 201.493 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2463.78 200.729 L2468.04 200.729 L2468.04 226.655 L2463.78 226.655 L2463.78 200.729 M2463.78 190.637 L2468.04 190.637 L2468.04 196.03 L2463.78 196.03 L2463.78 190.637 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2495.61 201.725 L2495.61 205.706 Q2493.81 204.711 2491.98 204.225 Q2490.17 203.716 2488.32 203.716 Q2484.18 203.716 2481.89 206.354 Q2479.59 208.97 2479.59 213.716 Q2479.59 218.461 2481.89 221.1 Q2484.18 223.715 2488.32 223.715 Q2490.17 223.715 2491.98 223.229 Q2493.81 222.72 2495.61 221.725 L2495.61 225.66 Q2493.83 226.493 2491.91 226.91 Q2490.01 227.327 2487.86 227.327 Q2482 227.327 2478.55 223.646 Q2475.1 219.965 2475.1 213.716 Q2475.1 207.373 2478.58 203.739 Q2482.07 200.104 2488.14 200.104 Q2490.1 200.104 2491.98 200.521 Q2493.85 200.915 2495.61 201.725 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2513.07 203.716 Q2509.64 203.716 2507.65 206.401 Q2505.66 209.063 2505.66 213.716 Q2505.66 218.368 2507.63 221.053 Q2509.62 223.715 2513.07 223.715 Q2516.47 223.715 2518.46 221.03 Q2520.45 218.345 2520.45 213.716 Q2520.45 209.109 2518.46 206.424 Q2516.47 203.716 2513.07 203.716 M2513.07 200.104 Q2518.62 200.104 2521.79 203.716 Q2524.96 207.327 2524.96 213.716 Q2524.96 220.081 2521.79 223.715 Q2518.62 227.327 2513.07 227.327 Q2507.49 227.327 2504.32 223.715 Q2501.17 220.081 2501.17 213.716 Q2501.17 207.327 2504.32 203.716 Q2507.49 200.104 2513.07 200.104 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2532.02 190.637 L2536.28 190.637 L2536.28 226.655 L2532.02 226.655 L2532.02 190.637 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2555.24 203.716 Q2551.82 203.716 2549.83 206.401 Q2547.83 209.063 2547.83 213.716 Q2547.83 218.368 2549.8 221.053 Q2551.79 223.715 2555.24 223.715 Q2558.64 223.715 2560.64 221.03 Q2562.63 218.345 2562.63 213.716 Q2562.63 209.109 2560.64 206.424 Q2558.64 203.716 2555.24 203.716 M2555.24 200.104 Q2560.8 200.104 2563.97 203.716 Q2567.14 207.327 2567.14 213.716 Q2567.14 220.081 2563.97 223.715 Q2560.8 227.327 2555.24 227.327 Q2549.66 227.327 2546.49 223.715 Q2543.34 220.081 2543.34 213.716 Q2543.34 207.327 2546.49 203.716 Q2549.66 200.104 2555.24 200.104 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2589.22 204.711 Q2588.51 204.294 2587.65 204.109 Q2586.82 203.901 2585.8 203.901 Q2582.19 203.901 2580.24 206.262 Q2578.32 208.6 2578.32 212.998 L2578.32 226.655 L2574.04 226.655 L2574.04 200.729 L2578.32 200.729 L2578.32 204.757 Q2579.66 202.396 2581.82 201.262 Q2583.97 200.104 2587.05 200.104 Q2587.49 200.104 2588.02 200.174 Q2588.55 200.22 2589.2 200.336 L2589.22 204.711 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip450)" style="stroke:#3da44d; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="2269.13,261.215 2346.43,261.215 "></polyline>
 <path clip-path="url(#clip450)" d="M2359.32 252.569 L2363.83 252.569 L2371.93 274.329 L2380.03 252.569 L2384.55 252.569 L2374.83 278.495 L2369.04 278.495 L2359.32 252.569 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2390.43 252.569 L2394.69 252.569 L2394.69 278.495 L2390.43 278.495 L2390.43 252.569 M2390.43 242.477 L2394.69 242.477 L2394.69 247.87 L2390.43 247.87 L2390.43 242.477 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2418.62 256.551 Q2417.9 256.134 2417.05 255.949 Q2416.21 255.741 2415.2 255.741 Q2411.59 255.741 2409.64 258.102 Q2407.72 260.44 2407.72 264.838 L2407.72 278.495 L2403.44 278.495 L2403.44 252.569 L2407.72 252.569 L2407.72 256.597 Q2409.06 254.236 2411.21 253.102 Q2413.37 251.944 2416.45 251.944 Q2416.89 251.944 2417.42 252.014 Q2417.95 252.06 2418.6 252.176 L2418.62 256.551 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2439.32 265.231 Q2439.32 260.602 2437.4 258.056 Q2435.5 255.509 2432.05 255.509 Q2428.62 255.509 2426.7 258.056 Q2424.8 260.602 2424.8 265.231 Q2424.8 269.838 2426.7 272.384 Q2428.62 274.93 2432.05 274.93 Q2435.5 274.93 2437.4 272.384 Q2439.32 269.838 2439.32 265.231 M2443.58 275.278 Q2443.58 281.898 2440.64 285.116 Q2437.7 288.356 2431.63 288.356 Q2429.39 288.356 2427.4 288.009 Q2425.4 287.685 2423.53 286.991 L2423.53 282.847 Q2425.4 283.866 2427.23 284.352 Q2429.06 284.838 2430.96 284.838 Q2435.15 284.838 2437.23 282.639 Q2439.32 280.463 2439.32 276.042 L2439.32 273.935 Q2438 276.227 2435.94 277.361 Q2433.88 278.495 2431.01 278.495 Q2426.24 278.495 2423.32 274.861 Q2420.4 271.227 2420.4 265.231 Q2420.4 259.213 2423.32 255.579 Q2426.24 251.944 2431.01 251.944 Q2433.88 251.944 2435.94 253.079 Q2438 254.213 2439.32 256.505 L2439.32 252.569 L2443.58 252.569 L2443.58 275.278 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2452.35 252.569 L2456.61 252.569 L2456.61 278.495 L2452.35 278.495 L2452.35 252.569 M2452.35 242.477 L2456.61 242.477 L2456.61 247.87 L2452.35 247.87 L2452.35 242.477 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2487.07 262.847 L2487.07 278.495 L2482.81 278.495 L2482.81 262.986 Q2482.81 259.306 2481.38 257.477 Q2479.94 255.648 2477.07 255.648 Q2473.62 255.648 2471.63 257.847 Q2469.64 260.046 2469.64 263.843 L2469.64 278.495 L2465.36 278.495 L2465.36 252.569 L2469.64 252.569 L2469.64 256.597 Q2471.17 254.259 2473.23 253.102 Q2475.31 251.944 2478.02 251.944 Q2482.49 251.944 2484.78 254.722 Q2487.07 257.477 2487.07 262.847 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2495.57 252.569 L2499.83 252.569 L2499.83 278.495 L2495.57 278.495 L2495.57 252.569 M2495.57 242.477 L2499.83 242.477 L2499.83 247.87 L2495.57 247.87 L2495.57 242.477 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2527.39 253.565 L2527.39 257.546 Q2525.59 256.551 2523.76 256.065 Q2521.95 255.556 2520.1 255.556 Q2515.96 255.556 2513.67 258.194 Q2511.38 260.81 2511.38 265.556 Q2511.38 270.301 2513.67 272.94 Q2515.96 275.555 2520.1 275.555 Q2521.95 275.555 2523.76 275.069 Q2525.59 274.56 2527.39 273.565 L2527.39 277.5 Q2525.61 278.333 2523.69 278.75 Q2521.79 279.167 2519.64 279.167 Q2513.78 279.167 2510.33 275.486 Q2506.89 271.805 2506.89 265.556 Q2506.89 259.213 2510.36 255.579 Q2513.85 251.944 2519.92 251.944 Q2521.89 251.944 2523.76 252.361 Q2525.64 252.755 2527.39 253.565 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip450)" d="M2546.58 265.463 Q2541.42 265.463 2539.43 266.643 Q2537.44 267.824 2537.44 270.671 Q2537.44 272.94 2538.92 274.282 Q2540.43 275.602 2543 275.602 Q2546.54 275.602 2548.67 273.102 Q2550.82 270.579 2550.82 266.412 L2550.82 265.463 L2546.58 265.463 M2555.08 263.704 L2555.08 278.495 L2550.82 278.495 L2550.82 274.56 Q2549.36 276.921 2547.19 278.055 Q2545.01 279.167 2541.86 279.167 Q2537.88 279.167 2535.52 276.944 Q2533.18 274.699 2533.18 270.949 Q2533.18 266.574 2536.1 264.352 Q2539.04 262.13 2544.85 262.13 L2550.82 262.13 L2550.82 261.713 Q2550.82 258.773 2548.88 257.176 Q2546.95 255.556 2543.46 255.556 Q2541.24 255.556 2539.13 256.088 Q2537.02 256.62 2535.08 257.685 L2535.08 253.75 Q2537.42 252.847 2539.62 252.407 Q2541.82 251.944 2543.9 251.944 Q2549.52 251.944 2552.3 254.861 Q2555.08 257.778 2555.08 263.704 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path></svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.6: Density plots of <code>PetalWidth</code> and <code>PetalWidth</code> by <code>Species</code>. The left graphic suggests multiple modes, which are revealed in the right graphic.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-density-grouped-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.6: Density plots of <code>PetalWidth</code> and <code>PetalWidth</code> by <code>Species</code>. The left graphic suggests multiple modes, which are revealed in the right graphic.
+</figcaption>
 </figure>
 </div>
 </div>
 </section>
 <section id="histograms-across-groups" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="histograms-across-groups"><span class="header-section-number">4.1.4</span> Histograms across groups</h3>
-<p>The density plot is, perhaps, less familiar than a histogram, but makes a better graphic when comparing two or more distributions, as the individual graphics don’t overlap. There are attempts to use the histogram, and they can be effective. In <a href="#fig-xword-histograms">Figure&nbsp;<span>4.7</span></a>, taken from an article on <a href="https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/">fivethirtyeight.com</a> on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overalpping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In <code>StatsPlots</code>, the <code>grouped hist</code> function can produce similar graphics.</p>
-<div id="fig-xword-histograms" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<p>The density plot is, perhaps, less familiar than a histogram, but makes a better graphic when comparing two or more distributions, as the individual graphics don’t overlap. There are attempts to use the histogram, and they can be effective. In <a href="#fig-xword-histograms" class="quarto-xref">Figure&nbsp;<span>4.7</span></a>, taken from an article on <a href="https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/">fivethirtyeight.com</a> on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overalpping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In <code>StatsPlots</code>, the <code>grouped hist</code> function can produce similar graphics.</p>
+<div id="fig-xword-histograms" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-xword-histograms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="xword-histogram.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Crossword times by day</figcaption><p></p>
+<figcaption>Crossword times by day</figcaption>
 </figure>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.7: Dotplots for solving times of various New York Times crossword puzzled grouped by day of the puzzle.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-xword-histograms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.7: Dotplots for solving times of various New York Times crossword puzzled grouped by day of the puzzle.
+</figcaption>
 </figure>
 </div>
 </section>
 <section id="quantile-comparisons" class="level3" data-number="4.1.5">
 <h3 data-number="4.1.5" class="anchored" data-anchor-id="quantile-comparisons"><span class="header-section-number">4.1.5</span> Quantile comparisons</h3>
 <p>A “quantile-quantile plot” plots pairs of quantiles from two data sets as a scatter plot to help gauge if the shape of the two distributions is similar. If it is, the data will fall roughly on a straight line. The previously discussed quantile-normal plot is identical, with the specialization that one of the distributions is the reference normal distribution.</p>
-<p>We use this plot to check if the <em>shape</em> of the distribution for two different species is roughly the same. To do so, we extract the <code>PetalWidth</code> values for the different levels of <code>:Species</code>. A direct way might be indexing: <code>iris[iris.Species .== "versicolor", :PetalWidth]</code> or with <code>subset</code>: <code>subset(iris, :Species =&gt; ByRow(==("versicolor"))).PetalWidth</code>. In the following we group by <code>:Species</code> then for each group apply a <span class="math inline">\(z\)</span>-score to <code>:PetalWidth</code>. From here, we can compare the 1st and 2nd and then the 2nd and 3rd group with <code>qqplot</code> in <a href="#fig-qqplot-petalwidth">Figure&nbsp;<span>4.8</span></a>. There is not a strong reason to expect big differences in shape.</p>
+<p>We use this plot to check if the <em>shape</em> of the distribution for two different species is roughly the same. To do so, we extract the <code>PetalWidth</code> values for the different levels of <code>:Species</code>. A direct way might be indexing: <code>iris[iris.Species .== "versicolor", :PetalWidth]</code> or with <code>subset</code>: <code>subset(iris, :Species =&gt; ByRow(==("versicolor"))).PetalWidth</code>. In the following we group by <code>:Species</code> then for each group apply a <span class="math inline">\(z\)</span>-score to <code>:PetalWidth</code>. From here, we can compare the 1st and 2nd and then the 2nd and 3rd group with <code>qqplot</code> in <a href="#fig-qqplot-petalwidth" class="quarto-xref">Figure&nbsp;<span>4.8</span></a>. There is not a strong reason to expect big differences in shape.</p>
 <div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">jitter</span>(x, scale <span class="op">=</span> <span class="fl">0.25</span>) <span class="op">=</span> x <span class="op">+</span> scale <span class="op">*</span> <span class="fu">randn</span>(<span class="fu">length</span>(x))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>gps <span class="op">=</span> [<span class="fu">select</span>(gp, <span class="op">:</span>PetalWidth <span class="op">=&gt;</span> zscore<span class="op">∘</span>jitter <span class="op">=&gt;</span> <span class="op">:</span>PetalWidth)</span>
@@ -1358,8 +1489,9 @@ Ode to the boxplots
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">qqplot</span>(gps[<span class="fl">2</span>].PetalWidth, gps[<span class="fl">3</span>].PetalWidth);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="14">
-<div id="fig-qqplot-petalwidth" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-qqplot-petalwidth" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="15">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-qqplot-petalwidth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -1532,7 +1664,10 @@ Ode to the boxplots
 <circle clip-path="url(#clip543)" cx="2571.73" cy="218.884" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 <circle clip-path="url(#clip543)" cx="2608.31" cy="96.8724" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.8: A <code>qqplot</code> of the petal width from the versicolor and virginica species. The graphic suggests similar-shaped distributions. The data is jittered to disambiguate identical values.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qqplot-petalwidth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.8: A <code>qqplot</code> of the petal width from the versicolor and virginica species. The graphic suggests similar-shaped distributions. The data is jittered to disambiguate identical values.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -1607,8 +1742,9 @@ cor = \frac{1}{n-1} \sum \left(\frac{x_i - \bar{x}}{s_x}\right) \cdot \left(\fra
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">vline!</span>([<span class="fu">mean</span>(l)], linestyle<span class="op">=:</span>dash)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hline!</span>([<span class="fu">mean</span>(w)], linestyle<span class="op">=:</span>dash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-scatterplot-l-w" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-scatterplot-l-w" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="20">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatterplot-l-w-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -1705,18 +1841,21 @@ cor = \frac{1}{n-1} \sum \left(\frac{x_i - \bar{x}}{s_x}\right) \cdot \left(\fra
 <polyline clip-path="url(#clip632)" style="stroke:#e26f46; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" stroke-dasharray="16, 10" points="1463.82,3420.99 1463.82,-1639.63 "></polyline>
 <polyline clip-path="url(#clip632)" style="stroke:#3da44d; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" stroke-dasharray="16, 10" points="-2188.47,1221.69 5055.37,1221.69 "></polyline>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.9: Scatter plot of petal length and petal width for the <em>setosa</em> data. The dashed lines show the “center” of the data, <span class="math inline">\((\bar{x}, \bar{y})\)</span>.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatterplot-l-w-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.9: Scatter plot of petal length and petal width for the <em>setosa</em> data. The dashed lines show the “center” of the data, <span class="math inline">\((\bar{x}, \bar{y})\)</span>.
+</figcaption>
 </figure>
 </div>
 </div>
-<p><a href="#fig-scatterplot-l-w">Figure&nbsp;<span>4.9</span></a> shows the length and width data in a scatter plot. Jittering would be helpful to show all the data, as it has been discretized and many points are overplotte. The dashed lines are centered at the means of the respective variables. If the mean is the center of a single variable, then <span class="math inline">\((\bar{x}, \bar{y})\)</span> may be thought of as the center of the paired data. Thinking of the dashed lines meeting at the origin, four quadrants are formed. The correlation can be viewed as a measure of how much the data sits in opposite quadrants. In the figure, there seems to be more data in quadrants I and III then II and IV, which sugests a <em>positive</em> correlation, as confirmed numerically.</p>
+<p><a href="#fig-scatterplot-l-w" class="quarto-xref">Figure&nbsp;<span>4.9</span></a> shows the length and width data in a scatter plot. Jittering would be helpful to show all the data, as it has been discretized and many points are overplotte. The dashed lines are centered at the means of the respective variables. If the mean is the center of a single variable, then <span class="math inline">\((\bar{x}, \bar{y})\)</span> may be thought of as the center of the paired data. Thinking of the dashed lines meeting at the origin, four quadrants are formed. The correlation can be viewed as a measure of how much the data sits in opposite quadrants. In the figure, there seems to be more data in quadrants I and III then II and IV, which sugests a <em>positive</em> correlation, as confirmed numerically.</p>
 <p>By writing the correlation in terms of <span class="math inline">\(z\)</span>-scores, the product in that formula is <em>positive</em> if the point is in quadrant I or III and negative if in II or IV. So, for example, a big positive number suggests data is concentrated in quadrants I and III or that there is a strong association between the variables. The scaling by the standard deviations, leaves the mathematical constraint that the correlation is between <span class="math inline">\(-1\)</span> and <span class="math inline">\(1\)</span>.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Correlation is not causation
 </div>
 </div>
@@ -1729,10 +1868,11 @@ Correlation is not causation
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="trend-lines"><span class="header-section-number">4.2.2</span> Trend lines</h3>
 <p>We mentioned that the Pearson correlation is a measure of a linear association and the Spearman rank correlation a measure of monotonic association. We now discuss some basic <em>trend lines</em> that highlight the association in paired data, where there is response variable.</p>
 <p>We use the language <em>explanatory</em> variable to describe the <span class="math inline">\(x\)</span> variable, and <em>response</em> variable to describe the <span class="math inline">\(y\)</span> variable, with the understanding that <span class="math inline">\(x\)</span> might be experimentally controlled and <span class="math inline">\(y\)</span> a random, measured response. The “line” is an explanation of how the <span class="math inline">\(y\)</span> values vary <em>on average</em> as the <span class="math inline">\(x\)</span> values vary by the experimenter.</p>
-<p>There are many choices for how to identify a trend line, though we will show one such way that is the most commonly used. To set it in a mathematical setting, a line can be parameterized by two values, <span class="math inline">\(y = \beta_0 + \beta_1 x\)</span>. Use the value <span class="math inline">\(\hat{y}_i = \beta_0 + \beta_1 x_i\)</span>, which is the <span class="math inline">\(y\)</span> value of the point on the line corresponding to <span class="math inline">\(x_i\)</span>. The residual amount is usually defined by <span class="math inline">\(e_i = y_i - \hat{y}_i\)</span>. That is the vertical distance from the data point to the line. See <a href="#fig-two-models">Figure&nbsp;<span>4.10</span></a> for a visualization. One could argue that the distance to the line might be better than the vertical distance, but this choice leads to a very useful mathematical characterization.</p>
+<p>There are many choices for how to identify a trend line, though we will show one such way that is the most commonly used. To set it in a mathematical setting, a line can be parameterized by two values, <span class="math inline">\(y = \beta_0 + \beta_1 x\)</span>. Use the value <span class="math inline">\(\hat{y}_i = \beta_0 + \beta_1 x_i\)</span>, which is the <span class="math inline">\(y\)</span> value of the point on the line corresponding to <span class="math inline">\(x_i\)</span>. The residual amount is usually defined by <span class="math inline">\(e_i = y_i - \hat{y}_i\)</span>. That is the vertical distance from the data point to the line. See <a href="#fig-two-models" class="quarto-xref">Figure&nbsp;<span>4.10</span></a> for a visualization. One could argue that the distance to the line might be better than the vertical distance, but this choice leads to a very useful mathematical characterization.</p>
 <div class="cell" data-execution_count="21">
-<div id="fig-two-models" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-two-models" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="22">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-two-models-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -1825,7 +1965,10 @@ Correlation is not causation
 <polyline clip-path="url(#clip723)" style="stroke:#00a9ad; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" stroke-dasharray="16, 10" points="2328.61,766.999 2328.61,964.286 "></polyline>
 <polyline clip-path="url(#clip723)" style="stroke:#ed5d92; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" stroke-dasharray="16, 10" points="2607.31,569.713 2607.31,175.141 "></polyline>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.10: Two different lines fit to the data. For each the residuals are computed, squared, then summed. The least-squares regression line is <em>the</em> line that makes this quantity minimal for a given data set.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-two-models-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.10: Two different lines fit to the data. For each the residuals are computed, squared, then summed. The least-squares regression line is <em>the</em> line that makes this quantity minimal for a given data set.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -2083,17 +2226,17 @@ PetalLength   0.201245    0.0826325   2.44    0.0186   0.0351012   0.367389
 </svg>
 </div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 A constant model
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The linear model has much wider applicability than the <em>simple</em> regression model, <span class="math inline">\(y_i = \beta_0 + \beta_1 x_i + \epsilon_i\)</span>. To see one example, we can fit the model <span class="math inline">\(y_i = \beta_0 + \epsilon_i\)</span> using least squares:</p>
+<p>The linear model has much wider applicability than the <em>simple</em> regression model, <span class="math inline">\(y_i = \beta_0 + \beta_1 x_i  + \epsilon_i\)</span>. To see one example, we can fit the model <span class="math inline">\(y_i = \beta_0 + \epsilon_i\)</span> using least squares:</p>
 <div class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(<span class="pp">@formula</span>(y <span class="op">~</span> <span class="fl">1</span>), (y<span class="op">=</span>l,)) <span class="op">|&gt;</span> coef</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="34">
@@ -2107,9 +2250,9 @@ A constant model
 </section>
 <section id="local-regression" class="level3" data-number="4.2.3">
 <h3 data-number="4.2.3" class="anchored" data-anchor-id="local-regression"><span class="header-section-number">4.2.3</span> Local regression</h3>
-<p>The method of least squares used above is called “regression.” It was popularized by Galton <span class="citation" data-cites="GALTON_10.2307/2841583">(<a href="../references.html#ref-GALTON_10.2307/2841583" role="doc-biblioref">Galton 1886</a>)</span> along with the phrase “regression to the mean.” The method of local regression (LOESS, with SS meaning scatterplot smoothing) essentially fits a regression line (or a degree <span class="math inline">\(d\)</span> polynomial) to parts of the data then stitches them together. The result is a curve that summarizes any trend in the data between the response variable and the explanatory variable. <a href="#fig-loess-explanation">Figure&nbsp;<span>4.11</span></a> shows some <em>locally</em> fit regression lines on the left, and on the right an identified <code>loess</code> line to show that the loess line here mostly follows the local regression models. The “loess” line was added to with these commands from the <code>Loess</code> package, which are wrapped up into a function to call later:</p>
+<p>The method of least squares used above is called “regression.” It was popularized by Galton <span class="citation" data-cites="GALTON_10.2307/2841583">(<a href="../references.html#ref-GALTON_10.2307/2841583" role="doc-biblioref">Galton 1886</a>)</span> along with the phrase “regression to the mean.” The method of local regression (LOESS, with SS meaning scatterplot smoothing) essentially fits a regression line (or a degree <span class="math inline">\(d\)</span> polynomial) to parts of the data then stitches them together. The result is a curve that summarizes any trend in the data between the response variable and the explanatory variable. <a href="#fig-loess-explanation" class="quarto-xref">Figure&nbsp;<span>4.11</span></a> shows some <em>locally</em> fit regression lines on the left, and on the right an identified <code>loess</code> line to show that the loess line here mostly follows the local regression models. The “loess” line was added to with these commands from the <code>Loess</code> package, which are wrapped up into a function to call later:</p>
 <div class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">Loess   </span><span class="co"># import so as not to conflict with other loaded packages</span></span>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">Loess</span>   <span class="co"># import so as not to conflict with other loaded packages</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">loess_line!</span>(p, x, y; normalize<span class="op">=</span><span class="cn">true</span>, span<span class="op">=</span><span class="fl">0.75</span>, degree<span class="op">=</span><span class="fl">2</span>, kwargs<span class="op">...</span>)</span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  model <span class="op">=</span> Loess.<span class="fu">loess</span>(x, y; normalize<span class="op">=</span>normalize, span<span class="op">=</span>span, degree<span class="op">=</span>degree)</span>
@@ -2122,8 +2265,9 @@ A constant model
 </div>
 <p>The default value of the <code>degree</code> keyword is <code>2</code> for a <em>quadratic</em> fit to the data.</p>
 <div class="cell" data-execution_count="35">
-<div id="fig-loess-explanation" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-loess-explanation" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="36">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-loess-explanation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -2325,7 +2469,10 @@ A constant model
 <polyline clip-path="url(#clip903)" style="stroke:#0000ff; stroke-linecap:round; stroke-linejoin:round; stroke-width:20; stroke-opacity:1; fill:none" points="2236.65,979.402 2239.08,977.978 2261.53,964.816 2275.02,956.906 2286.43,950.219 2298.83,942.954 2310.25,936.256 2322.5,929.076 2336.69,920.757 2349.3,913.364 2360.36,906.881 2372.42,899.813 2384.55,892.702 2397.96,884.841 2410.72,877.361 2423.99,869.584 2435.16,863.037 2448.8,855.044 2461.29,847.722 2472.82,840.959 2484.51,834.109 2497.61,826.432 2509.47,819.475 2523.06,811.51 2535.64,804.136 2548.05,796.865 2560.09,789.805 2572.43,782.569 2585.96,774.64 2605.61,763.123 2609.64,760.76 "></polyline>
 <polyline clip-path="url(#clip903)" style="stroke:#ff0000; stroke-linecap:round; stroke-linejoin:round; stroke-width:20; stroke-opacity:1; fill:none" points="1572.42,910.534 1582.9,911.544 1593.37,912.239 1603.85,912.621 1614.33,912.695 1624.8,912.462 1635.28,911.927 1645.76,911.093 1656.23,909.963 1666.71,908.54 1677.19,906.828 1687.67,904.83 1698.14,902.549 1708.62,899.989 1719.1,897.152 1729.57,894.043 1740.05,890.664 1750.53,887.018 1761,883.11 1771.48,878.941 1781.96,874.538 1792.44,869.971 1802.91,865.19 1813.39,860.124 1823.87,854.707 1834.34,848.871 1844.82,842.547 1855.3,835.668 1865.77,828.166 1876.25,819.973 1886.73,810.047 1897.2,796.487 1907.68,781.287 1918.16,766.671 1928.64,753.752 1939.11,735.594 1949.59,716.944 1960.07,704.95 1970.54,695.549 1981.02,686.56 1991.5,678.15 2001.97,670.486 2012.45,663.734 2022.93,658.06 2033.41,653.631 2043.88,650.614 2054.36,649.174 2064.84,649.479 2075.31,651.696 2085.79,656.053 2096.27,664.137 2106.74,675.628 2117.22,689.262 2127.7,703.771 2138.18,717.89 2148.65,730.353 2159.13,739.994 2169.61,748.557 2180.08,757.059 2190.56,765.422 2201.04,773.565 2211.51,781.412 2221.99,788.882 2232.47,795.898 2242.95,802.381 2253.42,808.252 2263.9,813.432 2274.38,817.843 2284.85,821.407 2295.33,824.044 2305.81,825.695 2316.28,827.238 2326.76,829.174 2337.24,831.489 2347.71,834.169 2358.19,837.201 2368.67,840.57 2379.15,844.263 2389.62,848.265 2400.1,852.563 2410.58,857.142 2421.05,861.989 2431.53,867.09 2442.01,872.431 2452.48,877.998 2462.96,883.776 2473.44,889.753 2483.92,895.913 2494.39,902.244 2504.87,908.731 2515.35,915.36 2525.82,922.118 2536.3,928.99 2546.78,935.962 2557.25,943.021 2567.73,950.152 2578.21,957.342 2588.69,964.576 2599.16,971.841 2609.64,979.123 "></polyline>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.11: On left, a scatter plot with some local regression lines (based on 10 points) layered on; on right, the same with a degree 1 <code>loess</code> line added.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-loess-explanation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.11: On left, a scatter plot with some local regression lines (based on 10 points) layered on; on right, the same with a degree 1 <code>loess</code> line added.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -2334,7 +2481,7 @@ A constant model
 <h3 data-number="4.2.4" class="anchored" data-anchor-id="robust-linear-models"><span class="header-section-number">4.2.4</span> Robust linear models</h3>
 <p>The formula for the slope of the simple regression coefficient depends on <span class="math inline">\(s_y/s_x\)</span>. The sample standard deviations may be influenced greatly by as few as one outlying value. That is, they are not very resistant to outliers. A theory of <em>robust linear models</em> has been developed which are useful in allowing a relaxation on the standard distributional assumptions, relaxations that accommodate data with more outliers. The <code>RobustModels</code> package implements a number of such models, of which we illustrate just <code>MEstimator{TukeyLoss}</code> without comment as to the implemented algorithm.</p>
 <p>One way to view data sets that benefit from robust models is to envision a process where the measured response values are given by the value on a regression line <em>plus</em> some “normally” distributed error <strong>plus</strong> some “contaminated” error which introduces outliers.</p>
-<p>To simulate that in our length and width data, we simply add in a contaminant to some of the terms below which appear in <a href="#fig-robust-regression">Figure&nbsp;<span>4.12</span></a> in the upper-right corner. That figure shows the least-squares regression line is influenced by the 3 contaminated points, but that robust regression line is not.</p>
+<p>To simulate that in our length and width data, we simply add in a contaminant to some of the terms below which appear in <a href="#fig-robust-regression" class="quarto-xref">Figure&nbsp;<span>4.12</span></a> in the upper-right corner. That figure shows the least-squares regression line is influenced by the 3 contaminated points, but that robust regression line is not.</p>
 <div class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>w′ <span class="op">=</span> <span class="fu">jitter</span>(w)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>l′ <span class="op">=</span> <span class="fu">jitter</span>(l)</span>
@@ -2360,8 +2507,9 @@ A constant model
 <span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>res_robust <span class="op">=</span> RobustModels.<span class="fu">rlm</span>(fm, (w<span class="op">=</span>w′, l<span class="op">=</span>l′), estimator)</span>
 <span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(us, RobustModels.<span class="fu">predict</span>(res_robust, [<span class="fu">one</span>.(us) us]); linewidth<span class="op">=</span><span class="fl">4</span>, label<span class="op">=</span><span class="st">"rlm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-robust-regression" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-robust-regression" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="37">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-robust-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -2459,14 +2607,17 @@ A constant model
 <path clip-path="url(#clip990)" d="M476.161 177.223 Q474.356 181.852 472.643 183.264 Q470.93 184.676 468.06 184.676 L464.657 184.676 L464.657 181.112 L467.157 181.112 Q468.916 181.112 469.888 180.278 Q470.86 179.445 472.041 176.343 L472.805 174.399 L462.319 148.889 L466.833 148.889 L474.934 169.167 L483.036 148.889 L487.55 148.889 L476.161 177.223 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip990)" d="M494.842 170.88 L502.481 170.88 L502.481 144.515 L494.17 146.181 L494.17 141.922 L502.434 140.255 L507.11 140.255 L507.11 170.88 L514.749 170.88 L514.749 174.815 L494.842 174.815 L494.842 170.88 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip990)" style="stroke:#e26f46; stroke-linecap:round; stroke-linejoin:round; stroke-width:16; stroke-opacity:1; fill:none" points="269.293,209.375 434.744,209.375 "></polyline>
 <path clip-path="url(#clip990)" d="M462.319 190.637 L466.578 190.637 L466.578 226.655 L462.319 226.655 L462.319 190.637 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip990)" d="M495.675 205.706 Q497.272 202.836 499.495 201.47 Q501.717 200.104 504.726 200.104 Q508.777 200.104 510.976 202.952 Q513.175 205.776 513.175 211.007 L513.175 226.655 L508.893 226.655 L508.893 211.146 Q508.893 207.419 507.573 205.614 Q506.254 203.808 503.545 203.808 Q500.235 203.808 498.314 206.007 Q496.393 208.206 496.393 212.003 L496.393 226.655 L492.11 226.655 L492.11 211.146 Q492.11 207.396 490.791 205.614 Q489.471 203.808 486.717 203.808 Q483.453 203.808 481.532 206.03 Q479.61 208.229 479.61 212.003 L479.61 226.655 L475.328 226.655 L475.328 200.729 L479.61 200.729 L479.61 204.757 Q481.069 202.373 483.106 201.239 Q485.143 200.104 487.944 200.104 Q490.768 200.104 492.735 201.54 Q494.726 202.975 495.675 205.706 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip990)" style="stroke:#3da44d; stroke-linecap:round; stroke-linejoin:round; stroke-width:16; stroke-opacity:1; fill:none" points="269.293,261.215 434.744,261.215 "></polyline>
 <path clip-path="url(#clip990)" d="M477.504 256.551 Q476.786 256.134 475.93 255.949 Q475.097 255.741 474.078 255.741 Q470.467 255.741 468.522 258.102 Q466.601 260.44 466.601 264.838 L466.601 278.495 L462.319 278.495 L462.319 252.569 L466.601 252.569 L466.601 256.597 Q467.944 254.236 470.097 253.102 Q472.249 251.944 475.328 251.944 Q475.768 251.944 476.3 252.014 Q476.833 252.06 477.481 252.176 L477.504 256.551 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip990)" d="M481.971 242.477 L486.231 242.477 L486.231 278.495 L481.971 278.495 L481.971 242.477 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip990)" d="M515.328 257.546 Q516.925 254.676 519.147 253.31 Q521.369 251.944 524.379 251.944 Q528.43 251.944 530.629 254.792 Q532.828 257.616 532.828 262.847 L532.828 278.495 L528.545 278.495 L528.545 262.986 Q528.545 259.259 527.226 257.454 Q525.906 255.648 523.198 255.648 Q519.888 255.648 517.967 257.847 Q516.045 260.046 516.045 263.843 L516.045 278.495 L511.763 278.495 L511.763 262.986 Q511.763 259.236 510.444 257.454 Q509.124 255.648 506.37 255.648 Q503.106 255.648 501.184 257.87 Q499.263 260.069 499.263 263.843 L499.263 278.495 L494.981 278.495 L494.981 252.569 L499.263 252.569 L499.263 256.597 Q500.721 254.213 502.758 253.079 Q504.795 251.944 507.596 251.944 Q510.42 251.944 512.388 253.38 Q514.379 254.815 515.328 257.546 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path></svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.12: The three data points in the upper right of this graphic are “contaminated” data. Their outlying nature has undue influence on the least-squares regression line (“lm”) pulling it up towards the points. The robust regression line (“rlm”) is not so influenced.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-robust-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.12: The three data points in the upper right of this graphic are “contaminated” data. Their outlying nature has undue influence on the least-squares regression line (“lm”) pulling it up towards the points. The robust regression line (“rlm”) is not so influenced.
+</figcaption>
 </figure>
 </div>
 </div>
 </section>
 <section id="prediction" class="level3" data-number="4.2.5">
 <h3 data-number="4.2.5" class="anchored" data-anchor-id="prediction"><span class="header-section-number">4.2.5</span> Prediction</h3>
-<p>In the definition of <code>loess_line!</code> and <a href="#fig-robust-regression">Figure&nbsp;<span>4.12</span></a> a <code>predict</code> method from various packages was used to plot the trend line. The pattern was similar: <code>predict(model, (l=data,))</code> created <span class="math inline">\(y\)</span> values for the given explanatory values.</p>
+<p>In the definition of <code>loess_line!</code> and <a href="#fig-robust-regression" class="quarto-xref">Figure&nbsp;<span>4.12</span></a> a <code>predict</code> method from various packages was used to plot the trend line. The pattern was similar: <code>predict(model, (l=data,))</code> created <span class="math inline">\(y\)</span> values for the given explanatory values.</p>
 <p>The language comes from the usage of statistical models.</p>
 <p>The explanatory “variable”, in general, may consist of <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, or more variables. Examples with <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> for <code>lm</code> were given. It is not hard to envision in the <code>iris</code> data that the petal length might be influenced by the species, the petal width, and even details of the sepal sizes. The word explanatory hints that the <span class="math inline">\(y\)</span> values should be somehow explained by the covariates. Of course, statistical data is typically subject to variability, so even if all covariates are equal, different responses need not be the same. A statistical model may account for this by expressing a relationship:</p>
 <blockquote class="blockquote">
@@ -2498,7 +2649,7 @@ A constant model
 </section>
 <section id="assessing-the-residuals" class="level3" data-number="4.2.6">
 <h3 data-number="4.2.6" class="anchored" data-anchor-id="assessing-the-residuals"><span class="header-section-number">4.2.6</span> Assessing the residuals</h3>
-<p>In the creation of <a href="#fig-robust-regression">Figure&nbsp;<span>4.12</span></a> the following value was used:</p>
+<p>In the creation of <a href="#fig-robust-regression" class="quarto-xref">Figure&nbsp;<span>4.12</span></a> the following value was used:</p>
 <div class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>sigma_e <span class="op">=</span> <span class="fu">dispersion</span>(res.model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="39">
@@ -2553,7 +2704,7 @@ A constant model
 </div>
 </div>
 <p>The <code>hat</code> function computes a matrix that arises in the regression model, its diagonal entries are returned by <code>hatvalues</code>. These are used to scale the residuals to produce the <em>standardized residuals</em>, computed by <code>rstandard</code>. The generic <code>leverage</code>, defined in <code>StatsBase</code>, is intended to compute what <code>hatvalues</code> does, but it currently doesn’t have a method defined in <code>GLM</code>.</p>
-<p>The four basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In <a href="#fig-diagnostic-plots">Figure&nbsp;<span>4.13</span></a> the four graphics are shown for the “setosa” species data with PetalWidth modeled by PetalLength.</p>
+<p>The four basic diagnostic plots follow those returned by default in R, though the R versions offer more insight into outlying values. In <a href="#fig-diagnostic-plots" class="quarto-xref">Figure&nbsp;<span>4.13</span></a> the four graphics are shown for the “setosa” species data with PetalWidth modeled by PetalLength.</p>
 <div class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fitted_versus_residuals</span>(res)</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  p <span class="op">=</span> <span class="fu">plot</span>(; legend<span class="op">=</span><span class="cn">false</span>)</span>
@@ -2597,8 +2748,9 @@ A constant model
 </div>
 </div>
 <div class="cell" data-execution_count="44">
-<div id="fig-diagnostic-plots" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-diagnostic-plots" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="45">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-diagnostic-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -2929,16 +3081,19 @@ A constant model
 <circle clip-path="url(#clip085)" cx="1619.99" cy="1563.86" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 <polyline clip-path="url(#clip085)" style="stroke:#e26f46; stroke-linecap:round; stroke-linejoin:round; stroke-width:4; stroke-opacity:1; fill:none" points="1613.55,1536.1 1623.63,1550.98 1633.7,1561.08 1643.78,1565.71 1653.85,1565.03 1663.92,1560.39 1674,1553.36 1684.07,1545.48 1694.14,1538.32 1704.22,1531.62 1714.29,1524.67 1724.36,1518.69 1734.44,1514.92 1744.51,1513.59 1754.58,1511.96 1764.66,1509.69 1774.73,1506.69 1784.8,1502.86 1794.88,1498.12 1804.95,1492.38 1815.03,1485.81 1825.1,1479.22 1835.17,1472.66 1845.25,1466.14 1855.32,1459.65 1865.39,1453.22 1875.47,1446.83 1885.54,1440.5 1895.61,1434.23 1905.69,1428.02 1915.76,1421.88 1925.83,1415.81 1935.91,1409.81 1945.98,1403.9 1956.06,1398.07 1966.13,1392.32 1976.2,1386.68 1986.28,1381.12 1996.35,1375.67 2006.42,1370.33 2016.5,1365.09 2026.57,1359.97 2036.64,1354.97 2046.72,1350.09 2056.79,1345.33 2066.86,1340.71 2076.94,1336.22 2087.01,1331.88 2097.09,1327.68 2107.16,1323.62 2117.23,1319.72 2127.31,1315.98 2137.38,1312.39 2147.45,1308.98 2157.53,1305.73 2167.6,1302.66 2177.67,1299.76 2187.75,1297.05 2197.82,1294.52 2207.89,1292.19 2217.97,1290.05 2228.04,1288.11 2238.12,1286.38 2248.19,1284.85 2258.26,1283.53 2268.34,1282.44 2278.41,1281.56 2288.48,1280.91 2298.56,1280.49 2308.63,1280.3 2318.7,1280.36 2328.78,1280.65 2338.85,1281.19 2348.92,1281.98 2359,1283.03 2369.07,1284.34 2379.15,1285.91 2389.22,1287.75 2399.29,1289.86 2409.37,1292.25 2419.44,1294.92 2429.51,1297.87 2439.59,1301.12 2449.66,1304.65 2459.73,1308.49 2469.81,1312.63 2479.88,1317.08 2489.95,1321.83 2500.03,1326.9 2510.1,1332.3 2520.18,1338.01 2530.25,1344.06 2540.32,1350.43 2550.4,1357.14 2560.47,1364.2 2570.54,1371.6 2580.62,1379.35 2590.69,1387.45 2600.76,1395.91 2610.84,1404.73 "></polyline>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.13: Four diagnostic plots, following the standard ones of R</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diagnostic-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.13: Four diagnostic plots, following the standard ones of R
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Alternatives
 </div>
 </div>
@@ -2950,7 +3105,7 @@ Alternatives
 <section id="transformations" class="level3" data-number="4.2.7">
 <h3 data-number="4.2.7" class="anchored" data-anchor-id="transformations"><span class="header-section-number">4.2.7</span> Transformations</h3>
 <p>The <code>lm</code> function, as used above, expects <em>linear</em> relationships between the explanatory variable and the response variable. That is, a model of the type <span class="math inline">\(y = \beta_0 + \beta_1 x + \epsilon\)</span>. There may be data for which some mathematical transformation is necessary in order to get this structural form.</p>
-<p>The <code>animals</code> data set, defined below, measures the body size and brain size of various species of animals. The brain size depends on the body size, but it seems to be non-linear and better modeled by <span class="math inline">\(e^y = e^{\beta_0 + \beta_1 x + \epsilon}\)</span>. In <a href="#fig-animals-plots">Figure&nbsp;<span>4.14</span></a> we can see scatter plots of the two data sets before and after a log transform.</p>
+<p>The <code>animals</code> data set, defined below, measures the body size and brain size of various species of animals. The brain size depends on the body size, but it seems to be non-linear and better modeled by <span class="math inline">\(e^y = e^{\beta_0 + \beta_1 x + \epsilon}\)</span>. In <a href="#fig-animals-plots" class="quarto-xref">Figure&nbsp;<span>4.14</span></a> we can see scatter plots of the two data sets before and after a log transform.</p>
 <div class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>animals <span class="op">=</span> <span class="fu">dataset</span>(<span class="st">"MASS"</span>, <span class="st">"Animals"</span>)</span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(animals, [<span class="op">:</span>Brain, <span class="op">:</span>Body] <span class="op">.=&gt;</span> <span class="fu">ByRow</span>(log) <span class="op">.=&gt;</span> [<span class="op">:</span>logBrain, <span class="op">:</span>logBody])</span>
@@ -2961,8 +3116,9 @@ Alternatives
 <span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>                         title<span class="op">=</span><span class="st">"log(Brain) by log(body)"</span>,</span>
 <span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>                         xlab<span class="op">=</span><span class="st">"log(Body)"</span>, ylab<span class="op">=</span><span class="st">"log(Brain)"</span>)</span>
 <span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(p1, p2; layout <span class="op">=</span> (<span class="pp">@layout</span> [a b]))<span class="co">#, size=fig_size_2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-animals-plots" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-animals-plots" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="46">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-animals-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -3091,7 +3247,10 @@ Alternatives
 <circle clip-path="url(#clip173)" cx="1712.21" cy="1359.31" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 <circle clip-path="url(#clip173)" cx="2202.83" cy="716.059" r="14.4" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.84"></circle>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.14: Plot of <code>animals</code> data before and after log transform of the body and brain variables.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-animals-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.14: Plot of <code>animals</code> data before and after log transform of the body and brain variables.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -3113,8 +3272,9 @@ Alternatives
 <span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>us <span class="op">=</span> <span class="fu">range</span>(<span class="fu">extrema</span>(animals.bcBody)<span class="op">...</span>, length<span class="op">=</span><span class="fl">100</span>)</span>
 <span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(us, GLM.<span class="fu">predict</span>(res, (bcBody <span class="op">=</span> us,)), linewidth<span class="op">=</span><span class="fl">4</span>, label<span class="op">=</span><span class="st">"lm"</span>)</span>
 <span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot!</span>(us, RobustModels.<span class="fu">predict</span>(res_robust,  [<span class="fu">one</span>.(us) us]), linewidth<span class="op">=</span><span class="fl">4</span>, label<span class="op">=</span><span class="st">"rlm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="fig-box-cox-animals" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-box-cox-animals" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="47">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-box-cox-animals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -3197,7 +3357,10 @@ Alternatives
 <polyline clip-path="url(#clip260)" style="stroke:#e26f46; stroke-linecap:round; stroke-linejoin:round; stroke-width:16; stroke-opacity:1; fill:none" points="316.602,233.176 478.752,233.176 "></polyline>
 <path clip-path="url(#clip260)" d="M505.777 214.438 L510.037 214.438 L510.037 250.456 L505.777 250.456 L505.777 214.438 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip260)" d="M539.134 229.507 Q540.731 226.637 542.953 225.271 Q545.175 223.906 548.184 223.906 Q552.235 223.906 554.434 226.753 Q556.633 229.577 556.633 234.808 L556.633 250.456 L552.351 250.456 L552.351 234.947 Q552.351 231.22 551.032 229.415 Q549.712 227.609 547.004 227.609 Q543.694 227.609 541.772 229.808 Q539.851 232.007 539.851 235.804 L539.851 250.456 L535.569 250.456 L535.569 234.947 Q535.569 231.197 534.249 229.415 Q532.93 227.609 530.175 227.609 Q526.911 227.609 524.99 229.831 Q523.069 232.03 523.069 235.804 L523.069 250.456 L518.786 250.456 L518.786 224.531 L523.069 224.531 L523.069 228.558 Q524.527 226.174 526.564 225.04 Q528.601 223.906 531.402 223.906 Q534.226 223.906 536.194 225.341 Q538.184 226.776 539.134 229.507 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><polyline clip-path="url(#clip260)" style="stroke:#3da44d; stroke-linecap:round; stroke-linejoin:round; stroke-width:16; stroke-opacity:1; fill:none" points="316.602,285.016 478.752,285.016 "></polyline>
 <path clip-path="url(#clip260)" d="M520.962 280.352 Q520.245 279.935 519.388 279.75 Q518.555 279.542 517.536 279.542 Q513.925 279.542 511.981 281.903 Q510.06 284.241 510.06 288.639 L510.06 302.296 L505.777 302.296 L505.777 276.371 L510.06 276.371 L510.06 280.398 Q511.402 278.037 513.555 276.903 Q515.708 275.746 518.786 275.746 Q519.226 275.746 519.759 275.815 Q520.291 275.861 520.939 275.977 L520.962 280.352 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip260)" d="M525.43 266.278 L529.689 266.278 L529.689 302.296 L525.43 302.296 L525.43 266.278 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path><path clip-path="url(#clip260)" d="M558.786 281.347 Q560.383 278.477 562.606 277.111 Q564.828 275.746 567.837 275.746 Q571.888 275.746 574.087 278.593 Q576.286 281.417 576.286 286.648 L576.286 302.296 L572.004 302.296 L572.004 286.787 Q572.004 283.06 570.684 281.255 Q569.365 279.449 566.657 279.449 Q563.346 279.449 561.425 281.648 Q559.504 283.847 559.504 287.644 L559.504 302.296 L555.221 302.296 L555.221 286.787 Q555.221 283.037 553.902 281.255 Q552.583 279.449 549.828 279.449 Q546.564 279.449 544.643 281.671 Q542.722 283.87 542.722 287.644 L542.722 302.296 L538.439 302.296 L538.439 276.371 L542.722 276.371 L542.722 280.398 Q544.18 278.014 546.217 276.88 Q548.254 275.746 551.055 275.746 Q553.879 275.746 555.846 277.181 Q557.837 278.616 558.786 281.347 Z" fill="#000000" fill-rule="nonzero" fill-opacity="1"></path></svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.15: The <code>animals</code> data after both the <code>Body</code> and <code>Brain</code> variables have been transformed through the Box-Cox method. This data set has three outliers that pull the <code>lm</code> regression line downward, but do not impact the robust regression line, which more accurately captures the trend for all but the three outliers (which happen to be dinosaur species).</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-box-cox-animals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.15: The <code>animals</code> data after both the <code>Body</code> and <code>Brain</code> variables have been transformed through the Box-Cox method. This data set has three outliers that pull the <code>lm</code> regression line downward, but do not impact the robust regression line, which more accurately captures the trend for all but the three outliers (which happen to be dinosaur species).
+</figcaption>
 </figure>
 </div>
 </div>
@@ -3209,7 +3372,7 @@ Alternatives
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>p_scatter <span class="op">=</span> <span class="pp">@df</span> iris <span class="fu">scatter</span>(<span class="op">:</span>PetalWidth, <span class="op">:</span>PetalLength; group<span class="op">=:</span>Species,</span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>      legend<span class="op">=</span><span class="cn">false</span>, alpha<span class="op">=</span><span class="fl">0.33</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In <a href="#fig-iris-scatterplot-regression">Figure&nbsp;<span>4.16</span></a> the basic scatter plot for petal width modeled by petal length is shown in the left figure along with a fitted regression line. We set an <code>alpha</code> value for the scatterplot to better see the regression lines. The line itself was prepared with:</p>
+<p>In <a href="#fig-iris-scatterplot-regression" class="quarto-xref">Figure&nbsp;<span>4.16</span></a> the basic scatter plot for petal width modeled by petal length is shown in the left figure along with a fitted regression line. We set an <code>alpha</code> value for the scatterplot to better see the regression lines. The line itself was prepared with:</p>
 <div class="cell" data-execution_count="48">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> <span class="fu">lm</span>(<span class="pp">@formula</span>(PetalLength <span class="op">~</span> PetalWidth), iris)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="49">
@@ -3252,7 +3415,7 @@ Species: virginica   2.27669   0.281325    8.09    &lt;1e-12   1.7207      2.832
 </div>
 </div>
 <p>The second row in the output of <code>m2</code> has an identical interpretation as for <code>m1</code> – it is the slope of the regression line. The first line of the output in <code>m1</code> is the <span class="math inline">\(x\)</span>-intercept, which moves the line up or down. Whereas the first of <code>m2</code> is the <span class="math inline">\(x\)</span> intercept for a line that describes <em>just one</em> of the species, in this case <code>setosa</code>. (A coding for the regression model with a categorical variable chooses one reference level, in this case “setosa.”). The 3rd and 4th lines are the slopes for the other two species.</p>
-<p>We can plot these individually, one-by-one, in a similar manner as before, however when we call <code>predict</code> we include a level for <code>:Species</code>. The result is the middle figure in <a href="#fig-iris-scatterplot-regression">Figure&nbsp;<span>4.16</span></a>.</p>
+<p>We can plot these individually, one-by-one, in a similar manner as before, however when we call <code>predict</code> we include a level for <code>:Species</code>. The result is the middle figure in <a href="#fig-iris-scatterplot-regression" class="quarto-xref">Figure&nbsp;<span>4.16</span></a>.</p>
 <div class="cell" data-execution_count="51">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>p_scatter2 <span class="op">=</span> <span class="fu">deepcopy</span>(p_scatter)</span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3289,7 +3452,7 @@ PetalWidth &amp; Species: virginica   0.100769    0.524837   0.19    0.8480  -0.
 </div>
 </div>
 <p>The first four coefficients are interpreted similarly to those for <code>m2</code>, the remaining 2 summarize the interaction between the petal width and the species type.</p>
-<p>We can produce a graphic, the right-most figure in <a href="#fig-iris-scatterplot-regression">Figure&nbsp;<span>4.16</span></a>:</p>
+<p>We can produce a graphic, the right-most figure in <a href="#fig-iris-scatterplot-regression" class="quarto-xref">Figure&nbsp;<span>4.16</span></a>:</p>
 <div class="cell" data-execution_count="53">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>p_scatter3 <span class="op">=</span> <span class="fu">deepcopy</span>(p_scatter)</span>
 <span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3305,8 +3468,9 @@ PetalWidth &amp; Species: virginica   0.100769    0.524837   0.19    0.8480  -0.
 <span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="54">
-<div id="fig-iris-scatterplot-regression" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-iris-scatterplot-regression" class="cell-output cell-output-display quarto-figure quarto-figure-center quarto-float anchored" data-execution_count="55">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-iris-scatterplot-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <!--?xml version="1.0" encoding="utf-8"?-->
 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="672" height="480" viewbox="0 0 2688 1920">
 <defs>
@@ -3876,20 +4040,23 @@ PetalWidth &amp; Species: virginica   0.100769    0.524837   0.19    0.8480  -0.
 <polyline clip-path="url(#clip354)" style="stroke:#00a9ad; stroke-linecap:round; stroke-linejoin:round; stroke-width:20; stroke-opacity:1; fill:none" points="2187.39,1044.38 2189.72,1040.34 2192.05,1036.3 2194.38,1032.25 2196.71,1028.21 2199.04,1024.17 2201.37,1020.13 2203.7,1016.09 2206.03,1012.05 2208.36,1008.01 2210.69,1003.97 2213.02,999.928 2215.35,995.887 2217.68,991.846 2220.01,987.805 2222.34,983.764 2224.67,979.723 2227,975.683 2229.34,971.642 2231.67,967.601 2234,963.56 2236.33,959.519 2238.66,955.478 2240.99,951.437 2243.32,947.396 2245.65,943.356 2247.98,939.315 2250.31,935.274 2252.64,931.233 2254.97,927.192 2257.3,923.151 2259.63,919.11 2261.96,915.07 2264.29,911.029 2266.62,906.988 2268.95,902.947 2271.28,898.906 2273.62,894.865 2275.95,890.824 2278.28,886.783 2280.61,882.743 2282.94,878.702 2285.27,874.661 2287.6,870.62 2289.93,866.579 2292.26,862.538 2294.59,858.497 2296.92,854.457 2299.25,850.416 2301.58,846.375 2303.91,842.334 2306.24,838.293 2308.57,834.252 2310.9,830.211 2313.23,826.171 2315.56,822.13 2317.9,818.089 2320.23,814.048 2322.56,810.007 2324.89,805.966 2327.22,801.925 2329.55,797.884 2331.88,793.844 2334.21,789.803 2336.54,785.762 2338.87,781.721 2341.2,777.68 2343.53,773.639 2345.86,769.598 2348.19,765.558 2350.52,761.517 2352.85,757.476 2355.18,753.435 2357.51,749.394 2359.84,745.353 2362.18,741.312 2364.51,737.272 2366.84,733.231 2369.17,729.19 2371.5,725.149 2373.83,721.108 2376.16,717.067 2378.49,713.026 2380.82,708.985 2383.15,704.945 2385.48,700.904 2387.81,696.863 2390.14,692.822 2392.47,688.781 2394.8,684.74 2397.13,680.699 2399.46,676.659 2401.79,672.618 2404.13,668.577 2406.46,664.536 2408.79,660.495 2411.12,656.454 2413.45,652.413 2415.78,648.372 2418.11,644.332 "></polyline>
 <polyline clip-path="url(#clip354)" style="stroke:#ed5d92; stroke-linecap:round; stroke-linejoin:round; stroke-width:20; stroke-opacity:1; fill:none" points="2302.75,644.129 2305.95,642.206 2309.16,640.282 2312.36,638.358 2315.56,636.434 2318.77,634.51 2321.97,632.586 2325.18,630.663 2328.38,628.739 2331.59,626.815 2334.79,624.891 2338,622.967 2341.2,621.043 2344.41,619.119 2347.61,617.196 2350.81,615.272 2354.02,613.348 2357.22,611.424 2360.43,609.5 2363.63,607.576 2366.84,605.653 2370.04,603.729 2373.25,601.805 2376.45,599.881 2379.65,597.957 2382.86,596.033 2386.06,594.109 2389.27,592.186 2392.47,590.262 2395.68,588.338 2398.88,586.414 2402.09,584.49 2405.29,582.566 2408.49,580.643 2411.7,578.719 2414.9,576.795 2418.11,574.871 2421.31,572.947 2424.52,571.023 2427.72,569.099 2430.93,567.176 2434.13,565.252 2437.34,563.328 2440.54,561.404 2443.74,559.48 2446.95,557.556 2450.15,555.632 2453.36,553.709 2456.56,551.785 2459.77,549.861 2462.97,547.937 2466.18,546.013 2469.38,544.089 2472.58,542.166 2475.79,540.242 2478.99,538.318 2482.2,536.394 2485.4,534.47 2488.61,532.546 2491.81,530.622 2495.02,528.699 2498.22,526.775 2501.42,524.851 2504.63,522.927 2507.83,521.003 2511.04,519.079 2514.24,517.156 2517.45,515.232 2520.65,513.308 2523.86,511.384 2527.06,509.46 2530.27,507.536 2533.47,505.612 2536.67,503.689 2539.88,501.765 2543.08,499.841 2546.29,497.917 2549.49,495.993 2552.7,494.069 2555.9,492.146 2559.11,490.222 2562.31,488.298 2565.51,486.374 2568.72,484.45 2571.92,482.526 2575.13,480.602 2578.33,478.679 2581.54,476.755 2584.74,474.831 2587.95,472.907 2591.15,470.983 2594.35,469.059 2597.56,467.136 2600.76,465.212 2603.97,463.288 2607.17,461.364 2610.38,459.44 2613.58,457.516 2616.79,455.592 2619.99,453.669 "></polyline>
 </svg>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.16: Three scatterplots of petal width by petal length in the <code>iris</code> data set. The right-hand figure includes the regression line fit to all the data. The middle one fits regression lines identified through an additive model that includes the species. The slopes are parallel, but the lines have an additive shift. The right figure shows a multiplicative model wherein the slopes and intercepts for each species are chosen.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-iris-scatterplot-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.16: Three scatterplots of petal width by petal length in the <code>iris</code> data set. The right-hand figure includes the regression line fit to all the data. The middle one fits regression lines identified through an additive model that includes the species. The slopes are parallel, but the lines have an additive shift. The right figure shows a multiplicative model wherein the slopes and intercepts for each species are chosen.
+</figcaption>
 </figure>
 </div>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-LinRegOutliers" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-LinRegOutliers" class="csl-entry" role="listitem">
 al., S. et (2021), <span>“LinRegOutliers: A julia package for detecting outliers in linear regression,”</span> <em>Journal of Open Source Software</em>, 6. <a href="https://doi.org/10.21105/joss.02892">https://doi.org/10.21105/joss.02892</a>.
 </div>
-<div id="ref-GLM" class="csl-entry" role="doc-biblioentry">
-Bates, D., and others (n.d.). <em>GLM.jl</em>. <a href="https://doi.org/10.5281">https://doi.org/10.5281</a>.
+<div id="ref-GLM" class="csl-entry" role="listitem">
+Bates, D., and others (n.d.). <span>“GLM.jl.”</span> <a href="https://doi.org/10.5281">https://doi.org/10.5281</a>.
 </div>
-<div id="ref-GALTON_10.2307/2841583" class="csl-entry" role="doc-biblioentry">
+<div id="ref-GALTON_10.2307/2841583" class="csl-entry" role="listitem">
 Galton, F. (1886), <span>“<a href="http://www.jstor.org/stable/2841583">Regression towards mediocrity in hereditary stature.</a>”</span> <em>The Journal of the Anthropological Institute of Great Britain and Ireland</em>, [Royal Anthropological Institute of Great Britain; Ireland, Wiley], 15, 246–263.
 </div>
 </div>
@@ -3931,9 +4098,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -3969,10 +4150,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -3982,8 +4180,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -3998,6 +4205,238 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -4035,30 +4474,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
-    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../EDA/tabular-data-julia.html" class="pagination-link">
+      <a href="../EDA/tabular-data-julia.html" class="pagination-link  aria-label=" &lt;span="" data&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../EDA/categorical-data-julia.html" class="pagination-link">
+      <a href="../EDA/categorical-data-julia.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Categorical data</span>">
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -4066,9 +4491,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-right">© Copyright 2023, John Verzani. All rights reserved.</div>
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jverzani/UsingJ/edit/master/EDA/bivariate-julia.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>© Copyright 2023, John Verzani. All rights reserved.</p>
+</div>
   </div>
 </footer>
+
 
 
 

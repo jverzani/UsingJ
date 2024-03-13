@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Verzani">
-<meta name="dcterms.date" content="2023-12-24">
+<meta name="dcterms.date" content="2024-03-13">
 
 <title>Using Julia for Introductory Statistics</title>
 <style>
@@ -19,11 +19,12 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -48,48 +49,20 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -103,8 +76,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -130,7 +102,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -139,8 +117,10 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KS515LKBGZ"></script>
@@ -153,7 +133,35 @@ gtag('js', new Date());
 gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 </script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -161,11 +169,16 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Using Julia for Introductory Statistics</h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -173,96 +186,107 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Using Julia for Introductory Statistics</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/jverzani/UsingJ" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/jverzani/UsingJ" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Julia introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./EDA/univariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></a>
+  <a href="./EDA/univariate-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./EDA/tabular-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></a>
+  <a href="./EDA/tabular-data-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Tabular data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./EDA/bivariate-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></a>
+  <a href="./EDA/bivariate-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bivariate data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./EDA/categorical-data-julia.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></a>
+  <a href="./EDA/categorical-data-julia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Categorical data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./EDA/makie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The <code>AlgebraOfGraphics</code> package</span></a>
+  <a href="./EDA/makie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The <code>AlgebraOfGraphics</code> package</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Inference/distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></a>
+  <a href="./Inference/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Inference/inference.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></a>
+  <a href="./Inference/inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./LinearModels/linear-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">The linear regression model</span></a>
+  <a href="./LinearModels/linear-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">The linear regression model</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#julia-introduction" id="toc-julia-introduction" class="nav-link active" data-scroll-target="#julia-introduction"><span class="toc-section-number">1</span>  Julia introduction</a>
+  <li><a href="#julia-introduction" id="toc-julia-introduction" class="nav-link active" data-scroll-target="#julia-introduction"><span class="header-section-number">1</span> Julia introduction</a>
   <ul class="collapse">
-  <li><a href="#installing-and-running-julia" id="toc-installing-and-running-julia" class="nav-link" data-scroll-target="#installing-and-running-julia"><span class="toc-section-number">1.1</span>  Installing and running Julia</a></li>
-  <li><a href="#overview-of-some-basics" id="toc-overview-of-some-basics" class="nav-link" data-scroll-target="#overview-of-some-basics"><span class="toc-section-number">1.2</span>  Overview of some basics</a></li>
-  <li><a href="#add-on-packages" id="toc-add-on-packages" class="nav-link" data-scroll-target="#add-on-packages"><span class="toc-section-number">1.3</span>  Add-on packages</a></li>
+  <li><a href="#installing-and-running-julia" id="toc-installing-and-running-julia" class="nav-link" data-scroll-target="#installing-and-running-julia"><span class="header-section-number">1.1</span> Installing and running Julia</a></li>
+  <li><a href="#overview-of-some-basics" id="toc-overview-of-some-basics" class="nav-link" data-scroll-target="#overview-of-some-basics"><span class="header-section-number">1.2</span> Overview of some basics</a></li>
+  <li><a href="#add-on-packages" id="toc-add-on-packages" class="nav-link" data-scroll-target="#add-on-packages"><span class="header-section-number">1.3</span> Add-on packages</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jverzani/UsingJ/edit/master/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/jverzani/UsingJ/edit/master/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Using Julia for Introductory Statistics</h1>
+<h1 class="title">Using Julia for Introductory Statistics</h1>
 </div>
 
 
@@ -279,7 +303,7 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 24, 2023</p>
+      <p class="date">March 13, 2024</p>
     </div>
   </div>
   
@@ -287,20 +311,22 @@ gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
   </div>
   
 
+
 </header>
+
 
 <section id="julia-introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Julia introduction</h1>
 <p>This is a collection of notes for using <code>Julia</code> for introductory statistics.</p>
 <p>In case you haven’t heard, <a href="https://julialang.org/">Julia</a> is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance – Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than <code>R</code> and <code>Python</code>, widely used scripting languages for the tasks illustrated herein.</p>
 <p>Why these notes on introductory statistics? No compelling reason save I had done something similar for <code>R</code> when <code>R</code> was a fledgling <code>S-Plus</code> clone. No more, <code>R</code> is a juggernaut, and it is almost certain <code>Julia</code> will never replace <code>R</code> as the programming langauage of choice for statistics. Besides, <code>Julia</code> users can already interface with <code>R</code> quite easily through <code>RCall</code>. <em>However</em>, there are some reasons that <code>Julia</code> could be a useful language when learning basic inferential statistics, especially if other real strengths of the <code>Julia</code> ecosystem were needed. So these notes show how <code>Julia</code> can be used for these tasks, and, hopefully, shows that it works pretty well.</p>
-<p>There are some great books published about using <code>Julia</code> <span class="citation" data-cites="bezanson2017julia">(<a href="references.html#ref-bezanson2017julia" role="doc-biblioref">Bezanson et al. 2017</a>)</span> with data science, within which much of this material is covered. For example, <span class="citation" data-cites="JuliaForDataAnalysis">(<a href="references.html#ref-JuliaForDataAnalysis" role="doc-biblioref">Kamiński 2022</a>)</span> is a quite thorough treatmeant, <span class="citation" data-cites="storopolihuijzeralonso2021juliadatascience">(<a href="references.html#ref-storopolihuijzeralonso2021juliadatascience" role="doc-biblioref">Storopoli et al. 2021</a>)</span> is very well done, <span class="citation" data-cites="nazarathy2021statisticsjulia">(<a href="references.html#ref-nazarathy2021statisticsjulia" role="doc-biblioref">Nazarathy and Klok 2021</a>)</span> covers topics here (cf.&nbsp;the <a href="https://www.youtube.com/watch?v=IlPoU5Yr2QI">JuliaCon Workshop</a>). The quarto book <a href="https://juliamixedmodels.github.io/EmbraceUncertainty/">Embrace Uncertainty</a> <span class="citation" data-cites="Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia">(<a href="references.html#ref-Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia" role="doc-biblioref">Alday et al. 2022</a>)</span> covers the more advanced topic of Mixed-effects Models in <code>Julia</code>. Nothing here couldn’t be found in those resources, these notes are just an introduction.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<p>There are some great books published about using <code>Julia</code> <span class="citation" data-cites="bezanson2017julia">(<a href="references.html#ref-bezanson2017julia" role="doc-biblioref">Bezanson et al. 2017</a>)</span> with data science, within which much of this material is covered. For example, <span class="citation" data-cites="JuliaForDataAnalysis">(<a href="references.html#ref-JuliaForDataAnalysis" role="doc-biblioref">Kamiński 2022</a>)</span> is a quite thorough treatmeant, <span class="citation" data-cites="storopolihuijzeralonso2021juliadatascience">(<a href="references.html#ref-storopolihuijzeralonso2021juliadatascience" role="doc-biblioref">Storopoli et al. 2021</a>)</span> is very well done, <span class="citation" data-cites="nazarathy2021statisticsjulia">(<a href="references.html#ref-nazarathy2021statisticsjulia" role="doc-biblioref">Nazarathy and Klok 2021</a>)</span> covers topics here (cf.&nbsp;the <a href="https://www.youtube.com/watch?v=IlPoU5Yr2QI">JuliaCon Workshop</a>). <span class="citation" data-cites="RomeoAndJulia">(<a href="references.html#ref-RomeoAndJulia" role="doc-biblioref">Lukaszuk 2023</a>)</span> covers many of the topics here with a Biologist’s viewpoint. The quarto book <a href="https://juliamixedmodels.github.io/EmbraceUncertainty/">Embrace Uncertainty</a> <span class="citation" data-cites="Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia">(<a href="references.html#ref-Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia" role="doc-biblioref">Alday et al. 2022</a>)</span> covers the more advanced topic of Mixed-effects Models in <code>Julia</code>. Nothing here couldn’t be found in those resources, these notes are just an introduction.</p>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Contribute
 </div>
 </div>
@@ -319,7 +345,7 @@ Contribute
 <li><a href="https://www.julia-vscode.org/">Visual Studio Code</a>: <code>Julia</code> is a supported language for the Visual Studio Code editor of Microsoft, a programmer’s IDE.</li>
 </ul>
 <p>These notes use <code>quarto</code> to organize the mix of text, code, and graphics. The <code>quarto</code> publishing system is developed by <a href="https://posit.co/">Posit</a>, the developers of the wildly sucessful <code>RStudio</code> interface for <code>R</code>. The code snippets are run as blocks (within <code>IJulia</code>) and the last command executed is shown. (If code is copy-and-pasted into the REPL, each line’s output will be displayed.) The code display occurs below the cell, as here, where we show that <code>Julia</code> can handle basic addition:</p>
-<div class="cell" data-execution_count="1">
+<div id="386aa708" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>4</code></pre>
@@ -333,12 +359,12 @@ Contribute
 <p><code>Julia</code> is a <em>dynamically typed</em> language, like <code>R</code> and <code>Python</code>, meaning variables can be reassigned to different values and with different types.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Dynamicness makes interactive usage at the REPL or through a notebook much easier.</p>
 <p>Julia supports the usual mathematical operations familiar to users of a calculator, such as <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, and <code>^</code>. In addition, there a numerous built in functions such as mathematical ones like <code>sqrt</code> or programming oriented ones, like <code>map</code>.</p>
 <p>These functions are called with arguments which may be <em>positional</em> (<span class="math inline">\(0\)</span>, <span class="math inline">\(1,\)</span> or more positional arguments) or specified by <em>keywords</em>. Multiple dispatch considers the positions and types of arguments a function is called with.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Interactive help
 </div>
 </div>
@@ -348,7 +374,7 @@ Interactive help
 </div>
 <p>Values in <code>Julia</code> have types. A particular instance will have a concrete type but <em>abstract</em> types help to organize code bases and participate in dispatch. Values can be assigned to variable names, or bindings. The ability to simply create new user-defined types makes generic programming quite accessible and <code>Julia</code> code very <em>composable</em>.</p>
 <p>This simple example, taking the average of several numbers, shows most of this:</p>
-<div class="cell" data-execution_count="2">
+<div id="ae64697a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">9</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xs) <span class="op">/</span> <span class="fu">length</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
@@ -356,7 +382,7 @@ Interactive help
 </div>
 </div>
 <p>The first line <em>assigns</em> to a variable, <code>xs</code>, a value that is a <em>vector</em> of numbers, integers of type <code>Int64</code> in this case. For this illustration, a vector is a container of different numbers. The second line calls three functions: <code>sum</code> to add the elements in the vector; <code>length</code> to count the number of elements in the vector; and <code>/</code> to divide these two quantities. All of these functions are <em>generic</em>, with different methods for different types of argument(s). The same pattern would work for different container types, such as a tuple:</p>
-<div class="cell" data-execution_count="3">
+<div id="10fb33f2" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">9</span>) <span class="co"># tuple</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xs) <span class="op">/</span> <span class="fu">length</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
@@ -388,20 +414,23 @@ Interactive help
 <p>Copyright 2023, John Verzani. All rights reserved.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia" class="csl-entry" role="listitem">
 Alday, P., Kliegl, R., and Bates, D. (2022), <em>Embrace uncertainty: Fitting mixed-effects models with julia</em>, https://juliamixedmodels.github.io/EmbraceUncertainty/.
 </div>
-<div id="ref-bezanson2017julia" class="csl-entry" role="doc-biblioentry">
+<div id="ref-bezanson2017julia" class="csl-entry" role="listitem">
 Bezanson, J., Edelman, A., Karpinski, S., and Shah, V. B. (2017), <span>“<a href="https://doi.org/10.1137/141000671">Julia: A fresh approach to numerical computing</a>,”</span> <em>SIAM review</em>, SIAM, 59, 65–98.
 </div>
-<div id="ref-JuliaForDataAnalysis" class="csl-entry" role="doc-biblioentry">
+<div id="ref-JuliaForDataAnalysis" class="csl-entry" role="listitem">
 Kamiński, B. (2022), <em><a href="https://www.manning.com/books/julia-for-data-analysis">Julia for data analysis</a></em>, Manning.
 </div>
-<div id="ref-nazarathy2021statisticsjulia" class="csl-entry" role="doc-biblioentry">
+<div id="ref-RomeoAndJulia" class="csl-entry" role="listitem">
+Lukaszuk, B. (2023), <em><a href="https://b-lukaszuk.github.io/RJ_BS_eng/">Romeo and julia where romeo is basic statistics</a></em>.
+</div>
+<div id="ref-nazarathy2021statisticsjulia" class="csl-entry" role="listitem">
 Nazarathy, Y., and Klok, H. (2021), <em>Statistics with julia: Fundamentals for data science, machine learning and artificial intelligence</em>, Springer.
 </div>
-<div id="ref-storopolihuijzeralonso2021juliadatascience" class="csl-entry" role="doc-biblioentry">
+<div id="ref-storopolihuijzeralonso2021juliadatascience" class="csl-entry" role="listitem">
 Storopoli, J., Huijzer, R., and Alonso, L. (2021), <em><a href="https://juliadatascience.io">Julia data science</a></em>.
 </div>
 </div>
@@ -442,9 +471,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -480,10 +523,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -493,8 +553,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -509,6 +578,238 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -546,27 +847,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
-    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./EDA/univariate-julia.html" class="pagination-link">
+      <a href="./EDA/univariate-julia.html" class="pagination-link" aria-label="<span class='chapter-number'>2</span>&nbsp; <span class='chapter-title'>Univariate data</span>">
         <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Univariate data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -574,9 +861,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-right">© Copyright 2023, John Verzani. All rights reserved.</div>
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jverzani/UsingJ/edit/master/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>© Copyright 2023, John Verzani. All rights reserved.</p>
+</div>
   </div>
 </footer>
+
 
 
 

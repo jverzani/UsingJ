@@ -1,8 +1,9 @@
-version: "0.0.4"
-jupyter: julia-1.9
-
-Project:
+project:
   type: book
+  output-dir: _book
+
+version: "0.0.4"
+jupyter: julia-1.10
 
 book:
   title: "Using Julia for Introductory Statistics"

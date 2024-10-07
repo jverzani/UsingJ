@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Using Julia for Introductory Statistics - 7&nbsp; Probability distributions</title>
+<title>7&nbsp; Probability distributions – Using Julia for Introductory Statistics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -132,7 +132,7 @@ gtag('js', new Date());
 gtag('config', 'G-KS515LKBGZ', { 'anonymize_ip': true});
 </script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -170,13 +170,13 @@ window.Quarto = {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Inference/distributions.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Probability distributions</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -317,7 +317,7 @@ window.Quarto = {
 
 
 <p>Exploratory data analysis differs from statistics. A statistical model for a measurement involves a description of the random nature of the measurement. To describe randomness, the language of probability is used. Much of this language is implemented in the <code>Distributions</code> package of <code>Julia</code>, loaded below with other packages:</p>
-<div class="cell" data-execution_count="1">
+<div id="3dd7df39" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">DataFrames</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">AlgebraOfGraphics</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -338,7 +338,7 @@ window.Quarto = {
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" data-execution_count="2" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="ab8d065f" class="cell quarto-layout-cell" data-execution_count="2" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 <figure class="figure">
@@ -347,7 +347,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="a7afd628" class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 <figure class="figure">
@@ -420,9 +420,9 @@ VAR(\bar{X}) &amp;= \frac{1}{n^2} \cdot \left(\sum_k VAR(X_k) + 2\sum_{i &lt; j}
 <li>Were the sampling repeated, the variation in the values of <span class="math inline">\(\hat{p}\)</span> should be smaller for larger sample sizes, <span class="math inline">\(n\)</span>.</li>
 </ul>
 <p>These imprecise statements can be made more precise, as will be seen. Figure <a href="#fig-pop-parameters-sample" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> illustrates a population, several different samples from it with the <em>sample means</em> visualized by a density plot. The density plot is centered at the same location as the population, but is narrower, reflecting smaller variability.</p>
-<div class="cell" data-execution_count="4">
+<div id="cell-fig-pop-parameters-sample" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display" data-execution_count="5">
-<div id="fig-pop-parameters-sample" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-pop-parameters-sample" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pop-parameters-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="distributions_files/figure-html/fig-pop-parameters-sample-output-1.svg" class="img-fluid figure-img">
@@ -440,14 +440,14 @@ Figure&nbsp;7.2: The top-left figure shows a population, the lower left paramete
 <section id="the-distributions-package" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="the-distributions-package"><span class="header-section-number">7.2</span> The Distributions package</h2>
 <p>While populations are in general described by a cdf, populations which are discrete or continuous are more naturally described by their pdf. There are many standard pdfs used to describe different types of randomness and supported in the <code>Distributions</code> package. This section reviews several.</p>
-<div class="cell" data-execution_count="5">
+<div id="a18850f3" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="bernoulli-binomial-geometric" class="level3" data-number="7.2.1">
 <h3 data-number="7.2.1" class="anchored" data-anchor-id="bernoulli-binomial-geometric"><span class="header-section-number">7.2.1</span> Bernoulli, Binomial, Geometric</h3>
 <p>The simplest non-trivial distribution is that used to model a coin toss: <span class="math inline">\(P(X=1)=p\)</span> and <span class="math inline">\(P(X=0) = 1-p\)</span>. We see this is <em>parameterized</em> by <span class="math inline">\(p\)</span>, the probability of heads (say). This also happens to be the mean of this distribution. By the rules of probability, we must have <span class="math inline">\(0 \leq p \leq 1\)</span>.</p>
 <p>In the <code>Distributions</code> package, named distributions are given a type, in this case <code>Bernoulli</code> which requires a value of <span class="math inline">\(p\)</span> to be formed. The following code uses the type and confirms the mean of this distribution is indeed <span class="math inline">\(p\)</span>:</p>
-<div class="cell" data-execution_count="6">
+<div id="5a096dd6" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">0.25</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Be <span class="op">=</span> <span class="fu">Bernoulli</span>(p)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(Be)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -456,7 +456,7 @@ Figure&nbsp;7.2: The top-left figure shows a population, the lower left paramete
 </div>
 </div>
 <p>The <code>Bernoulli(p)</code> distribution is very simple, but combinations of <span class="math inline">\(Bernoulli(p)\)</span> random variables give rise to many interesting distributions. For example, the number of heads in 10 coin tosses could be modeled by the sum of 10 Bernoulli random variables. The distribution of this random variable is described by the <code>Binomial</code> distribution. It has two parameters: <span class="math inline">\(p\)</span> for the Bernoulli <span class="math inline">\(10\)</span> for the number of tosses and is implemented with the <code>Binomial(n,p)</code> type. There are several summary statistics for the types supported by <code>Distributions</code>, including: <code>mean</code>, <code>median</code>, <code>std</code>:</p>
-<div class="cell" data-execution_count="7">
+<div id="3fceb29d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>n, p <span class="op">=</span> <span class="fl">10</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="fu">Binomial</span>(n, p)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(B),  <span class="fu">median</span>(B), <span class="fu">std</span>(B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -466,21 +466,21 @@ Figure&nbsp;7.2: The top-left figure shows a population, the lower left paramete
 </div>
 <p>The mean and standard deviation for the Binomial can be easily computed when this statistic is viewed as a sample mean of 10 Bernoulli random variables (<span class="math inline">\(np\)</span> and <span class="math inline">\(\sqrt{np(1-p)}\)</span>).</p>
 <p>More is known. For example, the value of this random variable can only be between 0 and 10. The <code>extrema</code> function combines both the <code>minimum</code> and <code>maximum</code> functions to give this:</p>
-<div class="cell" data-execution_count="8">
+<div id="19fa02c6" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extrema</span>(B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>(0, 10)</code></pre>
 </div>
 </div>
 <p>The <code>insupport</code> function is similar, returning <code>true</code> or <code>false</code> if a value, <code>x</code>, is in the support of the distribution, that is if <code>x</code> is a <em>possible</em> value:</p>
-<div class="cell" data-execution_count="9">
+<div id="d2533acc" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">insupport</span>(B, <span class="fl">5</span>), <span class="fu">insupport</span>(B, <span class="fl">15</span>), <span class="fu">insupport</span>(B, <span class="fl">5.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>(true, false, false)</code></pre>
 </div>
 </div>
 <p>We see only <code>5</code> is a possible value. Its probability, <span class="math inline">\(P(X=5)\)</span> for this discrete distribution, is computed by <code>pdf</code>:</p>
-<div class="cell" data-execution_count="10">
+<div id="a9e735e1" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pdf</span>(B, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>0.24609375000000022</code></pre>
@@ -491,7 +491,7 @@ Figure&nbsp;7.2: The top-left figure shows a population, the lower left paramete
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-binomials-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" data-execution_count="11" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="a2c60875" class="cell quarto-layout-cell" data-execution_count="11" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 <figure class="figure">
@@ -500,7 +500,7 @@ Figure&nbsp;7.2: The top-left figure shows a population, the lower left paramete
 </div>
 </div>
 </div>
-<div class="cell quarto-layout-cell" data-execution_count="12" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="cc6b171c" class="cell quarto-layout-cell" data-execution_count="12" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 <figure class="figure">
@@ -520,7 +520,7 @@ Figure&nbsp;7.3: The binomial distribution for different <span class="math inlin
 <p>The cumulative distribution, <span class="math inline">\(F(a)\)</span>, finds the value <span class="math inline">\(p\)</span> for a given value of <span class="math inline">\(a\)</span> in <span class="math inline">\(p = P(X \leq a)\)</span>. It’s inverse operation, finding a value <span class="math inline">\(a\)</span> in <span class="math inline">\(p=P(X \leq a)\)</span> for a given <span class="math inline">\(p\)</span>, is returned by <code>quantile</code>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Quantiles are computed with the calling style <code>quantile(D, p)</code>.</p>
 <p>A related question is the number of coin tosses needed to get the <em>first</em> heads. If <span class="math inline">\(X\)</span> is this distribution, the the event <span class="math inline">\(\{X &gt; k\}\)</span> can be described as the first <span class="math inline">\(k\)</span> tosses were tails. This probability is directly computable. The distribution of this number depends only on the parameter <span class="math inline">\(p\)</span> and is called the <em>Geometric distribution</em>.</p>
 <p>For example, we can see here the mean, and standard deviation, and also that the the number is unbounded:</p>
-<div class="cell" data-execution_count="13">
+<div id="611913bc" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>G <span class="op">=</span> <span class="fu">Geometric</span>(p)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(G), <span class="fu">std</span>(G), <span class="fu">extrema</span>(G) <span class="co"># 1/p, 1/√p, 0,1,...,∞</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -532,7 +532,7 @@ Figure&nbsp;7.3: The binomial distribution for different <span class="math inlin
 <section id="uniform-and-discretenonparametric-distributions" class="level3" data-number="7.2.2">
 <h3 data-number="7.2.2" class="anchored" data-anchor-id="uniform-and-discretenonparametric-distributions"><span class="header-section-number">7.2.2</span> Uniform and DiscreteNonParametric distributions</h3>
 <p>A <em>discrete</em> uniform random variable on <span class="math inline">\(a, a+1, \dots, b\)</span> assigns equal weight to each value. Hence, each possible value is equally likely. The <code>DiscreteUniform(a,b)</code> type models this distribution. For example, to model the roll of a 6-sided die, we might have:</p>
-<div class="cell" data-execution_count="14">
+<div id="96a36791" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="fu">DiscreteUniform</span>(<span class="fl">1</span>,<span class="fl">6</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(D), <span class="fu">std</span>(D)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
@@ -540,7 +540,7 @@ Figure&nbsp;7.3: The binomial distribution for different <span class="math inlin
 </div>
 </div>
 <p>More generally, a distribution which assigns weight <span class="math inline">\(p_k\)</span> to values <span class="math inline">\(x_1, x_2, \dots, x_n\)</span> is modeled by the <code>DiscreteNonParametric(xs, ps)</code> distribution. For example, Benford’s “law” is an observation that the first non-zero digit of many data sets follows a certain pattern. For this the <em>possible</em> values are <span class="math inline">\(1\)</span> through <span class="math inline">\(9\)</span> and their probabilities are <span class="math inline">\(f(k) = P(X=k) = \log_{10}(k+1) - \log_{10}(k)\)</span>. We can model this with:</p>
-<div class="cell" data-execution_count="15">
+<div id="21735f44" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">9</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> <span class="fu">log10</span>.(xs <span class="op">.+</span> <span class="fl">1</span>) <span class="op">-</span> <span class="fu">log10</span>.(xs)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> <span class="fu">DiscreteNonParametric</span>(xs, ps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -552,13 +552,13 @@ p: [0.3010299956639812, 0.17609125905568124, 0.12493873660829996, 0.096910013008
 </div>
 </div>
 <p>We can answer questions like the mean, the standard deviation, and what is the probability the number is <code>5</code> or less with:</p>
-<div class="cell" data-execution_count="16">
+<div id="d7d7ad57" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(B), <span class="fu">std</span>(B), <span class="fu">cdf</span>(B, <span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>(3.4402369671232065, 2.4609982997506656, 0.7781512503836436)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="17">
+<div id="cell-fig-Benford" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fl">5</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> <span class="fu">support</span>(B)</span>
@@ -570,7 +570,7 @@ p: [0.3010299956639812, 0.17609125905568124, 0.12493873660829996, 0.096910013008
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
-<div id="fig-benford" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-benford" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-benford-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="distributions_files/figure-html/fig-benford-output-1.svg" class="img-fluid figure-img">
@@ -589,18 +589,18 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 <h3 data-number="7.2.3" class="anchored" data-anchor-id="the-continuous-uniform-distribution"><span class="header-section-number">7.2.3</span> The continuous uniform distribution</h3>
 <p>The continuous uniform distribution models equally likely outcomes over an interval <span class="math inline">\([a,b]\)</span>. (The endpoints possibly open, as mathematically they have no chance of being selected.) For example, the built-in <code>rand</code> function for Float64 values returns random numbers which are modeled by being uniform over <span class="math inline">\([0,1)\)</span>. (That they can be <code>0</code> but not <code>1</code> is a reality of how computers and mathematical models aren’t always exactly the same, but rather the model is an abstraction of the implementation.)</p>
 <p>The <code>Uniform(a,b)</code> type models these numbers. Here we see <code>rand</code> being used to randomly sample <span class="math inline">\(3\)</span> uniform numbers using a more general interface than the use of <code>rand</code> in base <code>Julia</code>:</p>
-<div class="cell" data-execution_count="18">
+<div id="af2a54cf" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>U <span class="op">=</span> <span class="fu">Uniform</span>(<span class="fl">0</span>, <span class="fl">1</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rand</span>(U, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>3-element Vector{Float64}:
- 0.07840854312239087
- 0.49280532827183554
- 0.5805794615043689</code></pre>
+ 0.5563874645453806
+ 0.6823698185902889
+ 0.15811784668574047</code></pre>
 </div>
 </div>
 <p>If <span class="math inline">\(U\)</span> is Uniform on <span class="math inline">\([0,1]\)</span> then <span class="math inline">\(Y = aU + b\)</span> is uniform on <span class="math inline">\([b, b+a]\)</span>. The difference in means is shifted by <span class="math inline">\(b + E(U)\)</span>, the difference in standard deviations is scaled by <span class="math inline">\(a\)</span>. We can do the algebra of linear transformations using overloaded operations:</p>
-<div class="cell" data-execution_count="19">
+<div id="73f470f4" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>a, b <span class="op">=</span> <span class="fl">2</span>, <span class="fl">3</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> a <span class="op">*</span> U <span class="op">+</span> b</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>q1 <span class="op">=</span> <span class="fu">mean</span>(U) <span class="op">==</span> <span class="fu">mean</span>(Y) <span class="op">-</span> (b <span class="op">+</span> <span class="fu">mean</span>(U)) <span class="op">==</span> (<span class="fl">1</span> <span class="op">+</span> <span class="fl">0</span>)<span class="op">/</span><span class="fl">2</span></span>
@@ -614,7 +614,7 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 <section id="the-normal-distribution" class="level3" data-number="7.2.4">
 <h3 data-number="7.2.4" class="anchored" data-anchor-id="the-normal-distribution"><span class="header-section-number">7.2.4</span> The normal distribution</h3>
 <p>The most important distribution in statistics is called the normal distribution. This is a bell-shaped distribution completely described by its mean and standard deviation, <code>Normal(mu, sigma)</code> (though some math books use the variance, <span class="math inline">\(\sigma^2\)</span> for the second parameter). The <em>standard</em> normal has <span class="math inline">\(\mu=0\)</span> and <span class="math inline">\(\sigma=1\)</span>. Standard normal random variables are generically denoted by <span class="math inline">\(Z\)</span>:</p>
-<div class="cell" data-execution_count="20">
+<div id="7ff0378c" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> <span class="fu">Normal</span>(<span class="fl">0</span>, <span class="fl">1</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(Z), <span class="fu">std</span>(Z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
@@ -622,7 +622,7 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 </div>
 </div>
 <p>There are many facts about standard normals that are useful to know. First we have the three rules of thumb – <span class="math inline">\(68\)</span>, <span class="math inline">\(95\)</span>, <span class="math inline">\(99.7\)</span> – describing the amount of area above <span class="math inline">\([-1,1]\)</span>, <span class="math inline">\([-2,2]\)</span>, and <span class="math inline">\([-3,3]\)</span>. We can see these from the <code>cdf</code> with:</p>
-<div class="cell" data-execution_count="21">
+<div id="0f1280a9" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">between</span>(Z, a, b) <span class="op">=</span> <span class="fu">cdf</span>(Z,b) <span class="op">-</span> <span class="fu">cdf</span>(Z,a)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">between</span>(Z, <span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>), <span class="fu">between</span>(Z, <span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>), <span class="fu">between</span>(Z, <span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
@@ -633,7 +633,7 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 <p>The transformation <span class="math inline">\(Y = \mu + \sigma \cdot Z\)</span> will produce a normal with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, modeled more directly by <code>Normal(mu, sigma)</code>.</p>
 <p>A common question in introductory statistics is what values <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> correspond to <span class="math inline">\((1-\alpha)\cdot 100\)</span>% of the area under the pdf of <span class="math inline">\(Y\)</span>? There are infinitely many such answers, but only one pair that is symmetric about the mean, <span class="math inline">\(\mu\)</span>. This can be found with the help of <code>quantile</code> <em>and</em> the observation that <em>since</em> the pdf of <span class="math inline">\(Y\)</span> is symmetric, there will be area <span class="math inline">\(1 - \alpha\)</span> <strong>plus</strong> <span class="math inline">\(\alpha/2\)</span> to the left of <span class="math inline">\(b\)</span>, a question tailor-made for <code>quantile</code>. From <span class="math inline">\(b\)</span>, <span class="math inline">\(a\)</span> can be found from symmetry, it being equidistant from the mean as <span class="math inline">\(b\)</span> is.</p>
 <p>For example:</p>
-<div class="cell" data-execution_count="22">
+<div id="1090af52" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>mu, sigma <span class="op">=</span> <span class="fl">10</span>, <span class="fl">20</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fu">Normal</span>(mu, sigma)</span>
@@ -646,7 +646,7 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 </div>
 <p>An observation of De Moivre in 1733 about the binomial proved foundational. Suppose we consider the binomial distribution with <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span> such that <span class="math inline">\(np\)</span> and <span class="math inline">\(n\cdot(1-p)\)</span> are both <span class="math inline">\(10\)</span> or more. Then <span class="math inline">\(\mu = np\)</span> and <span class="math inline">\(\sigma = \sqrt{np(1-p)}\)</span>. The cdf of this distribution was observed to be <em>very</em> well approximated by the cdf of the <span class="math inline">\(Normal(\mu, \sigma)\)</span> distribution. Furthermore, <em>asymptotically</em> they are equal.</p>
 <p>For example, the following searches for the largest discrepancy in the cdfs:</p>
-<div class="cell" data-execution_count="23">
+<div id="0c08bce6" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>n, p <span class="op">=</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">3</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>mu, sigma <span class="op">=</span> n<span class="op">*</span>p, <span class="fu">sqrt</span>(<span class="fu">n*p*</span>(<span class="fl">1</span><span class="op">-</span>p))</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>B, Y <span class="op">=</span> <span class="fu">Binomial</span>(n,p), <span class="fu">Normal</span>(mu, sigma)</span>
@@ -657,7 +657,7 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 </div>
 </div>
 <p>This shows an error of not more than <span class="math inline">\(0.0469...\)</span> in approximating the binomial with the normal. The <em>continuity correction</em> adjusts for the discrete nature of the binomial by comparing <span class="math inline">\(k\)</span> to <span class="math inline">\(k+1/2\)</span> for the normal. The following is more accurate, as can be seen:</p>
-<div class="cell" data-execution_count="24">
+<div id="08b4ef2e" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findmax</span>(<span class="fu">abs</span>(<span class="fu">cdf</span>(B, k) <span class="op">-</span> <span class="fu">cdf</span>(Y, k<span class="op">+</span><span class="fl">1</span><span class="op">/</span><span class="fl">2</span>)) <span class="cf">for</span> k <span class="kw">in</span> ks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>(0.004701503073942237, 34)</code></pre>
@@ -677,30 +677,30 @@ Figure&nbsp;7.4: Benford’s law illustrated with values <span class="math inlin
 T = \frac{Z}{\sqrt{Y/\nu}}.
 \]</span></p>
 <p>The <span class="math inline">\(T\)</span>-distribution is a symmetric, bell-shaped distribution like the normal distribution, but has wider, fatter tails hence typically produces larger values in a sample. This can be seen heuristically with a relatively small degrees of freedom as follows:</p>
-<div class="cell" data-execution_count="25">
+<div id="eecb8f56" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>T5 <span class="op">=</span> <span class="fu">TDist</span>(<span class="fl">5</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">maximum</span>(abs, <span class="fu">rand</span>(T5, <span class="fl">100</span>)), <span class="fu">maximum</span>(abs, <span class="fu">rand</span>(Z, <span class="fl">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
-<pre><code>(3.6621884154534414, 2.4194746510021092)</code></pre>
+<pre><code>(3.8076371107475513, 2.8542285227595743)</code></pre>
 </div>
 </div>
 <p><a href="#fig-qqplots-distributions" class="quarto-xref">Figure&nbsp;<span>7.5</span></a> shows a quantile-normal plot of <span class="math inline">\(T(3)\)</span> in the lower-left graphic. The long tails cause deviations in the pattern of points from a straight line.</p>
 <p>The <code>skewness</code> method measures asymmetry. For both the <span class="math inline">\(T\)</span> and the normal distributions – both bell shaped – this is <span class="math inline">\(0\)</span>. The <code>kurtosis</code> function measures <em>excess kurtosis</em> a measure of the size of the tails <em>as compared</em> to the normal. We can see:</p>
-<div class="cell" data-execution_count="26">
+<div id="88cae4bc" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skewness</span>(T5), <span class="fu">skewness</span>(Z), <span class="fu">kurtosis</span>(T5), <span class="fu">kurtosis</span>(Z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>(0.0, 0.0, 6.0, 0.0)</code></pre>
 </div>
 </div>
 <p>A distribution with excess kurtosis exceeding the normal is called <em>leptokurtic</em>. Such distributions more frequently produce values with <span class="math inline">\(z\)</span> scores larger than expected by the standard normal distribution. A <em>platykurtic</em> distribution, on the other hand, would have in more frequently fewer values in the tails and fewer values close to the mean of a standard normal. The uniform distribution is a good example of a playtkurtic distribution, both conditions have a test in <code>Distributions</code>:</p>
-<div class="cell" data-execution_count="27">
+<div id="10e47099" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">isleptokurtic</span>(T5), <span class="fu">isplatykurtic</span>(U)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>(true, true)</code></pre>
 </div>
 </div>
 <p>For the <span class="math inline">\(T\)</span>-distribution, when the degrees of freedom gets large, say bigger than <span class="math inline">\(100\)</span>, the distribution is well approximated by the normal. In the following code, we see a similar comparison as above to compare the difference. For a quantile-normal plot see the upper-right graphic in <a href="#fig-qqplots-distributions" class="quarto-xref">Figure&nbsp;<span>7.5</span></a>.</p>
-<div class="cell" data-execution_count="28">
+<div id="1f800f0b" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>T100 <span class="op">=</span> <span class="fu">TDist</span>(<span class="fl">100</span>)</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length<span class="op">=</span><span class="fl">100</span>)</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">findmax</span>(<span class="fu">abs</span>(<span class="fu">cdf</span>(T100, x) <span class="op">-</span> <span class="fu">cdf</span>(Z, x)) <span class="cf">for</span> x <span class="kw">in</span> xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -709,19 +709,79 @@ T = \frac{Z}{\sqrt{Y/\nu}}.
 </div>
 </div>
 <p>In <a href="#fig-qqplots-distributions" class="quarto-xref">Figure&nbsp;<span>7.5</span></a> the lower-right graphic is of the uniform distribution, the short tails, lead to a deviation from a straight line in this graphic; the lower-right graphic is of the skewed exponential distribution; the skew shows up in the lack of symmetry about the fitted line.</p>
-<div class="cell" data-execution_count="29">
-<div class="cell-output cell-output-display" data-execution_count="30">
-<div id="fig-qqplots-distributions" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-qqplots-distributions" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="29">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-qqplots-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="distributions_files/figure-html/fig-qqplots-distributions-output-1.svg" class="img-fluid figure-img">
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre>MethodError: plottype(::Type{Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}}) is ambiguous.
+
+Candidates:
+  plottype(<span class="ansi-bright-black-fg">P1</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T1}}, ::<span class="ansi-bold">Type</span>{&lt;:Plot{T2}}) where {T1, T2}
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:311</span>
+  plottype(<span class="ansi-bright-black-fg">P</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T}}, ::<span class="ansi-bold">Type</span>{Plot{MakieCore.plot}}) where T
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:326</span>
+  plottype(::<span class="ansi-bold">Type</span>{&lt;:Plot{Makie.qqnorm}}, <span class="ansi-bright-black-fg">args...</span>)
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/stats/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">distributions.jl:117</span>
+
+Possible fix, define
+  plottype(::Type{&lt;:Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}})
+
+
+Stacktrace:
+  [1] (::AlgebraOfGraphics.Visual)(input::ProcessedLayer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/transformations/visual.jl:8
+  [2] process(layer::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/processing.jl:148
+  [3] iterate
+    @ ./generator.jl:47 [inlined]
+  [4] collect(itr::Base.Generator{Layers, typeof(AlgebraOfGraphics.process)})
+    @ Base ./array.jl:834
+  [5] map
+    @ ./abstractarray.jl:3313 [inlined]
+  [6] ProcessedLayers
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:41 [inlined]
+  [7] compute_axes_grid(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:235
+  [8] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:233 [inlined]
+  [9] compute_axes_grid(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:205
+ [10] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:202 [inlined]
+ [11] #336
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20 [inlined]
+ [12] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [13] plot!(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20
+ [14] plot!
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:16 [inlined]
+ [15] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:64
+ [16] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [17] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
+ [18] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
+ [19] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
+ [20] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
+ [21] draw(d::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47
+ [22] |&gt;(x::Layer, f::typeof(draw))
+    @ Base ./operators.jl:917
+ [23] top-level scope
+    @ In[30]:6</pre>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qqplots-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.5: Quantile-normal plots for different distributions – <span class="math inline">\(T_3\)</span> is leptokurtic; <span class="math inline">\(T_{100}\)</span> is approximately normal; <span class="math inline">\(U\)</span> is platykurtic; and <span class="math inline">\(E\)</span> is skewed.
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-qqplots-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.5
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 <p>Consider now two, independent Chi-squared random variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> with <span class="math inline">\(\nu_1\)</span> and <span class="math inline">\(\nu_2\)</span> degrees of freedom. The ratio</p>
 <p><span class="math display">\[
@@ -729,25 +789,85 @@ F = \frac{Y_1/\nu_1}{Y_2/\nu_2},
 \]</span></p>
 <p>has a known distribution called the <span class="math inline">\(F\)</span>-distribution with <span class="math inline">\(\nu_1\)</span> and <span class="math inline">\(\nu_2\)</span> degrees of freedom.</p>
 <p>This distribution has different shapes for different parameter values (<a href="#fig-f-distributions" class="quarto-xref">Figure&nbsp;<span>7.6</span></a>), with the distributions becoming more normal as the two parameters get large.</p>
-<div class="cell" data-execution_count="30">
+<div id="0620a7bb" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kurtosis</span>(<span class="fu">FDist</span>(<span class="fl">5</span>, <span class="fl">10</span>)), <span class="fu">kurtosis</span>(<span class="fu">FDist</span>(<span class="fl">5</span>,<span class="fl">100</span>)), <span class="fu">kurtosis</span>(<span class="fu">FDist</span>(<span class="fl">100</span>,<span class="fl">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="31">
 <pre><code>(50.86153846153846, 3.1474470779483217, 0.7278883188966445)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="31">
-<div class="cell-output cell-output-display" data-execution_count="32">
-<div id="fig-f-distributions" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-f-distributions" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="31">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-f-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="distributions_files/figure-html/fig-f-distributions-output-1.svg" class="img-fluid figure-img">
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre>MethodError: plottype(::Type{Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}}) is ambiguous.
+
+Candidates:
+  plottype(<span class="ansi-bright-black-fg">P1</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T1}}, ::<span class="ansi-bold">Type</span>{&lt;:Plot{T2}}) where {T1, T2}
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:311</span>
+  plottype(<span class="ansi-bright-black-fg">P</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T}}, ::<span class="ansi-bold">Type</span>{Plot{MakieCore.plot}}) where T
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:326</span>
+  plottype(::<span class="ansi-bold">Type</span>{&lt;:Plot{Makie.qqnorm}}, <span class="ansi-bright-black-fg">args...</span>)
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/stats/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">distributions.jl:117</span>
+
+Possible fix, define
+  plottype(::Type{&lt;:Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}})
+
+
+Stacktrace:
+  [1] (::AlgebraOfGraphics.Visual)(input::ProcessedLayer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/transformations/visual.jl:8
+  [2] process(layer::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/processing.jl:148
+  [3] iterate
+    @ ./generator.jl:47 [inlined]
+  [4] collect(itr::Base.Generator{Layers, typeof(AlgebraOfGraphics.process)})
+    @ Base ./array.jl:834
+  [5] map
+    @ ./abstractarray.jl:3313 [inlined]
+  [6] ProcessedLayers
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:41 [inlined]
+  [7] compute_axes_grid(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:235
+  [8] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:233 [inlined]
+  [9] compute_axes_grid(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:205
+ [10] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:202 [inlined]
+ [11] #336
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20 [inlined]
+ [12] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [13] plot!(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20
+ [14] plot!
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:16 [inlined]
+ [15] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:64
+ [16] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [17] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
+ [18] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
+ [19] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
+ [20] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
+ [21] draw(d::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47
+ [22] |&gt;(x::Layer, f::typeof(draw))
+    @ Base ./operators.jl:917
+ [23] top-level scope
+    @ In[32]:6</pre>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-f-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.6: Quantile-normal plots of the <span class="math inline">\(F\)</span> distribution for different degrees of freedom. As the degrees of freedom values get bigger, the distribution is more normal.
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-f-distributions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.6
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 </section>
 </section>
@@ -769,7 +889,9 @@ P(\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \leq z) \approx P(Z \leq z),
 <p>The central limit theorem has some assumptions on the underlying population. The assumption that a mean and standard deviation exist are sufficient for application. It is true exactly for normal populations, for non-normal populations asymptotically so. For a binomial population, a rule of thumb is <span class="math inline">\(np\)</span> and <span class="math inline">\(n(1-p)\)</span> should be larger than <span class="math inline">\(5\)</span> (<span class="math inline">\(10\)</span> to be conservative), which avoids a skewed population.</p>
 <p>In general, how large <span class="math inline">\(n\)</span> needs to be depends on the underlying shape of the <em>population</em>: if the population has long tails (leptokurtic) or is very skewed, then <span class="math inline">\(n\)</span> must be much larger than if the population is symmetric and platykurtic.</p>
 <p><a href="#fig-qqplots-xbar" class="quarto-xref">Figure&nbsp;<span>7.7</span></a> shows simulations of the distribution of <span class="math inline">\(\bar{X}\)</span> for <span class="math inline">\(n=10\)</span> for different populations. The key to simulations is the ability to draw random samples from the distribution, which is provided through the <code>rand</code> method for a distribution type, with <code>rand(D,n)</code> returning a random sample of size <span class="math inline">\(n\)</span>.</p>
-<div class="cell" data-execution_count="32">
+<div id="fig-qqplots-xbar" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="32">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-qqplots-xbar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xbar</span>(D, n, N<span class="op">=</span><span class="fl">200</span>) <span class="op">=</span> [<span class="fu">mean</span>(<span class="fu">rand</span>(D, n)) for _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>N]</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sxbar</span>(D, n, N<span class="op">=</span><span class="fl">200</span>) <span class="op">=</span> (<span class="fu">xbar</span>(D,n,N) <span class="op">.-</span> <span class="fu">mean</span>(D)) <span class="op">/</span> (<span class="fu">std</span>(D)<span class="op">/</span><span class="fu">sqrt</span>(n))</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -784,18 +906,74 @@ P(\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \leq z) \approx P(Z \leq z),
 <span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>zs, layout <span class="op">=</span> <span class="op">:</span>D, main<span class="op">=:</span>D, color<span class="op">=:</span>D)</span>
 <span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
-<div id="fig-qqplots-xbar" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-qqplots-xbar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="distributions_files/figure-html/fig-qqplots-xbar-output-1.svg" class="img-fluid figure-img">
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre>MethodError: plottype(::Type{Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}}) is ambiguous.
+
+Candidates:
+  plottype(<span class="ansi-bright-black-fg">P1</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T1}}, ::<span class="ansi-bold">Type</span>{&lt;:Plot{T2}}) where {T1, T2}
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:311</span>
+  plottype(<span class="ansi-bright-black-fg">P</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T}}, ::<span class="ansi-bold">Type</span>{Plot{MakieCore.plot}}) where T
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:326</span>
+  plottype(::<span class="ansi-bold">Type</span>{&lt;:Plot{Makie.qqnorm}}, <span class="ansi-bright-black-fg">args...</span>)
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/stats/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">distributions.jl:117</span>
+
+Possible fix, define
+  plottype(::Type{&lt;:Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}})
+
+
+Stacktrace:
+  [1] (::AlgebraOfGraphics.Visual)(input::ProcessedLayer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/transformations/visual.jl:8
+  [2] process(layer::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/processing.jl:148
+  [3] iterate
+    @ ./generator.jl:47 [inlined]
+  [4] collect(itr::Base.Generator{Layers, typeof(AlgebraOfGraphics.process)})
+    @ Base ./array.jl:834
+  [5] map
+    @ ./abstractarray.jl:3313 [inlined]
+  [6] ProcessedLayers
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:41 [inlined]
+  [7] compute_axes_grid(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:235
+  [8] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:233 [inlined]
+  [9] compute_axes_grid(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:205
+ [10] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:202 [inlined]
+ [11] #336
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20 [inlined]
+ [12] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [13] plot!(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20
+ [14] plot!
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:16 [inlined]
+ [15] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:64
+ [16] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [17] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
+ [18] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
+ [19] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
+ [20] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
+ [21] draw(d::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47
+ [22] top-level scope
+    @ In[33]:14</pre>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qqplots-xbar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.7: Quantile-normal plots of different random samples of <span class="math inline">\(\bar{X}\)</span> for <span class="math inline">\(n=10\)</span>. The underlying popluation is either normal, short tailed (playkurtic), long tailed (leptokurtic), or skewed. For the normal and short tailed populations the distribution of <span class="math inline">\(\bar{X}\)</span> is approximately normal for this small value of <span class="math inline">\(n\)</span>; for the other two populations, larger samples sizes are needed to see the aymptotic normality guaranteed by the central limit theorem.
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-qqplots-xbar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.7
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 </section>
 <section id="the-t-statistic" class="level4">
@@ -850,7 +1028,9 @@ T^2 &amp;= (\frac{\bar{X} - \mu}{S/\sqrt{n}})^2\\
 <hr>
 <p>The distribution of the <span class="math inline">\(T\)</span> and <span class="math inline">\(F\)</span> statistics for an iid random sample is known under the assumption of a <em>normal</em> population. What if the population is not normal, how robust is the distribution of these statistics to differences in the population? This was studied in <span class="citation" data-cites="Box_non_normality_10.1093/biomet/40.3-4.318">(<a href="../references.html#ref-Box_non_normality_10.1093/biomet/40.3-4.318" role="doc-biblioref">BOX 1953</a>)</span>. Here we show some examples through simulation.</p>
 <p>In the following we use a long-tailed population (<span class="math inline">\(T_3\)</span>) and a skewed exponential population to look:</p>
-<div class="cell" data-execution_count="33">
+<div id="fig-t-f-robustness-test" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="33">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-t-f-robustness-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">T_n</span>(D, n) <span class="op">=</span> (xs <span class="op">=</span> <span class="fu">rand</span>(D,n); (<span class="fu">mean</span>(xs) <span class="op">-</span> <span class="fu">mean</span>(D)) <span class="op">/</span> (<span class="fu">std</span>(xs) <span class="op">/</span> <span class="fu">sqrt</span>(n)))</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">F_n</span>(D, n1, n2) <span class="op">=</span> (xs <span class="op">=</span> <span class="fu">rand</span>(D,n1); ys <span class="op">=</span> <span class="fu">rand</span>(D, n2); (<span class="fu">std</span>(xs)<span class="op">/</span>(n1<span class="op">-</span><span class="fl">1</span>)) <span class="op">/</span> (<span class="fu">std</span>(ys)<span class="op">/</span>(n2<span class="op">-</span><span class="fl">1</span>)))</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -871,18 +1051,55 @@ T^2 &amp;= (\frac{\bar{X} - \mu}{S/\sqrt{n}})^2\\
 <span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>x, <span class="op">:</span>y, main<span class="op">=:</span>D, layout<span class="op">=:</span>D, color<span class="op">=:</span>D)</span>
 <span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a><span class="fu">draw</span>(p, facet<span class="op">=</span>(; linkxaxes<span class="op">=:</span>none, linkyaxes<span class="op">=:</span>none))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
-<div id="fig-t-f-robustness-test" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-t-f-robustness-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="distributions_files/figure-html/fig-t-f-robustness-test-output-1.svg" class="img-fluid figure-img">
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: ArgumentError: ProcessedLayer with plot type Scatter did not have :main in its AestheticMapping. The mapping was {1 = AlgebraOfGraphics.AesX, 2 = AlgebraOfGraphics.AesY, :color = AlgebraOfGraphics.AesColor, :strokecolor = AlgebraOfGraphics.AesColor, :marker = AlgebraOfGraphics.AesMarker, :markersize = AlgebraOfGraphics.AesMarkerSize}
+ArgumentError: ProcessedLayer with plot type Scatter did not have :main in its AestheticMapping. The mapping was {1 = AlgebraOfGraphics.AesX, 2 = AlgebraOfGraphics.AesY, :color = AlgebraOfGraphics.AesColor, :strokecolor = AlgebraOfGraphics.AesColor, :marker = AlgebraOfGraphics.AesMarker, :markersize = AlgebraOfGraphics.AesMarkerSize}
+
+Stacktrace:
+  [1] hardcoded_or_mapped_aes(processedlayer::ProcessedLayer, key::Symbol, aes_mapping::Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:228
+  [2] (::AlgebraOfGraphics.var"#p!#129"{Set{Type{&lt;:AlgebraOfGraphics.Aesthetic}}, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}, ProcessedLayer, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}})(key::Symbol)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:154
+  [3] foreach(f::AlgebraOfGraphics.var"#p!#129"{Set{Type{&lt;:AlgebraOfGraphics.Aesthetic}}, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}, ProcessedLayer, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}}, d::Dictionaries.Indices{Symbol})
+    @ Dictionaries ~/.julia/packages/Dictionaries/RaTRN/src/foreach.jl:36
+  [4] compute_scale_properties(processedlayers::Vector{ProcessedLayer}, scales::AlgebraOfGraphics.Scales)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:159
+  [5] compute_axes_grid(d::Layers, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:237
+  [6] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:233 [inlined]
+  [7] compute_axes_grid(fig::Figure, d::Layers, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:205
+  [8] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:202 [inlined]
+  [9] #336
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20 [inlined]
+ [10] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [11] plot!(fig::Figure, d::Layers, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20
+ [12] plot!
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:16 [inlined]
+ [13] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layers, AlgebraOfGraphics.Scales})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:64
+ [14] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [15] _draw(d::Layers, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
+ [16] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
+ [17] draw(d::Layers, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{}, facet::@NamedTuple{linkxaxes::Symbol, linkyaxes::Symbol}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
+ [18] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
+ [19] top-level scope
+    @ In[34]:21</code></pre>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-t-f-robustness-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.8: Small sample simulations of <span class="math inline">\(T\)</span> and <span class="math inline">\(F\)</span> statistic for non-normal populations. None are well described by the <span class="math inline">\(T\)</span> or <span class="math inline">\(F\)</span> distributions.
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-t-f-robustness-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.8
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 </section>
 </section>
@@ -890,19 +1107,60 @@ Figure&nbsp;7.8: Small sample simulations of <span class="math inline">\(T\)</sp
 <h3 data-number="7.3.3" class="anchored" data-anchor-id="the-sample-median"><span class="header-section-number">7.3.3</span> The sample median</h3>
 <p>The sample median is the “middle” of an iid random sample. Like the sample mean, it is a measure of center, that, unlike the sample mean, is resistant to outliers. The central limit theorem instructs us that for most populations the distribution of the sample mean is normally distributed. The distribution of the sample median can be computed. It is asymptotically normal with mean <span class="math inline">\(\mu\)</span> and variance given by <span class="math inline">\((4nf(m)^2)^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the sample size, <span class="math inline">\(m\)</span> the median of the <em>population</em>, and <span class="math inline">\(f\)</span> the pdf of the population.</p>
 <p><a href="#fig-median-efficiency" class="quarto-xref">Figure&nbsp;<span>7.9</span></a> shows through boxplots the variability of the sample median and sample mean depends on the population. For the standard normal population the ratio of the variances of <span class="math inline">\(\bar{X}\)</span> and <span class="math inline">\(M\)</span> tends to <span class="math inline">\(2/\pi\)</span>. This is seen in the smaller IQR for <span class="math inline">\(\bar{X}\)</span> compared to <span class="math inline">\(M\)</span> in the figure for the normal population. This ratio isn’t always smaller than 1 for other populations.</p>
-<div class="cell" data-execution_count="34">
-<div class="cell-output cell-output-display" data-execution_count="35">
-<div id="fig-median-efficiency" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-median-efficiency" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="34">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-median-efficiency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="distributions_files/figure-html/fig-median-efficiency-output-1.svg" class="img-fluid figure-img">
+<div class="cell-output cell-output-error">
+<pre><code>LoadError: ArgumentError: ProcessedLayer with plot type Plot{Makie.boxplot} did not have :main in its AestheticMapping. The mapping was {1 = AlgebraOfGraphics.AesX, 2 = AlgebraOfGraphics.AesY, :color = AlgebraOfGraphics.AesColor, :dodge = AlgebraOfGraphics.AesDodge}
+ArgumentError: ProcessedLayer with plot type Plot{Makie.boxplot} did not have :main in its AestheticMapping. The mapping was {1 = AlgebraOfGraphics.AesX, 2 = AlgebraOfGraphics.AesY, :color = AlgebraOfGraphics.AesColor, :dodge = AlgebraOfGraphics.AesDodge}
+
+Stacktrace:
+  [1] hardcoded_or_mapped_aes(processedlayer::ProcessedLayer, key::Symbol, aes_mapping::Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:228
+  [2] (::AlgebraOfGraphics.var"#p!#129"{Set{Type{&lt;:AlgebraOfGraphics.Aesthetic}}, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}, ProcessedLayer, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}})(key::Symbol)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:154
+  [3] foreach(f::AlgebraOfGraphics.var"#p!#129"{Set{Type{&lt;:AlgebraOfGraphics.Aesthetic}}, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}, ProcessedLayer, Dictionaries.Dictionary{Union{Int64, Symbol}, Type{&lt;:AlgebraOfGraphics.Aesthetic}}}, d::Dictionaries.Indices{Symbol})
+    @ Dictionaries ~/.julia/packages/Dictionaries/RaTRN/src/foreach.jl:36
+  [4] compute_scale_properties(processedlayers::Vector{ProcessedLayer}, scales::AlgebraOfGraphics.Scales)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:159
+  [5] compute_axes_grid(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:237
+  [6] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:233 [inlined]
+  [7] compute_axes_grid(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:205
+  [8] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:202 [inlined]
+  [9] #336
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20 [inlined]
+ [10] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [11] plot!(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20
+ [12] plot!
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:16 [inlined]
+ [13] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:64
+ [14] update
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
+ [15] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
+ [16] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
+ [17] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
+ [18] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
+ [19] draw(d::Layer)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47
+ [20] top-level scope
+    @ In[35]:17</code></pre>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median-efficiency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.9: Comparison of spread of the sample median versus the sample mean for various populations. For skewed and long-tailed distributions, the sample median has smaller variability.
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-median-efficiency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.9
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 </section>
 <section id="the-chi-squared-statistic" class="level3" data-number="7.3.4">
@@ -975,18 +1233,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1018,7 +1265,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1026,10 +1295,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
           // target, if specified
           link.setAttribute("target", "_blank");
           if (link.getAttribute("rel") === null) {
@@ -1071,7 +1345,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1347,12 +1625,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../EDA/makie.html" class="pagination-link  aria-label=" &lt;span="" `algebraofgraphics`="" package&lt;="" span&gt;"="">
+      <a href="../EDA/makie.html" class="pagination-link" aria-label="The `AlgebraOfGraphics` package">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The <code>AlgebraOfGraphics</code> package</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../Inference/inference.html" class="pagination-link" aria-label="<span class='chapter-number'>8</span>&nbsp; <span class='chapter-title'>Inference</span>">
+      <a href="../Inference/inference.html" class="pagination-link" aria-label="Inference">
         <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Inference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>

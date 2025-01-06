@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.24">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Verzani">
-<meta name="dcterms.date" content="2024-10-07">
+<meta name="dcterms.date" content="2025-01-06">
 
 <title>Using Julia for Introductory Statistics</title>
 <style>
@@ -92,10 +92,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-018089954d508eae8a473f0b7f0491f0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-75bd732ee74a0ba26fe67d77831af1f2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -303,7 +303,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 7, 2024</p>
+      <p class="date">January 6, 2025</p>
     </div>
   </div>
   
@@ -345,7 +345,7 @@ Contribute
 <li><a href="https://www.julia-vscode.org/">Visual Studio Code</a>: <code>Julia</code> is a supported language for the Visual Studio Code editor of Microsoft, a programmer’s IDE.</li>
 </ul>
 <p>These notes use <code>quarto</code> to organize the mix of text, code, and graphics. The <code>quarto</code> publishing system is developed by <a href="https://posit.co/">Posit</a>, the developers of the wildly sucessful <code>RStudio</code> interface for <code>R</code>. The code snippets are run as blocks (within <code>IJulia</code>) and the last command executed is shown. (If code is copy-and-pasted into the REPL, each line’s output will be displayed.) The code display occurs below the cell, as here, where we show that <code>Julia</code> can handle basic addition:</p>
-<div id="90803215" class="cell" data-execution_count="1">
+<div id="6574ad88" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>4</code></pre>
@@ -374,7 +374,7 @@ Interactive help
 </div>
 <p>Values in <code>Julia</code> have types. A particular instance will have a concrete type but <em>abstract</em> types help to organize code bases and participate in dispatch. Values can be assigned to variable names, or bindings. The ability to simply create new user-defined types makes generic programming quite accessible and <code>Julia</code> code very <em>composable</em>.</p>
 <p>This simple example, taking the average of several numbers, shows most of this:</p>
-<div id="94d8e963" class="cell" data-execution_count="2">
+<div id="af8d9ee1" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">9</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xs) <span class="op">/</span> <span class="fu">length</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
@@ -382,7 +382,7 @@ Interactive help
 </div>
 </div>
 <p>The first line <em>assigns</em> to a variable, <code>xs</code>, a value that is a <em>vector</em> of numbers, integers of type <code>Int64</code> in this case. For this illustration, a vector is a container of different numbers. The second line calls three functions: <code>sum</code> to add the elements in the vector; <code>length</code> to count the number of elements in the vector; and <code>/</code> to divide these two quantities. All of these functions are <em>generic</em>, with different methods for different types of argument(s). The same pattern would work for different container types, such as a tuple:</p>
-<div id="450b5348" class="cell" data-execution_count="3">
+<div id="88827430" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">9</span>) <span class="co"># tuple</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xs) <span class="op">/</span> <span class="fu">length</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">

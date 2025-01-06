@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.24">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-018089954d508eae8a473f0b7f0491f0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-75bd732ee74a0ba26fe67d77831af1f2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -320,14 +320,14 @@ window.Quarto = {
 <p>The <code>AlgebraOfGraphics</code> packages offers a <em>declarative</em> style to create statistical graphics. An example from the <a href="https://aog.makie.org/stable/philosophy/">documentation</a> shows the code to do the following “declare the dataset; declare the analysis; declare the arguments used; declare the grouping and the respective visual attribute; draw the visualization.” This is all done through a series of composable commands, illustrated by example below. The Pumas project has a much more extensive <a href="https://tutorials.pumas.ai/html/PlottingInJulia/">tutorial</a> than is presented here.</p>
 <p>We will see that it is very easy to visualize multiple variables through an appropriate choice of graphic or transformation, with further choices of coloring, faceting, or other means to demarcate different factors. The “declarative” style shines here, as the user simply specifies a variable, and the package converts this, as needed, to a color or shape .</p>
 <p>We begin by loading the packages. The <code>CairoMakie</code> backend is used here, <code>GLMakie</code>is good for interactive usage at the command line, <code>WGLMakie</code> is for web-based graphics, all are part of the same <code>Makie</code> plotting ecosystem.</p>
-<div id="5722fde3" class="cell" data-execution_count="1">
+<div id="0d67e9df" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StatsBase</span>, <span class="bu">DataFrames</span>, <span class="bu">CategoricalArrays</span>, <span class="bu">RDatasets</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">AlgebraOfGraphics</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set_aog_theme!</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We use the color theme of <code>aog</code>, as declared in the last command. The packages are compute-intensive and can take a while to load.</p>
 <p>Following the package <a href="docs.juliahub.com/AlgebraOfGraphics/">tutorial</a>, we load the <a href="https://github.com/allisonhorst/palmerpenguins">Palmer penguins</a> data set of Allison Horst. This includes data collected and made available by Dr.&nbsp;Kristen Gorman and the Palmer Station, Antarctica LTER, a member of the Long Term Ecological Research Network. The data can be downloaded from the GitHub site, but it is also wrapped into a <code>Julia</code> package:</p>
-<div id="146ea0d6" class="cell" data-execution_count="2">
+<div id="d45624e4" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">PalmerPenguins</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> <span class="fu">dropmissing</span>(<span class="fu">DataFrame</span>(PalmerPenguins.<span class="fu">load</span>()))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(penguins, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -345,7 +345,7 @@ window.Quarto = {
 <th style="text-align: left;" data-quarto-table-cell-role="th">body_mass_g</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">sex</th>
 </tr>
-<tr class="odd subheader headerLastRow">
+<tr class="subheader headerLastRow even">
 <th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
 <th style="text-align: left;" data-quarto-table-cell-role="th" title="InlineStrings.String15">String15</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th" title="InlineStrings.String15">String15</th>
@@ -399,7 +399,7 @@ window.Quarto = {
 <section id="boxplot-and-violin-plot" class="level3" data-number="6.1.1">
 <h3 data-number="6.1.1" class="anchored" data-anchor-id="boxplot-and-violin-plot"><span class="header-section-number">6.1.1</span> Boxplot and violin plot</h3>
 <p>A boxplot (<a href="#fig-basic-boxplot-penguin" class="quarto-xref">Figure&nbsp;<span>6.1</span></a>) for each species is created by composing a series of declarative commands:</p>
-<div id="d6ac6152" class="cell" data-execution_count="3">
+<div id="87e9375e" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">data</span>(penguins) <span class="op">*</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visual</span>(BoxPlot) <span class="op">*</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>species, <span class="op">:</span>bill_length_mm <span class="op">=&gt;</span> <span class="st">"Bill length (mm)"</span>, color<span class="op">=:</span>species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -447,30 +447,30 @@ To save a figure to a file
 </div>
 </div>
 <p>This is the basic pattern where different choices are combined, or merged, with the <code>*</code> operation. The pieces can be re-purposed. In the following, we make use of this data:</p>
-<div id="fefcfa42" class="cell" data-execution_count="5">
+<div id="f5846dda" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">data</span>(penguins);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Box plots are very effective for quickly comparing distributions of a numeric variable across the levels of some factor. The calling syntax preferences that style, where both an <code>x</code> and <code>y</code> value are specified to <code>mapping</code>. To create a box plot of a <em>single</em> variable, without grouping, the graphic takes a bit more to construct. In the following we create a single valued <code>x</code> variable to produce the upper left graphic in <a href="#fig-layout-example" class="quarto-xref">Figure&nbsp;<span>6.2</span></a>:</p>
-<div id="d6981f90" class="cell" data-execution_count="6">
+<div id="4c538592" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> d <span class="op">*</span> <span class="fu">visual</span>(BoxPlot) <span class="op">*</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="fl">1</span> <span class="op">=&gt;</span> one, <span class="op">:</span>bill_length_mm <span class="op">=&gt;</span> <span class="st">"Bill length (mm)"</span>);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The mini language is used above two different ways: with a function to create the single value for <code>x</code> (<code>AlgebraOfGraphics</code> will treat this to a factor, so <code>one</code> isn’t needed, just some single-valued function) <em>and</em> with a target for labeling the <code>y</code> variable. As mentioned, such transformations can also be done within the data frame before it is passed to <code>data</code>, which is necessary for some types of transformations.</p>
 <p>To add another layer, in this case a scatter plot, we can <em>add</em> the plotting objects:</p>
-<div id="2aeccfe9" class="cell" data-execution_count="7">
+<div id="7b9652b9" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>p2a <span class="op">=</span> d <span class="op">*</span> <span class="fu">visual</span>(BoxPlot) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>species, <span class="op">:</span>bill_length_mm, color<span class="op">=:</span>species)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>p2b <span class="op">=</span> d <span class="op">*</span> <span class="fu">visual</span>(Scatter) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>species, <span class="op">:</span>bill_length_mm)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> p2a <span class="op">+</span> p2b;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>Scatter</code> transformation plots pairs of points in a Cartesian plane.</p>
 <p>Combinations with <code>+</code> add a layer; those with <code>*</code> merge layers. The <em>algebra</em> name also refers to algebraically desirable short cuts. For example, we repeat <code>d</code> and the <code>mapping</code> for each <code>p2a</code> and <code>p2b</code>, but these can be used just once by <em>distributing</em> them:</p>
-<div id="474c224f" class="cell" data-execution_count="8">
+<div id="1c87ee3e" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="fu">mapping</span>(<span class="op">:</span>species, <span class="op">:</span>bill_length_mm <span class="op">=&gt;</span> <span class="st">"bill length (mm)"</span>, color<span class="op">=:</span>species);</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>p3 <span class="op">=</span>  d <span class="op">*</span> ( <span class="fu">visual</span>(BoxPlot) <span class="op">+</span> <span class="fu">visual</span>(Scatter) ) <span class="op">*</span> m;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Both <code>p2</code> and <code>p3</code> are shown in the lower row of <a href="#fig-layout-example" class="quarto-xref">Figure&nbsp;<span>6.2</span></a>. There is just one slight difference, the dots representing the data in <code>p2</code> are not colored, as the mapping did not instruct that in forming <code>p2b</code>.</p>
 <p>Specifying a violin plot requires just a slight modification to the above: we change the <code>BoxPlot</code> visual to <code>Violin</code>. Violin plots have an argument <code>side</code> that allows both sides of the violin to reflect an extra grouping variable. We use the <code>:sex</code> variable in the following, as it has only two levels. With this, each side of the violin plot reflects grouping by the <code>:sex</code> factor, the legend is used to lookup which level of the factor is represented.</p>
-<div id="212ab39e" class="cell" data-execution_count="9">
+<div id="b102601e" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="op">=</span> d <span class="op">*</span> <span class="fu">visual</span>(Violin) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>species, <span class="op">:</span>bill_length_mm, color<span class="op">=:</span>species, side<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>visual(Violin)</code> call wraps the function <code>Makie.violin</code> whose documentation contains additional possible arguments beyond <code>side</code>.</p>
@@ -500,7 +500,7 @@ Figure&nbsp;6.2: Figure showing four different graphics displayed. In this case,
 <h3 data-number="6.1.2" class="anchored" data-anchor-id="dot-plot"><span class="header-section-number">6.1.2</span> Dot plot</h3>
 <p>The boxplot does an excellent job of summarizing a data set with a few indicators making it quite useful when there are many data points. A dot plot is useful when there are a limited number of values and advantageous as the graphic shows all the data.</p>
 <p>A dot plot (<a href="#fig-dotplot-variations" class="quarto-xref">Figure&nbsp;<span>6.3</span></a>) can be constructed easily enough by ensuring, in this case, the <code>y</code> variable is non-numeric:</p>
-<div id="966d53a3" class="cell" data-execution_count="12">
+<div id="4cfa9a3c" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>huddle <span class="op">=</span> penguins[<span class="fu">sample</span>(<span class="fl">1</span><span class="op">:</span><span class="fu">size</span>(penguins,<span class="fl">1</span>), <span class="fl">50</span>),<span class="op">:</span>] <span class="co"># a sample</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">data</span>(huddle) <span class="op">*</span> <span class="fu">visual</span>(Scatter) <span class="op">*</span></span>
@@ -508,13 +508,13 @@ Figure&nbsp;6.2: Figure showing four different graphics displayed. In this case,
 </div>
 <p>(In this example, <code>species</code> is categorical, so the extra <code>=&gt; nonnumeric</code> is unnecessary.)</p>
 <p>Compare the above to a boxplot of the same sampled data:</p>
-<div id="4c2ad603" class="cell" data-execution_count="13">
+<div id="1a561b3b" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">data</span>(huddle) <span class="op">*</span> <span class="fu">visual</span>(BoxPlot) <span class="op">*</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>species, <span class="op">:</span>bill_length_mm <span class="op">=&gt;</span> <span class="st">"Bill length (mm)"</span>; color<span class="op">=:</span>species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The boxplot makes it easy to compare medians across the levels of the <code>species</code> factor to gauge graphically if there is a differentiated effect on the response.</p>
 <p>The following is an enhanced dot plot which emphasizes a comparison of center by adding a line and sorting so that this line only moves to the right as the eye travels up the levels of the factor. The code is a modification of some from <span class="citation" data-cites="Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia">(<a href="../references.html#ref-Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia" role="doc-biblioref">Alday et al. 2022</a>)</span>.</p>
-<div id="cc5f916b" class="cell" data-execution_count="14">
+<div id="a94ec1e3" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="st">"`dotplot`: show values for each group as dotplot sorted by some center"</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">_arrange_dotplot_data</span>(df, value<span class="op">::</span><span class="dt">Symbol</span>, group<span class="op">::</span><span class="dt">Symbol</span>, center<span class="op">=</span>mean;</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                              jitter<span class="op">=</span><span class="cn">true</span>)</span>
@@ -565,11 +565,11 @@ Figure&nbsp;6.3: A basic dot plot, a comparable box plot, and an enhanced dot pl
 <p>The <code>AlgebraOfGraphics</code> has certain functions it refers to as <em>transformations</em> of the data. These include <code>histogram</code>, <code>density</code>, <code>frequency</code>, <code>linear</code>, <code>smooth</code>, and <code>expectation</code>; most all will be illustrated by example below.</p>
 <p>These are used like <code>visual</code> was above, but arguments are passed directly to the transformation.</p>
 <p>The <code>histogram</code> function plays the role of <code>visual</code> in this graphic. (The <code>visual</code> function is still useful to apply data-independent attributes.) Here we arrange to color by <code>species</code>:</p>
-<div id="86df1516" class="cell" data-execution_count="16">
+<div id="02c8c2d1" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> d <span class="op">*</span> <span class="fu">histogram</span>() <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, color<span class="op">=:</span>species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The histograms overlap. The <code>layout</code> command can be used to declare one panel per level. We do this with <code>:sex</code>:</p>
-<div id="0cf75b69" class="cell" data-execution_count="17">
+<div id="384d3393" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> d <span class="op">*</span> <span class="fu">histogram</span>() <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, color<span class="op">=:</span>species, layout<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>See <a href="#fig-histogram-densityplot-example" class="quarto-xref">Figure&nbsp;<span>6.4</span></a> for the graphics.</p>
@@ -577,12 +577,12 @@ Figure&nbsp;6.3: A basic dot plot, a comparable box plot, and an enhanced dot pl
 <section id="density-plot" class="level3" data-number="6.1.5">
 <h3 data-number="6.1.5" class="anchored" data-anchor-id="density-plot"><span class="header-section-number">6.1.5</span> Density plot</h3>
 <p>The <code>histogram</code> function has options for overriding the default bin selection and has several options for scaling the figure through its <code>normalization</code> argument. We use this in the next graphic which layers a density plot over a scaled histogram using the <code>:pdf</code> scaling. The <code>density</code> transformation is qualified with the module name to prevent a conflict with one in <code>Makie</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<div id="291245ab" class="cell" data-execution_count="18">
+<div id="bc191661" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> <span class="fu">histogram</span>(normalization<span class="op">=:</span>pdf) <span class="op">+</span> AlgebraOfGraphics.<span class="fu">density</span>()</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>p3 <span class="op">=</span> d <span class="op">*</span> layers <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, color<span class="op">=:</span>species, layout<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In this next figure we add in a scatter plot of the data on top of the density plots. For the scatter plot, we use the <code>Scatter</code> visual for which we create jittered <span class="math inline">\(y\)</span> values to disambiguate the data, these are added as a column to the data in <code>d1</code>, below:</p>
-<div id="78cf78f5" class="cell" data-execution_count="19">
+<div id="8da1a4d1" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p4a <span class="op">=</span> d <span class="op">*</span>  AlgebraOfGraphics.<span class="fu">density</span>() <span class="op">*</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, color<span class="op">=:</span>species)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -611,12 +611,12 @@ Figure&nbsp;6.4: Histogram and Density plots.
 <h3 data-number="6.1.6" class="anchored" data-anchor-id="quantile-normal-plots"><span class="header-section-number">6.1.6</span> Quantile-normal plots</h3>
 <p>The <code>QQNorm</code> and <code>QQPlot</code> visuals are used to make quantile-quantile plots; <code>QQNorm</code> expects a mapping to <code>:x</code> (first position) whereas <code>QQPlot</code> expects mappings to <code>:x</code> and <code>:y</code> (the first two positions).</p>
 <p>The following will give a visual check if bill length is normally distributed, the graphic indicates slightly shorter tails than expected</p>
-<div id="e906dec8" class="cell" data-execution_count="21">
+<div id="e7904658" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> <span class="fu">data</span>(penguins) <span class="op">*</span> <span class="fu">visual</span>(QQNorm, qqline<span class="op">=:</span>fit) <span class="op">*</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The following will give a visual check if bill length has a similarly <em>shaped</em> distribution as bill depth, in this case with each species highlighted:</p>
-<div id="1431ee0d" class="cell" data-execution_count="22">
+<div id="db227a4e" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> <span class="fu">data</span>(penguins) <span class="op">*</span> <span class="fu">visual</span>(QQPlot, qqline<span class="op">=:</span>fit) <span class="op">*</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, <span class="op">:</span>bill_depth_mm, color<span class="op">=:</span>species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -625,18 +625,18 @@ Figure&nbsp;6.4: Histogram and Density plots.
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-quantileplot-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div id="7ed5ee56" class="cell quarto-layout-cell" data-execution_count="23" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="8b348bae" class="cell quarto-layout-cell" data-execution_count="23" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>MethodError: plottype(::Type{Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}}) is ambiguous.
 
 Candidates:
   plottype(<span class="ansi-bright-black-fg">P1</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T1}}, ::<span class="ansi-bold">Type</span>{&lt;:Plot{T2}}) where {T1, T2}
-<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:311</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/Y3ABD/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:319</span>
   plottype(<span class="ansi-bright-black-fg">P</span>::<span class="ansi-bold">Type</span>{&lt;:Plot{T}}, ::<span class="ansi-bold">Type</span>{Plot{MakieCore.plot}}) where T
-<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:326</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/Y3ABD/src/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">interfaces.jl:334</span>
   plottype(::<span class="ansi-bold">Type</span>{&lt;:Plot{Makie.qqnorm}}, <span class="ansi-bright-black-fg">args...</span>)
-<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/rEu75/src/stats/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">distributions.jl:117</span>
+<span class="ansi-bright-black-fg">    @</span> <span class="ansi-bright-black-fg">Makie</span> <span class="ansi-bright-black-fg">~/.julia/packages/Makie/Y3ABD/src/stats/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">distributions.jl:117</span>
 
 Possible fix, define
   plottype(::Type{&lt;:Plot{Makie.qqnorm}}, ::Type{Plot{MakieCore.plot}})
@@ -644,95 +644,92 @@ Possible fix, define
 
 Stacktrace:
   [1] (::AlgebraOfGraphics.Visual)(input::ProcessedLayer)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/transformations/visual.jl:8
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/transformations/visual.jl:8
   [2] process(layer::Layer)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/processing.jl:148
-  [3] iterate
-    @ ./generator.jl:47 [inlined]
-  [4] collect(itr::Base.Generator{Layers, typeof(AlgebraOfGraphics.process)})
-    @ Base ./array.jl:834
-  [5] map
-    @ ./abstractarray.jl:3313 [inlined]
-  [6] ProcessedLayers
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:41 [inlined]
-  [7] compute_axes_grid(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:235
-  [8] compute_axes_grid
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:233 [inlined]
-  [9] compute_axes_grid(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:205
- [10] compute_axes_grid
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/algebra/layers.jl:202 [inlined]
- [11] #336
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20 [inlined]
- [12] update
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
- [13] plot!(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:20
- [14] plot!
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:16 [inlined]
- [15] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales})(f::Figure)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:64
- [16] update
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
- [17] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
- [18] _draw
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
- [19] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{size::Tuple{Int64, Int64}}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
- [20] draw
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
- [21] top-level scope
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/algebra/processing.jl:165
+  [3] ProcessedLayers
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/algebra/layers.jl:55 [inlined]
+  [4] compute_axes_grid(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/algebra/layers.jl:250
+  [5] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/algebra/layers.jl:248 [inlined]
+  [6] compute_axes_grid(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/algebra/layers.jl:218
+  [7] compute_axes_grid
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/algebra/layers.jl:215 [inlined]
+  [8] #363
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:20 [inlined]
+  [9] update
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:10 [inlined]
+ [10] plot!(fig::Figure, d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:20
+ [11] plot!
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:16 [inlined]
+ [12] (::AlgebraOfGraphics.var"#374#379"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales, AlgebraOfGraphics.FigureSettings})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:162
+ [13] update
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:10 [inlined]
+ [14] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:161
+ [15] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:154 [inlined]
+ [16] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{size::Tuple{Int64, Int64}}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:85
+ [17] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:75 [inlined]
+ [18] top-level scope
     @ In[24]:1</pre>
 </div>
 </div>
 </div>
-<div id="d9ee6097" class="cell quarto-layout-cell" data-execution_count="24" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="139d7c11" class="cell quarto-layout-cell" data-execution_count="24" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-error">
 <div class="ansi-escaped-output">
 <pre>MethodError: no method matching legend_elements(::Type{Plot{Makie.qqplot}}, ::Dictionaries.Dictionary{Symbol, Any}, ::Dictionaries.Dictionary{Union{Int64, Symbol}, Any})
+The function `legend_elements` exists, but no method is defined for this combination of argument types.
 
 Closest candidates are:
   legend_elements(<span class="ansi-bright-red-fg">::Type{Arrows}</span>, ::Any, ::Dictionaries.Dictionary{Union{Int64, Symbol}, Any})
-<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">AlgebraOfGraphics</span> <span class="ansi-bright-black-fg">~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">legend.jl:387</span>
+<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">AlgebraOfGraphics</span> <span class="ansi-bright-black-fg">~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">legend.jl:436</span>
   legend_elements(<span class="ansi-bright-red-fg">::Type{Plot{Makie.contour}}</span>, ::Any, ::Dictionaries.Dictionary{Union{Int64, Symbol}, Any})
-<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">AlgebraOfGraphics</span> <span class="ansi-bright-black-fg">~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">legend.jl:373</span>
+<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">AlgebraOfGraphics</span> <span class="ansi-bright-black-fg">~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">legend.jl:422</span>
   legend_elements(<span class="ansi-bright-red-fg">::Type{MakieCore.Text}</span>, ::Any, ::Dictionaries.Dictionary{Union{Int64, Symbol}, Any})
-<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">AlgebraOfGraphics</span> <span class="ansi-bright-black-fg">~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">legend.jl:367</span>
+<span class="ansi-bright-black-fg">   @</span> <span class="ansi-magenta-fg">AlgebraOfGraphics</span> <span class="ansi-bright-black-fg">~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/</span><span style="text-decoration:underline" class="ansi-bright-black-fg">legend.jl:416</span>
   ...
 
 
 Stacktrace:
   [1] legend_elements(p::ProcessedLayer, scale_args::Dictionaries.Dictionary{Union{Int64, Symbol}, Any})
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:277
-  [2] compute_legend(grid::Matrix{AxisEntries}; order::Nothing)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:246
-  [3] compute_legend
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:88 [inlined]
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:324
+  [2] _legend_elements(processedlayer::ProcessedLayer, scale_args::Dictionaries.Dictionary{Union{Int64, Symbol}, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:310
+  [3] compute_legend(grid::Matrix{AxisEntries}; order::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:278
   [4] compute_legend
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:42 [inlined]
-  [5] #legend!#284
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:15 [inlined]
-  [6] legend!
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:14 [inlined]
-  [7] #legend!#283
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:5 [inlined]
-  [8] legend!
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/guides/legend.jl:1 [inlined]
-  [9] (::AlgebraOfGraphics.var"#341#342"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales})(f::Figure)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:68
- [10] update
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:10 [inlined]
- [11] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:63
- [12] _draw
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:60 [inlined]
- [13] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{size::Tuple{Int64, Int64}}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
-    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:57
- [14] draw
-    @ ~/.julia/packages/AlgebraOfGraphics/swbj0/src/draw.jl:47 [inlined]
- [15] top-level scope
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:95 [inlined]
+  [5] compute_legend
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:49 [inlined]
+  [6] #legend!#309
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:22 [inlined]
+  [7] legend!
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:21 [inlined]
+  [8] #legend!#308
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:5 [inlined]
+  [9] legend!
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/guides/legend.jl:1 [inlined]
+ [10] (::AlgebraOfGraphics.var"#374#379"{Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Dictionaries.Dictionary{Symbol, Any}, Layer, AlgebraOfGraphics.Scales, AlgebraOfGraphics.FigureSettings})(f::Figure)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:169
+ [11] update
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:10 [inlined]
+ [12] _draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::Dictionaries.Dictionary{Symbol, Any}, figure::Dictionaries.Dictionary{Symbol, Any}, facet::Dictionaries.Dictionary{Symbol, Any}, legend::Dictionaries.Dictionary{Symbol, Any}, colorbar::Dictionaries.Dictionary{Symbol, Any})
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:161
+ [13] _draw
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:154 [inlined]
+ [14] draw(d::Layer, scales::AlgebraOfGraphics.Scales; axis::@NamedTuple{}, figure::@NamedTuple{size::Tuple{Int64, Int64}}, facet::@NamedTuple{}, legend::@NamedTuple{}, colorbar::@NamedTuple{}, palette::Nothing)
+    @ AlgebraOfGraphics ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:85
+ [15] draw
+    @ ~/.julia/packages/AlgebraOfGraphics/BPWA1/src/draw.jl:75 [inlined]
+ [16] top-level scope
     @ In[25]:1</pre>
 </div>
 </div>
@@ -750,7 +747,7 @@ Figure&nbsp;6.5: Quantile-quantile plots. The left graphic uses a reference norm
 <h2 data-number="6.2" class="anchored" data-anchor-id="line-plots"><span class="header-section-number">6.2</span> Line plots</h2>
 <p>A scatter plot shows <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> pairs as points, a line plot connects these points. There are numerous ways to draw lines with the <code>AlgebraOfGraphics</code> including: <code>visual(Lines)</code>, for connect-the-dots lines; <code>visual(LinesFill)</code>, for shading; <code>visual(HLines)</code> and <code>visual(VLines)</code>, for horizontal and vertical lines; <code>visual(Rangebars)</code> to draw vertical or horizontal line segments.</p>
 <p>The graph of a function can be drawn using <code>Lines</code>, as in this example, where we add in different range bars to emphasize the role that the two parameters play in this function’s graph:</p>
-<div id="eb2bd316" class="cell" data-execution_count="25">
+<div id="df659611" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ϕ</span>(x; μ<span class="op">=</span><span class="fl">0</span>, σ<span class="op">=</span><span class="fl">1</span>) <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fu">sqrt</span>(<span class="fl">2</span><span class="op">*</span><span class="cn">pi</span><span class="op">*</span>σ<span class="op">^</span><span class="fl">2</span>) <span class="op">*</span> <span class="fu">exp</span>(<span class="fu">-</span>(<span class="fl">1</span><span class="op">/</span>(<span class="fl">2</span>σ)) <span class="op">*</span> (x <span class="op">-</span> μ)<span class="op">^</span><span class="fl">2</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">range</span>(<span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length<span class="op">=</span><span class="fl">251</span>)</span>
@@ -782,25 +779,25 @@ Figure&nbsp;6.5: Quantile-quantile plots. The left graphic uses a reference norm
 <h2 data-number="6.3" class="anchored" data-anchor-id="bivariate-relationships"><span class="header-section-number">6.3</span> Bivariate relationships</h2>
 <p>Scatterplots with trend lines are easily produced within the <code>AlgebraOfGraphics</code> framework: the <code>Scatter</code> visual creates scatter plots; for trend lines there is the <code>smooth</code> transformation to fit a loess line, and the <code>linear</code> transformation to fit linear models.</p>
 <p>This first set of commands shows how to fit a smoother (upper left graphic in <a href="#fig-scatterplot-example" class="quarto-xref">Figure&nbsp;<span>6.6</span></a>). The <code>smooth</code> function has arguments which pass on to <code>Loess.loess</code>.</p>
-<div id="4346d7fa" class="cell" data-execution_count="26">
+<div id="10350d32" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> <span class="fu">visual</span>(Scatter) <span class="op">+</span> <span class="fu">smooth</span>()</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> d <span class="op">*</span> layers <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, <span class="op">:</span>bill_depth_mm);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>linear</code> function draws the fitted regression line and shades an interval automatically (the <code>interval</code> argument). Linear prediction under model assumptions provides a means to identify confidence intervals for the <em>mean</em> response (the average value were the covariates held fixed and the response repeatedly samples) and for the <em>predicted</em> response for a single observation. The latter are wider, as single observations have more variability than averages of observations. A value of <code>nothing</code> suppresses this aspect.</p>
 <p>This next set of commands shows (upper-right figure of <a href="#fig-scatterplot-example" class="quarto-xref">Figure&nbsp;<span>6.6</span></a>) one way to add a linear regression line. As the mapping for <code>linear</code> does not include the grouping variable, (<code>color</code>) the line is based on all the data:</p>
-<div id="0b133699" class="cell" data-execution_count="27">
+<div id="24789881" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="op">=</span> d <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>bill_length_mm, <span class="op">:</span>bill_depth_mm)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>p2a <span class="op">=</span> d1 <span class="op">*</span> <span class="fu">visual</span>(Scatter) <span class="op">*</span> <span class="fu">mapping</span>(color<span class="op">=:</span>species)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>p2b <span class="op">=</span> d1 <span class="op">*</span> <span class="fu">linear</span>()</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> p2a <span class="op">+</span> p2b;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Whereas with this next specification, <code>color</code> is mapped for both the <code>linear</code> transformation and the <code>Scatter</code> visual. This groups the data and separate lines are fit to each. We can see (lower-left figure of <a href="#fig-scatterplot-example" class="quarto-xref">Figure&nbsp;<span>6.6</span></a>) that whereas the entire data shows a negative correlation, the cohorts are all positively correlated, an example of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson’s paradox</a>.</p>
-<div id="312eb282" class="cell" data-execution_count="28">
+<div id="55a85ff0" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> <span class="fu">visual</span>(Scatter) <span class="op">+</span> <span class="fu">linear</span>()</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>p3 <span class="op">=</span> d1 <span class="op">*</span> layers <span class="op">*</span>  <span class="fu">mapping</span>(color<span class="op">=:</span>species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Adding <code>layout=:sex</code> shows more clearly (lower-right figure of <a href="#fig-scatterplot-example" class="quarto-xref">Figure&nbsp;<span>6.6</span></a>) that each group has a regression line fit, that is the multiplicative model is fit.</p>
-<div id="9f5a59ad" class="cell" data-execution_count="29">
+<div id="595003ba" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="op">=</span> d1 <span class="op">*</span> layers <span class="op">*</span>  <span class="fu">mapping</span>(color<span class="op">=:</span>species, layout<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-fig-scatterplot-example" class="cell" data-execution_count="30">
@@ -820,7 +817,7 @@ Figure&nbsp;6.6: Scatter plots of bill depth by bill width produced by varying s
 <section id="corner-plot" class="level3" data-number="6.3.1">
 <h3 data-number="6.3.1" class="anchored" data-anchor-id="corner-plot"><span class="header-section-number">6.3.1</span> Corner plot</h3>
 <p>A corner plot, as produced by the <code>PairPlots</code> package through its <code>pairplot</code> function, is a quick plot to show pair-wise relations amongst multiple numeric values. The graphic uses the lower part of a grid to show paired scatterplots with, by default, contour lines highlighting the relationship. On the diagonal are univariate density plots.</p>
-<div id="45f57bc2" class="cell" data-execution_count="31">
+<div id="31db1b6e" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">PairPlots</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>nms <span class="op">=</span> <span class="fu">names</span>(penguins, <span class="fl">3</span><span class="op">:</span><span class="fl">5</span>)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="fu">select</span>(penguins, nms <span class="op">.=&gt;</span> <span class="fu">replace</span>.(nms, <span class="st">"_mm"</span> <span class="op">=&gt;</span> <span class="st">""</span>, <span class="st">"_"</span> <span class="op">=&gt;</span> <span class="st">" "</span>)) <span class="co"># adjust names</span></span>
@@ -864,21 +861,21 @@ Figure&nbsp;6.7: 3D scatter plots of bill length, bill depth, and flipper length
 <section id="categorical-data" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="categorical-data"><span class="header-section-number">6.4</span> Categorical data</h2>
 <p>The distribution of the surveyed species is not the same. A bar chart can illustrate (upper-left graphic of <a href="#fig-barplot-example" class="quarto-xref">Figure&nbsp;<span>6.8</span></a>). The <code>frequency</code> transform does the counting:</p>
-<div id="7de7ba55" class="cell" data-execution_count="33">
+<div id="104e8d7b" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> d <span class="op">*</span> <span class="fu">frequency</span>() <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>species);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Two categories can be illustrated, we need <code>dodge</code> set here to avoid overplotting of the bars. In this example, following the <code>AlgebraOfGraphics</code> tutorial, we add in information about the island. This shows (upper-right graphic of <a href="#fig-barplot-example" class="quarto-xref">Figure&nbsp;<span>6.8</span></a>) that two species are found on just 1 island, whereas Adelie is found on all three.</p>
-<div id="e38f3fa5" class="cell" data-execution_count="34">
+<div id="cbda2cc6" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="op">=</span> d <span class="op">*</span> <span class="fu">frequency</span>() <span class="op">*</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>species, color<span class="op">=:</span>island, dodge<span class="op">=:</span>island);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using <code>stack</code> in place of <code>dodge</code> presents a stacked bar chart (lower-left graphic of <a href="#fig-barplot-example" class="quarto-xref">Figure&nbsp;<span>6.8</span></a>):</p>
-<div id="4280d5a4" class="cell" data-execution_count="35">
+<div id="69c6e687" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>p3 <span class="op">=</span> d <span class="op">*</span> <span class="fu">frequency</span>() <span class="op">*</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>species, color<span class="op">=:</span>island, stack<span class="op">=:</span>island);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A third category can be introduced using <code>layout</code>, <code>col</code>, or <code>row</code> (lower-right graphic of <a href="#fig-barplot-example" class="quarto-xref">Figure&nbsp;<span>6.8</span></a>):</p>
-<div id="9c123a7a" class="cell" data-execution_count="36">
+<div id="0250fb28" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="op">=</span> d <span class="op">*</span> <span class="fu">frequency</span>() <span class="op">*</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(<span class="op">:</span>species, color<span class="op">=:</span>island, stack<span class="op">=:</span>island) <span class="op">*</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mapping</span>(row<span class="op">=:</span>sex);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

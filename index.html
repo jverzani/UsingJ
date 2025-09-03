@@ -320,8 +320,9 @@ window.Quarto = {
 <section id="julia-introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Julia introduction</h1>
 <p>This is a collection of notes for using <code>Julia</code> for introductory statistics.</p>
-<p>In case you haven’t heard, <a href="https://julialang.org/">Julia</a> is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance – Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than <code>R</code> and <code>Python</code>, widely used scripting languages for the tasks illustrated herein.</p>
-<p>Why these notes on introductory statistics? No compelling reason save I had done something similar for <code>R</code> when <code>R</code> was a fledgling <code>S-Plus</code> clone. No more, <code>R</code> is a juggernaut, and it is almost certain <code>Julia</code> will never replace <code>R</code> as the programming language of choice for statistics. Besides, <code>Julia</code> users can already interface with <code>R</code> quite easily through <code>RCall</code>. <em>However</em>, there are some reasons that <code>Julia</code> could be a useful language when learning basic inferential statistics, especially if other real strengths of the <code>Julia</code> ecosystem were needed. So these notes show how <code>Julia</code> can be used for these tasks, and, hopefully, shows that it works pretty well.</p>
+<p>In case you haven’t heard, <a href="https://julialang.org/">Julia</a> is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance—Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than <code>R</code> and <code>Python</code>, widely used scripting languages for the tasks illustrated herein.</p>
+<p>Why these notes on introductory statistics? No compelling reason save I had done something similar for <code>R</code> when <code>R</code> was a fledgling <code>S-Plus</code> clone. No more, <code>R</code> is a juggernaut, and it is almost certain <code>Julia</code> will never replace <code>R</code> as the programming language of choice for statistics. Besides, <code>Julia</code> users can already interface with <code>R</code> quite easily through <code>RCall</code>.</p>
+<p><em>However</em>, there are some reasons that <code>Julia</code> could be a useful language when learning basic inferential statistics, especially if other real strengths of the <code>Julia</code> ecosystem were needed. So these notes show how <code>Julia</code> can be used for these tasks, and, hopefully, shows that it works pretty well.</p>
 <p>There are some great books published about using <code>Julia</code> <span class="citation" data-cites="bezanson2017julia">(<a href="references.html#ref-bezanson2017julia" role="doc-biblioref">Bezanson et al. 2017</a>)</span> with data science, within which much of this material is covered. For example, <span class="citation" data-cites="JuliaForDataAnalysis">(<a href="references.html#ref-JuliaForDataAnalysis" role="doc-biblioref">Kamiński 2022</a>)</span> is a quite thorough treatmeant, <span class="citation" data-cites="storopolihuijzeralonso2021juliadatascience">(<a href="references.html#ref-storopolihuijzeralonso2021juliadatascience" role="doc-biblioref">Storopoli et al. 2021</a>)</span> is very well done, <span class="citation" data-cites="nazarathy2021statisticsjulia">(<a href="references.html#ref-nazarathy2021statisticsjulia" role="doc-biblioref">Nazarathy and Klok 2021</a>)</span> covers topics here (cf.&nbsp;the <a href="https://www.youtube.com/watch?v=IlPoU5Yr2QI">JuliaCon Workshop</a>). <span class="citation" data-cites="RomeoAndJulia">(<a href="references.html#ref-RomeoAndJulia" role="doc-biblioref">Lukaszuk 2023</a>)</span> covers many of the topics here with a Biologist’s viewpoint. The quarto book <a href="https://juliamixedmodels.github.io/EmbraceUncertainty/">Embrace Uncertainty</a> <span class="citation" data-cites="Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia">(<a href="references.html#ref-Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia" role="doc-biblioref">Alday et al. 2022</a>)</span> covers the more advanced topic of Mixed-effects Models in <code>Julia</code>. Nothing here couldn’t be found in those resources, these notes are just an introduction.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -338,7 +339,7 @@ Contribute
 </div>
 <section id="installing-and-running-julia" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="installing-and-running-julia"><span class="header-section-number">1.1</span> Installing and running Julia</h2>
-<p><code>Julia</code> can be downloaded from <a href="https://julialang.org/">julialang.org</a>. The language is evolving rapidly. The latest official release is recommended. These notes should work with any version since <code>v"1.6.0"</code>. It is recommended to use a version <code>v"1.9.0"</code> or later, as there are significant speedups with external packages that make the user experience even better.</p>
+<p><code>Julia</code> can be downloaded from <a href="https://julialang.org/">julialang.org</a> using <code>juliaup</code>. The language is evolving rapidly. The latest official release is recommended. These notes should work with any version since <code>v"1.10.0"</code>. It is recommended to use the latest version, as the language had general improvement with each new release and some external packages take advantage of these.</p>
 <p>Once downloaded and installed the <code>Julia</code> installation will provide a <em>command line</em> for interactive usage and a binary to run scripts. It is envisioned most users will use an alternative interface, though <code>Julia</code> has an excellent REPL for command-line usage.</p>
 <p>Some alternatives to the REPL for interacting with <code>Julia</code> are:</p>
 <ul>
@@ -357,7 +358,7 @@ Contribute
 <section id="overview-of-some-basics" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="overview-of-some-basics"><span class="header-section-number">1.2</span> Overview of some basics</h2>
 <p>This section gives a quick orientation for using <code>Julia</code>. See this compiled collection of <a href="https://julialang.org/learning/tutorials/">tutorials</a> for more comprehensive introductions.</p>
-<p>As will be seen, <code>Julia</code> use <em>multiple dispatch</em> (as does <code>R</code>) where different function methods can be called using the same generic name. Different methods are dispatched depending on the type and number of the arguments. The <code>+</code> sign above, is actually a function call to the <code>+</code> function, which in base <code>Julia</code> has over 200 different methods, as there are many different implementations for addition. For a beginner this is great – fewer new function names to remember.</p>
+<p>As will be seen, <code>Julia</code> use <em>multiple dispatch</em> (as does <code>R</code>) where different function methods can be called using the same generic name. Different methods are dispatched depending on the type and number of the arguments. The <code>+</code> sign above, is actually a function call to the <code>+</code> function, which in base <code>Julia</code> has over <span class="math inline">\(150\)</span> different methods, as there are many different implementations for addition. For a beginner this is great—fewer new function names to remember; for a power user this is greate—new methods can be specialized for performance purposes.</p>
 <p><code>Julia</code> is a <em>dynamically typed</em> language, like <code>R</code> and <code>Python</code>, meaning variables can be reassigned to different values and with different types.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Dynamicness makes interactive usage at the REPL or through a notebook much easier.</p>
 <p>Julia supports the usual mathematical operations familiar to users of a calculator, such as <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, and <code>^</code>. In addition, there a numerous built in functions such as mathematical ones like <code>sqrt</code> or programming oriented ones, like <code>map</code>.</p>
 <p>These functions are called with arguments which may be <em>positional</em> (<span class="math inline">\(0\)</span>, <span class="math inline">\(1,\)</span> or more positional arguments) or specified by <em>keywords</em>. Multiple dispatch considers the positions and types of arguments a function is called with.</p>
@@ -391,7 +392,7 @@ Interactive help
 <pre><code>4.4</code></pre>
 </div>
 </div>
-<p>The takeaway – we can focus more on what the computations mean, and less on how to program a particular computation.</p>
+<p>The takeaway—we can focus more on what the computations mean, and less on how to program a particular computation.</p>
 </section>
 <section id="add-on-packages" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="add-on-packages"><span class="header-section-number">1.3</span> Add-on packages</h2>
@@ -412,8 +413,6 @@ Interactive help
 <li><p><a href="https://github.com/JuliaStats/GLM.jl"><code>GLM</code></a>, <a href="https://github.com/JuliaStats/Loess.jl"><code>Loess</code></a>, and <a href="https://github.com/getzze/RobustModels.jl"><code>RobustModels</code></a>, for statistical modeling.</p></li>
 </ul>
 <p>Most of these are maintained by the <code>StatsBase</code> organization, which provides the <code>StatsKit</code> package to load all these with a single command, though we don’t illustrate that.</p>
-<hr>
-<p>Copyright 2023, John Verzani. All rights reserved.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -441,7 +440,7 @@ Storopoli, J., Huijzer, R., and Alonso, L. (2021), <em><a href="https://juliadat
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>With the one caveat that generic function names can not be reassigned as variables or vice versa.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>With the one caveat that generic function names can not be reassigned as variables or vice versa within a session.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -869,7 +868,7 @@ Storopoli, J., Huijzer, R., and Alonso, L. (2021), <em><a href="https://juliadat
       &nbsp;
     <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/jverzani/UsingJ/edit/master/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
-<p>© Copyright 2023, John Verzani. All rights reserved.</p>
+<p>© Copyright 2023-25, John Verzani. All rights reserved.</p>
 </div>
   </div>
 </footer>

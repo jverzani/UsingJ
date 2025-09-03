@@ -1,9 +1,13 @@
 /.quarto/
 /_book/
 /_site/
+/site_libs/
 /_freeze/
 /*/*_files/
 /*/*.ipynb/
 TODO.md
 Manifest.toml
 _quarto_bak.yml
+TODO_files/*
+index_files/*
+references_files/*

@@ -1,4 +1,4 @@
-version: "0.0.4"
+version: "0.0.5"
 engines: ['julia']
 
 project:
@@ -18,7 +18,7 @@ book:
 #  downloads: pdf
   page-footer:
     right: |
-      © Copyright 2023, John Verzani. All rights reserved.
+      © Copyright 2023-25, John Verzani. All rights reserved.
   chapters:
     - index.qmd
     - EDA/univariate-julia.qmd

@@ -166,7 +166,7 @@ Since a data set is a single realization, and probability speaks to the frequenc
 
 > For a data set drawn from iid random sample with a  $Normal(\mu,\sigma)$ population a $(1-\alpha)\cdot 100$% confidence interval is given by $\bar{x} \pm z_{1-\alpha/2}\cdot \sigma/\sqrt{n}$, where $z_{1-\alpha/2}=-z_{\alpha/2}$ satisfies $P(z_{\alpha/2} < Z < z_{1-\alpha/2})$, $Z$ being a standard normal random variable.
 
-@fig-ci-works illustrates confidence intervals based on several independent random samples. Occasionally -- with a probability controlled by $\alpha$ -- the intervals do not cover the true population mean.
+@fig-ci-works illustrates confidence intervals based on several independent random samples. Occasionally---with a probability controlled by $\alpha$---the intervals do not cover the true population mean.
 
 
 ```{julia}
@@ -241,7 +241,7 @@ Under the assumptions above (iid sample, normal population), the standard error 
 ::: {#exm-t-test}
 ##### Confidence interval for the mean, no assumption on $\sigma$
 
-Returning to the coffee-dispenser technician, a cappuccino dispenser has two sources of variance for the amount poured -- the coffee and the foam. This is harder to engineer precisely, so is assumed unknown in the calibration process. Suppose the technician again took $6$ samples to gauge the value of $\mu$.
+Returning to the coffee-dispenser technician, a cappuccino dispenser has two sources of variance for the amount poured---the coffee and the foam. This is harder to engineer precisely, so is assumed unknown in the calibration process. Suppose the technician again took $6$ samples to gauge the value of $\mu$.
 
 With no assumptions on the value of $\mu$ *or* $\sigma$. A $95$% confidence interval for $\mu$ would be computed by:
 
@@ -256,7 +256,7 @@ SE = s / sqrt(n)
 ```
 
 
-These computations -- and many others -- are carried out by functions in the `HypothesisTests` package. For example, we could have computed the values above through:
+These computations---and many others---are carried out by functions in the `HypothesisTests` package. For example, we could have computed the values above through:
 
 ```{julia}
 using HypothesisTests
@@ -641,7 +641,7 @@ We can compare the confidence interval identified for $\mu$ to that identified t
 confint(OneSampleTTest(ys), level = 0.95)
 ```
 
-The two differ -- they use different sampling distributions and methods -- though simulations will show both manners create CIs capturing the true mean at the rate of the confidence level.
+The two differ---they use different sampling distributions and methods---though simulations will show both manners create CIs capturing the true mean at the rate of the confidence level.
 
 The above example does not showcase the advantage of the maximum likelihood methods, but hints at a systematic way to find confidence intervals, which for some cases is optimal, and is more systematic then finding some pivotal quantity (e.g. the $T$-statistic under a normal population assumption).
 
@@ -651,7 +651,7 @@ The above example does not showcase the advantage of the maximum likelihood meth
 
 A confidence interval is a means to estimate a population parameter with an appreciation for the variability involved in random sampling. However, sometimes a different language is sought. For example, we might hear a newer product is *better* than an old one, or amongst two different treatments there is a *difference*. These aren't comments about the specific value. The language of hypothesis tests affords the flexibility to incorporate this language.
 
-The basic setup is similar to a courtroom trial in the United States -- as seen on TV:
+The basic setup is similar to a courtroom trial in the United States---as seen on TV:
 
 * a defendant is judged by a jury with an *assumption of innocence*
 * presentation of evidence is given
@@ -746,7 +746,7 @@ A default value for the null was chosen (`h_0`), a default level for the confide
 
 #### Equivalence between hypothesis tests and confidence intervals
 
-For many tests, such as the one-sample $T$-test, there is an equivalence between a two-sided significance test with significance level $\alpha$ and a $(1-\alpha)\cdot 100$% confidence interval -- no surprise given the same $T$-statistic is employed by both.
+For many tests, such as the one-sample $T$-test, there is an equivalence between a two-sided significance test with significance level $\alpha$ and a $(1-\alpha)\cdot 100$% confidence interval---no surprise given the same $T$-statistic is employed by both.
 
 For example, consider a two-sided significance test of $H_0: \mu=\mu_0$. Let $\alpha$ be the level of significance: we "reject" the null hypothesis if the $p$-value is less than $\alpha$. An iid random sample is summarized by the observed value of the $T$-statistic, $(\bar{x} - \mu_0)/(s/\sqrt{n})$. Let $t^* = t_{1-\alpha/2}$ be the quantile, then if the $p$-value is less than $\alpha$, we must have the observed value in absolute value is greater than $t^*$. That is
 
@@ -1275,7 +1275,7 @@ ps /= sum(ps) # make sum to exactly 1
 χ².stat
 ```
 
-We don't show the $p$ value -- yet -- as we need to consider an adjusted degrees of freedom. There are $s=2$ parameters estimated from the data, so the degrees of freedom of this test statistic are $18 - 2 - 1 = 15$. The $p$-value is found by computing the area to the *right* of the observed value, giving:
+We don't show the $p$ value---yet---as we need to consider an adjusted degrees of freedom. There are $s=2$ parameters estimated from the data, so the degrees of freedom of this test statistic are $18 - 2 - 1 = 15$. The $p$-value is found by computing the area to the *right* of the observed value, giving:
 
 ```{julia}
 1 - cdf(Chisq(18 - 2 - 1), χ².stat)

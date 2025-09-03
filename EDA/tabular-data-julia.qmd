@@ -33,7 +33,7 @@ There are different ways to construct a data frame.
 
 Consider the task of the Wirecutter in trying to select the best [carry on travel bag](https://www.nytimes.com/wirecutter/reviews/best-carry-on-travel-bags/#how-we-picked-and-tested). After compiling a list of possible models by scouring travel blogs etc., they select some criteria (capacity, compartment design, aesthetics, comfort, ...) and compile data, similar to what one person collected in a
 [spreadsheet](https://docs.google.com/spreadsheets/d/1fSt_sO1s7moXPHbxBCD3JIKPa8QIZxtKWYUjD6ElZ-c/edit#gid=744941088).
-Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatibility, loading style, and a last-checked date -- as this market improves constantly.
+Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatibility, loading style, and a last-checked date---as this market improves constantly.
 
 ```
 product         v  p    l loads       checked
@@ -140,7 +140,7 @@ push!(d, Dict(:b => "Genius", :v => 25, :p => 228, :lap => "Y",
               :load => "clamshell", :d => Date("2022-10-01")))
 ```
 
-(A dictionary is a `key => value` container like a named tuple, but keys may be arbitrary `Julia` objects -- not always symbols -- so we explicitly use symbols in the above command.)
+(A dictionary is a `key => value` container like a named tuple, but keys may be arbitrary `Julia` objects---not always symbols---so we explicitly use symbols in the above command.)
 
 ::: {.callout-note}
 ##### The `Tables` interface
@@ -185,7 +185,7 @@ The filename, may be more general. For example, it could be `download(url)` for 
 
 ::: {.callout-note}
 ##### Read and write
-The methods `read` and `write` are qualified in the above usage with the `CSV` module. In the `Julia` ecosystem, the `FileIO` package provides a common framework for reading and writing files; it uses the verbs `load` and `save`. This can also be used with `DataFrames`, though it works through the `CSVFiles` package -- and not `CSV`, as illustrated above. The read command would look like `DataFrame(load(fname))` and the write command like `save(fname, df)`. Here `fname` would have a ".csv" extension so that the type of file could be detected.
+The methods `read` and `write` are qualified in the above usage with the `CSV` module. In the `Julia` ecosystem, the `FileIO` package provides a common framework for reading and writing files; it uses the verbs `load` and `save`. This can also be used with `DataFrames`, though it works through the `CSVFiles` package---and not `CSV`, as illustrated above. The read command would look like `DataFrame(load(fname))` and the write command like `save(fname, df)`. Here `fname` would have a ".csv" extension so that the type of file could be detected.
 :::
 
 | Command | Description |
@@ -266,7 +266,7 @@ can be very complicated, but here we only assume that `r"name"` will
 match "name" somewhere in the string; `r"^name"` and `r"name$"` will
 match "name" at the beginning and ending of a string.  Using a regular
 expression will return a data frame row (when a row index is
-specified) -- not a value -- as it is possible to return 0, 1 or more
+specified)---not a value---as it is possible to return 0, 1 or more
 columns in the selection.
 
 
@@ -395,7 +395,7 @@ For the `cars` data set, the latter can be used to extract the Volkswagen models
 cars[cars.Manufacturer .== "Volkswagen", :]
 ```
 
-This approach lends itself to the description "find all rows matching some value" then "extract the identified rows," -- written as two steps to emphasize there are two passes through the data. Another mental model would be loop over the rows, and keep those that match the query. This is done generically by the `filter` function for collections in `Julia` or by the `subset` function of `DataFrames`.
+This approach lends itself to the description "find all rows matching some value" then "extract the identified rows,"---written as two steps to emphasize there are two passes through the data. Another mental model would be loop over the rows, and keep those that match the query. This is done generically by the `filter` function for collections in `Julia` or by the `subset` function of `DataFrames`.
 
 The `filter(predicate, collection)` function is used to identify just the values in the collection for which the predicate function returns `true`. When a data frame is used with `filter`, the iteration is over the rows, so the wrapping `eachrow` iterator is not needed. We need a predicate function to replace the `.==` above. One follows. It doesn't need `.==`, as `r` is a data frame row and access produces a value not a vector:
 
@@ -796,7 +796,7 @@ legos.youngest_age = categorical(legos.youngest_age, ordered=true)
 first(legos[:,r"age"], 2)
 ```
 
-With that ordering, an expected pattern becomes clear -- kits for older users have on average more pieces -- though there are unexpected exceptions:
+With that ordering, an expected pattern becomes clear---kits for older users have on average more pieces---though there are unexpected exceptions:
 
 ```{julia}
 @chain legos begin

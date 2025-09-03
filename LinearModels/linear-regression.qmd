@@ -307,7 +307,7 @@ res = lm(fm, cereal)
 ```
 
 
-The output shows what might have been anticipated: there appears to be no connection between `Sodium` and `Calories`, though were this data on dinner foods that might not be the case. The $T$-test displayed for `Sodium` is  a test of whether  the slope based on `Sodium` is $0$ -- holding the other variables constant -- and the large $p$-value would lead us to accept that hypotheses.
+The output shows what might have been anticipated: there appears to be no connection between `Sodium` and `Calories`, though were this data on dinner foods that might not be the case. The $T$-test displayed for `Sodium` is  a test of whether  the slope based on `Sodium` is $0$---holding the other variables constant---and the large $p$-value would lead us to accept that hypotheses.
 
 
 We drop this variable from the model and refit:
@@ -392,7 +392,7 @@ EqualVarianceTTest(y2, y1)
 
 However, some comments are warranted. We would have found a slightly different answer (a different sign) had we done `EqualVarianceTTest(y1, y2)`. This is because a choice is made if we consider $\bar{y}_1-\bar{y}_2$ or $\bar{y}_2 - \bar{y}_1$ in the statistic.
 
-In the use of the linear model, there is a new subtlety -- the `group` variable is *categorical* and not numeric. A peek at the *model matrix* (`modelmatrix(res)`) will show that the categorical variable was *coded* with a $0$ for each `g1` and $1$ for each `g2`. The details are handled by the underlying `StatsModels` package which first creates a `ModelFrame` which takes a formula and the data; `ModelMatrix` then creates the matrix, $X$. The call to `ModelFrame` allows a specification of *contrasts*. The above uses the `DummyCoding`, which picks a  base level (`"g1"` in this case) and then creates a variable for *each* other level, these variables having values either being `0` or `1`, and `1` only when the factor has that level. Using the notation $1_{j}(x_i)$ for this, we have the above call to `lm` fits the model $y_i = \beta_0 + \beta_1 \cdot 1_{\text{g2}}(x_i) + e_i$ and the model matrix shows this (2nd row below):
+In the use of the linear model, there is a new subtlety---the `group` variable is *categorical* and not numeric. A peek at the *model matrix* (`modelmatrix(res)`) will show that the categorical variable was *coded* with a $0$ for each `g1` and $1$ for each `g2`. The details are handled by the underlying `StatsModels` package which first creates a `ModelFrame` which takes a formula and the data; `ModelMatrix` then creates the matrix, $X$. The call to `ModelFrame` allows a specification of *contrasts*. The above uses the `DummyCoding`, which picks a  base level (`"g1"` in this case) and then creates a variable for *each* other level, these variables having values either being `0` or `1`, and `1` only when the factor has that level. Using the notation $1_{j}(x_i)$ for this, we have the above call to `lm` fits the model $y_i = \beta_0 + \beta_1 \cdot 1_{\text{g2}}(x_i) + e_i$ and the model matrix shows this (2nd row below):
 
 ```{julia}
 modelmatrix(res) |> permutedims # turned on side to save page space

@@ -109,7 +109,7 @@ The `missing` value propagates through computations:
 sum(hip_cost)
 ```
 
-In particular, all of these  combinations with `missing` yield `missing`, as they should -- if data is not available, combinations based on that data are still not available:
+In particular, all of these  combinations with `missing` yield `missing`, as they should---if data is not available, combinations based on that data are still not available:
 
 ```{julia}
 1 + missing, 1 - missing, 1*missing, 1/missing, missing^2, missing == true
@@ -167,7 +167,7 @@ For the many purposes, tuples can be exchanged for vectors, as both are iterable
 sum(whale), mean(whale), length(whale)
 ```
 
-Unlike vectors, but like numbers, tuples can not be *modified* after construction. This allows tuples to be quite useful -- and performant -- for programming purposes.
+Unlike vectors, but like numbers, tuples can not be *modified* after construction. This allows tuples to be quite useful---and performant---for programming purposes.
 
 Tuples can also have names. The basic construction uses "key=value" pairs:
 
@@ -257,7 +257,7 @@ The range `1:1` specifies the value `1`, as does just `1`, but for indexing the 
 whale[1], whale[1:1]
 ```
 
-The design is indexing by a scalar -- like `1` -- can drop dimensions (the vector becomes a scalar), whereas indexing by a container -- like `1:1` or, say, `[1]` -- does not drop dimensions. The documentation for indexing of an array has: "If all the indices are scalars, then the result, `X`, is a single element from the array, `A`. Otherwise, `X` is an array with the same number of dimensions as the sum of the dimensionalities of all the indices."
+The design is indexing by a scalar---like `1`---can drop dimensions (the vector becomes a scalar), whereas indexing by a container---like `1:1` or, say, `[1]`---does not drop dimensions. The documentation for indexing of an array has: "If all the indices are scalars, then the result, `X`, is a single element from the array, `A`. Otherwise, `X` is an array with the same number of dimensions as the sum of the dimensionalities of all the indices."
 
 :::
 
@@ -295,7 +295,7 @@ whale_copy = whale
 show(whale_copy)
 ```
 
-the container is copied, but -- unlike if we had used `copy(whale)` -- the two variables point to the same container. When a vector is passed into a function, the function works with the container, not a copy.
+the container is copied, but---unlike if we had used `copy(whale)`---the two variables point to the same container. When a vector is passed into a function, the function works with the container, not a copy.
 
 ### Modification
 
@@ -363,7 +363,7 @@ whale .= [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
 show(whale)
 ```
 
-But `whale` is not a new object -- as it would be without that dot -- but rather, these values are placed into the container `whale` already refers to -- which also is the container `whale_copy` points at:
+But `whale` is not a new object---as it would be without that dot---but rather, these values are placed into the container `whale` already refers to---which also is the container `whale_copy` points at:
 
 ```{julia}
 show(whale_copy)
@@ -446,7 +446,7 @@ This assigns `whale` to a *new* container which accepts floating point values, a
 
 Though cumbersome, this is not typical usage, as the constructor used to create the data set will promote to a common type, so it would only matter when adjusting the initial values.
 
-For the special case of assigning a *missing* value, the `allowmissing` function from the `DataFrames` package^[The `DataFrames` package is almost always utilized, as it provides a fundamental type to work with tabular data, the data frame. With data frames, the `allowmissing!` function is used, as well, for this task.] creates a vector with a type that allows -- as well -- missing values^[The `allowmissing` function creates a union type with `Missing` in addition to the original data type. It some printouts, a `?` is appended to the type name to indicate this addition.]. Again, re-assignment is necessary:
+For the special case of assigning a *missing* value, the `allowmissing` function from the `DataFrames` package^[The `DataFrames` package is almost always utilized, as it provides a fundamental type to work with tabular data, the data frame. With data frames, the `allowmissing!` function is used, as well, for this task.] creates a vector with a type that allows---as well---missing values^[The `allowmissing` function creates a union type with `Missing` in addition to the original data type. It some printouts, a `?` is appended to the type name to indicate this addition.]. Again, re-assignment is necessary:
 
 ```{julia}
 using DataFrames
@@ -456,7 +456,7 @@ whale[1] = missing
 
 #### Broadcasting
 
-As seen, the functions `length` and `sum` are reductions -- in this case, returning a single number, a scalar, from a vector of numbers. To compute a *sample standard deviation*, say, we follow the formula:
+As seen, the functions `length` and `sum` are reductions---in this case, returning a single number, a scalar, from a vector of numbers. To compute a *sample standard deviation*, say, we follow the formula:
 
 $$
 s = \sqrt{\frac{\sum_i (x_i - \bar{x})^2 }{n-1}}.
@@ -474,7 +474,7 @@ To do so we would need to:
 * Divide a number by another number and take the square root.
 
 Embarking on this punch list with a naive attempt at the first --
-`whale - mean(whale)` -- will fail.
+`whale - mean(whale)`---will fail.
 
 The subtraction of a scalar value from a vector value is not defined, as `Julia` is not implicitly vectorized. Rather the user must be explicit. For this, the concept of broadcasting is useful. In this context, broadcasting will expand the scalar to match the size of the vector and then use vector subtraction to find the result. Broadcasting is done simply by adding a "." (the dot) to the function. For infix operations like `-` this is *before* the operator:
 
@@ -568,7 +568,7 @@ There are different options available for the storage of categorical data.
 
 #### Character data
 
-The `String` type in `Julia` is the default type for holding character data. Strings are created with matching single quotes *or* -- for multiline strings -- with matching triple quotes:
+The `String` type in `Julia` is the default type for holding character data. Strings are created with matching single quotes *or*---for multiline strings---with matching triple quotes:
 
 ```{julia}
 s = "The quick brown fox ..."
@@ -654,7 +654,7 @@ job_title = ["Data Scientist", "Machine Learning Scientist", "Big Data Engineer"
 
 #### Symbols
 
-`Julia` as a language can be used to represent the language's code as a data structure in the [language](https://stackoverflow.com/questions/23480722/what-is-a-symbol-in-julia). Symbols are needed to refer to the name, or identifier, of a variable as opposed to the values in the variable. Symbols, being part of the language, are used for other purposes, such as keys for a named tuple of flags for an argument. The access pattern `nt.a` has been mentioned; this is a convenience for `getfield(nt, :a)`, the symbol being used as a key. When data frames are introduced -- essentially a collection of matched data vectors -- symbols will be used to reference the individual variables.
+`Julia` as a language can be used to represent the language's code as a data structure in the [language](https://stackoverflow.com/questions/23480722/what-is-a-symbol-in-julia). Symbols are needed to refer to the name, or identifier, of a variable as opposed to the values in the variable. Symbols, being part of the language, are used for other purposes, such as keys for a named tuple of flags for an argument. The access pattern `nt.a` has been mentioned; this is a convenience for `getfield(nt, :a)`, the symbol being used as a key. When data frames are introduced---essentially a collection of matched data vectors---symbols will be used to reference the individual variables.
 
 The simple constructor for a symbol is `:`, as in `:some_symbol`. (The `:` constructor makes *expressions*, but in this use, these are interpreted as symbols.) The `Symbol` constructor can also be used to create symbols with spaces, e.g., `Symbol("some symbol")`; the string macro `var"..."` is a convenience.
 
@@ -785,7 +785,7 @@ whale = [74, 122, 235, 111, 292, 111, 211, 133, 156, 79]
 whale[ whale .>= 200 ]
 ```
 
-Or, this example -- which shows the mathematically natural chaining of comparison operators --  filters out only the values in $[100, 125)$:
+Or, this example---which shows the mathematically natural chaining of comparison operators--- filters out only the values in $[100, 125)$:
 
 ```{julia}
 whale[ 100 .<= whale .< 125 ]
@@ -858,7 +858,7 @@ Structured data may not represent statistical data, but is useful nonetheless, e
 
 For a vector of all ones or all zeros, the `ones` and `zeros` functions are useful. The command `ones(n)` will return a vector of `n` zeros using the default `Float64` type. To specify a different type, such as `Int64`, the two-argument form, `ones(T, n)`, is available. Similarly, `zeros` is used to create a vector of zeros. The singular `one()`, `zero()` (one `one(T)` and `zero(T)`) are useful for generic programming. For example, we use the idiom `one.(x)` to create a vector of all `1`s with the length and type of the vector `x`.
 
-Arithmetic sequences, $a, a+h, a+2h, \dots, b$ can be created with the colon operator `a:h:b` or `a:b` when `h` is `1`. This operator returns a recipe for generating the sequence, it is lazy -- it does not generate the sequence. The precedence is such that simple arithmetic operations do not need parentheses. That is `a+1:b-1` represents the sequence $a+1, a+2, \dots, b-1$. Arithmetic sequences prove useful for indexing into a vector.
+Arithmetic sequences, $a, a+h, a+2h, \dots, b$ can be created with the colon operator `a:h:b` or `a:b` when `h` is `1`. This operator returns a recipe for generating the sequence, it is lazy---it does not generate the sequence. The precedence is such that simple arithmetic operations do not need parentheses. That is `a+1:b-1` represents the sequence $a+1, a+2, \dots, b-1$. Arithmetic sequences prove useful for indexing into a vector.
 
 The colon operator for floating point values may or may not stop at `b`. Programming this is harder than it seems. The simple example of `1/10:1/10:3/10` should be $1/10, 2/10, 3/10$, but it turns out that on the computer `1/10 + 2*1/10` is actually *just larger* than `3/10`. See the value of `3/10 - (1/10 + 1/10 + 1/10)` to investigate. However, the algorithm of `:` does produce the result with $3$ values here.
 
@@ -954,7 +954,7 @@ mad(whale; center=mean(whale))
 
 (We use a semicolon to separate positional arguments from keyword arguments, as that is needed to define a keyword, but commas can be used to call a keyword argument. What is important is that any keywords come last when a function is called.)
 
-Functions, as defined above, are methods of a  `generic function`. That is, there can be more than one method for a given name. (There are over 200 methods for the generic function named `+` in base `Julia` -- and packages can extend this even more.) To direct or *dispatch* a call to the appropriate method, `Julia` considers the number and types of its positional arguments. That is, like `+`, functions can be defined differently for integers and floating point values.
+Functions, as defined above, are methods of a  `generic function`. That is, there can be more than one method for a given name. (There are over 200 methods for the generic function named `+` in base `Julia`---and packages can extend this even more.) To direct or *dispatch* a call to the appropriate method, `Julia` considers the number and types of its positional arguments. That is, like `+`, functions can be defined differently for integers and floating point values.
 
 We might like our `MAD` function to be more graceful than to throw a `MethodError` if a vector of strings is passed to it. A vector of strings has type `Vector{String}` so we could make a method just for that type:^[To extend the `mad` function from `StatsBase` requires the extra step of *importing* that function *or* qualifying it with its module, as in `StatsBase.mad(...) = ...`.] `Julia makes adding methods easy, but the types that are used to extend the function shouldn't be owned by other packages, as this is considered **type-piracy**. (Failing to do so may prompt a request for a *letter of marque*.)
 
@@ -1037,7 +1037,7 @@ A *comprehension* is a good alternative to a for loop when accumulation is requi
 [xi - mean(x) for xi in x]
 ```
 
-Comprehensions use *generators*, which can also be used for many other functions, such as `sum`, which was previously illustrated. This form has the advantage of not needing to allocate temporary space to compute. For example `sum([xi for xi in x])` would have to find space for the vector created by the comprehension, but the similar -- and easier to type --  `sum(xi for xi in x)` would not.
+Comprehensions use *generators*, which can also be used for many other functions, such as `sum`, which was previously illustrated. This form has the advantage of not needing to allocate temporary space to compute. For example `sum([xi for xi in x])` would have to find space for the vector created by the comprehension, but the similar---and easier to type--- `sum(xi for xi in x)` would not.
 
 In this example, we sum the squared differences, passing an optional function to `sum`:
 
@@ -1126,9 +1126,9 @@ $$
 
 A property of the mean is when the data is *centered* by the mean, i.e. take the transformation $y_i = x_i - \bar{x}$, then the mean of the $y_i$ is just $0$. Put another way, the mean is the point where the differences to the left and right of the mean even out when added.
 
-The standard deviation, as a sense of scale, has the property that if the data is  centered and *then scaled* by the standard deviation, the center will be $0$ and the scale will be $1$. That is, the $z$-scores have mean $0$ (as they data is centered) and standard deviation $1$ (as the data is scaled) -- the $z$ scores speak to the "shape" or distribution of values of a data set.
+The standard deviation, as a sense of scale, has the property that if the data is  centered and *then scaled* by the standard deviation, the center will be $0$ and the scale will be $1$. That is, the $z$-scores have mean $0$ (as they data is centered) and standard deviation $1$ (as the data is scaled)---the $z$ scores speak to the "shape" or distribution of values of a data set.
 
-These measures are sensitive -- or not *resistant* -- to one or more *outlying* values. For example, the average wealth of people in a bar changes dramatically if someone like a pre-crash Elon Musk walks in. The standard deviation is similar. So measures based on position are better when data is *skewed*, especially if heavily skewed. For these, the median and IQR are not impacted greatly by one large value. That is they are resistant to outliers. The extreme values (the minimum and maximum) are less so. As such, the range of the data is a poor measure of spread, the range of the middle quartiles (the IQR) a much more resistant measure of spread.
+These measures are sensitive---or not *resistant*---to one or more *outlying* values. For example, the average wealth of people in a bar changes dramatically if someone like a pre-crash Elon Musk walks in. The standard deviation is similar. So measures based on position are better when data is *skewed*, especially if heavily skewed. For these, the median and IQR are not impacted greatly by one large value. That is they are resistant to outliers. The extreme values (the minimum and maximum) are less so. As such, the range of the data is a poor measure of spread, the range of the middle quartiles (the IQR) a much more resistant measure of spread.
 
 :::
 

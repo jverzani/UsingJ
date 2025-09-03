@@ -88,7 +88,7 @@ Putting the categorical variable first, presents a graphic (@fig-grouped-dotplot
 
 
 
-Regardless of how the graphic is produced, there appears to be a difference in the centers based on the species, as would be expected -- different species have different sizes.
+Regardless of how the graphic is produced, there appears to be a difference in the centers based on the species, as would be expected---different species have different sizes.
 
 
 
@@ -207,7 +207,7 @@ x_{1}, & x_{2}, \dots, x_{n}\\
 y_{1}, & y_{2}, \dots, y_{n}
 \end{align*}
 
-Or -- to emphasize how the data is paired off -- as $(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)$.
+Or---to emphasize how the data is paired off---as $(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)$.
 
 ### Numeric summaries
 
@@ -797,7 +797,7 @@ First, suppose we simply adjust the fitted lines up or down for each cluster. Th
 m2 = lm(@formula(PetalLength ~ PetalWidth + Species), iris)
 ```
 
-The second row in the output of `m2` has an identical interpretation as for `m1` -- it is the slope of the regression line. The first line of the output in `m1` is the $x$-intercept, which moves the line up or down. Whereas the first of `m2` is the $x$ intercept for a line that describes *just one* of the species, in this case `setosa`. (A coding for the regression model with a categorical variable chooses one reference level, in this case "setosa."). The 3rd and 4th lines are the slopes for the other two species.
+The second row in the output of `m2` has an identical interpretation as for `m1`---it is the slope of the regression line. The first line of the output in `m1` is the $x$-intercept, which moves the line up or down. Whereas the first of `m2` is the $x$ intercept for a line that describes *just one* of the species, in this case `setosa`. (A coding for the regression model with a categorical variable chooses one reference level, in this case "setosa."). The 3rd and 4th lines are the slopes for the other two species.
 
 We can plot these individually, one-by-one, in a similar manner as before, however when we call `predict` we include a level for `:Species`. The result is the middle figure in @fig-iris-scatterplot-regression.
 

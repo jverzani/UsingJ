@@ -103,7 +103,7 @@ The transformation $Z = (X - \mu)/\sigma$, following the $z$-score, centers and 
 
 For a *random sample* $X_1, X_2, \dots, X_n$ the sum $S = \sum_k X_k$ has the property that $E(S) = \sum_k E(X_k)$ ("expectations add"). This is true even if the sample is not iid. For example, finding the average number of heads in $100$ tosses of a fair coin is easy, it being $100 \cdot (1/2) = 50$, the $1/2$ being the expectation of a single heads where $X_i=1$ if heads, and $X_i=0$ if tails.
 
-While $E(X_1 + X_2) = E(X_1) + E(X_2)$, as expectations are *linear* and satisfy $E(aX+bY) = aE(X)+bE(Y)$, it is not the case that $E(X_1 \cdot X_2) = E(X_1) \cdot E(X_2)$ in general -- though it is true when the two random variables are independent. As such, the variance of $S= \sum_k X_k$ is:
+While $E(X_1 + X_2) = E(X_1) + E(X_2)$, as expectations are *linear* and satisfy $E(aX+bY) = aE(X)+bE(Y)$, it is not the case that $E(X_1 \cdot X_2) = E(X_1) \cdot E(X_2)$ in general---though it is true when the two random variables are independent. As such, the variance of $S= \sum_k X_k$ is:
 
 $$
 VAR(\sum_k X_k) = \sum_k VAR(X_k) + 2 \sum_{i < j} COV(X_i, X_j),
@@ -380,7 +380,7 @@ Z = Normal(0, 1)
 mean(Z), std(Z)
 ```
 
-There are many facts about standard normals that are useful to know. First we have the three rules of thumb -- $68$, $95$, $99.7$ -- describing the amount of area above $[-1,1]$, $[-2,2]$, and $[-3,3]$. We can see these from the `cdf` with:
+There are many facts about standard normals that are useful to know. First we have the three rules of thumb---$68$, $95$, $99.7$---describing the amount of area above $[-1,1]$, $[-2,2]$, and $[-3,3]$. We can see these from the `cdf` with:
 
 ```{julia}
 between(Z, a, b) = cdf(Z,b) - cdf(Z,a)
@@ -453,7 +453,7 @@ maximum(abs, rand(T5, 100)), maximum(abs, rand(Z, 100))
 
 @fig-qqplots-distributions shows a quantile-normal plot of $T(3)$ in the lower-left graphic. The long tails cause deviations in the pattern of points from a straight line.
 
-The `skewness` method measures asymmetry. For both the $T$ and the normal distributions -- both bell shaped -- this is $0$. The `kurtosis` function measures *excess kurtosis* a measure of the size of the tails *as compared* to the normal. We can see:
+The `skewness` method measures asymmetry. For both the $T$ and the normal distributions---both bell shaped---this is $0$. The `kurtosis` function measures *excess kurtosis* a measure of the size of the tails *as compared* to the normal. We can see:
 
 ```{julia}
 skewness(T5), skewness(Z), kurtosis(T5), kurtosis(Z)
@@ -480,7 +480,7 @@ In  @fig-qqplots-distributions the lower-right graphic is of the uniform distrib
 ```{julia}
 #| echo: false
 #| label: fig-qqplots-distributions
-#| fig-cap: Quantile-normal plots for different distributions -- $T_3$ is leptokurtic; $T_{100}$ is approximately normal; $U$ is platykurtic; and $E$ is skewed.
+#| fig-cap: Quantile-normal plots for different distributions---$T_3$ is leptokurtic; $T_{100}$ is approximately normal; $U$ is platykurtic; and $E$ is skewed.
 
 probs = range(0.01, 0.99, 40)
 Ds = (N = Normal(0,1), T₃ = TDist(3), T₁₀₀=TDist(100),

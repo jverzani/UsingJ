@@ -81,7 +81,7 @@ The object `p` can be rendered to the screen with the `draw` method resulting in
 ```{julia}
 #| label: fig-basic-boxplot-penguin
 #| fig-cap: Boxplots of bill length for the three penguin species in `penguins`.
-draw(p; figure=(;size=(600,400)),
+draw(p; figure=(; size=(600,400)),
      axis=(; title="Bill length"))
 ```
 
@@ -227,11 +227,11 @@ All these figures appear in @fig-dotplot-variations.
 #| echo: false
 #| label: fig-dotplot-variations
 #| fig-cap: A basic dot plot, a comparable box plot, and an enhanced dot plot. For small data sets, the dot plot can show comparisons of spread and center quite well; reordering based on the center emphasizes the differentiated effect on the response of the grouping variable.
-F = Figure()
-draw!(F[1,1], p1)
-draw!(F[1,2], p2)
-draw!(F[2,1], p3)
-F
+f = Figure()
+draw!(f[1,1], p1)
+draw!(f[1,2], p2)
+draw!(f[2,1], p3)
+f
 ```
 
 ### Faceting
@@ -297,21 +297,25 @@ f
 
 ### Quantile-normal plots
 
-The `QQNorm` and `QQPlot` visuals are used to make quantile-quantile plots; `QQNorm` expects a mapping to `:x` (first position) whereas `QQPlot` expects mappings to `:x` and `:y` (the first two positions).
+A quantile-quantile graphic is created with the `QQPlot` visual. `QQPlot` expects mappings to `:x` and `:y` (the first two positions).
+
+The `Makie` command `qqplot` can be used along with its specialization to plotting the `y` position against a normal distribution through `qqnorm`.
+
+The following will give a visual check if bill length has a similarly *shaped* distribution as bill depth
+
+```{julia}
+p1 = data(penguins) * visual(QQPlot, qqline=:fit) *
+    mapping(:bill_length_mm, :bill_depth_mm);
+```
+
+The `QQPlot` command had a regression. Before, it was possible to specify a `color` attribute to `mapping`; that now errors. As well, the `QQNorm` specialization (where the `x` is mapped to the `Normal(0,1)` distribution) currently fails. The underlying `qqnorm` function is available, though it requires some modification to specifying the data.
 
 The following will give a visual check if bill length is normally distributed, the graphic indicates slightly shorter tails than expected
 
 ```{julia}
-p1 = data(penguins) * visual(QQNorm, qqline=:fit) *
-    mapping(:bill_length_mm);
+p2 = qqnorm(penguins.bill_length_mm, qqline=:fit);
 ```
 
-The following will give a visual check if bill length has a similarly *shaped* distribution as bill depth, in this case with each species highlighted:
-
-```{julia}
-p2 = data(penguins) * visual(QQPlot, qqline=:fit) *
-    mapping(:bill_length_mm, :bill_depth_mm, color=:species);
-```
 
 Both are shown in @fig-quantileplot-example.
 
@@ -323,10 +327,10 @@ draw(p1; figure=((size=(600, 400),)))
 
 ```{julia}
 #| echo: false
-draw(p2; figure=((size=(600, 400),)))
+p2
 ```
 
-Quantile-quantile plots. The left graphic uses a reference normal distribution (through `QQNorm`), the right one uses `QQPlot` to compare the distribution of two variables after grouping by `species`.
+Quantile-quantile plots. The left graphic shows `QQPlot` used to compare the distribution of two variables. The right graphic, using `qqnorm` uses a reference normal distribution for comparison.
 :::
 
 ## Line plots

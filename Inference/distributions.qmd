@@ -486,7 +486,10 @@ probs = range(0.01, 0.99, 40)
 Ds = (T₃ = TDist(3), T₁₀₀=TDist(100), U=Uniform(0,1), E=Exponential(1))
 d = DataFrame(D=collect(keys(Ds)), qs = [quantile.(D,probs) for D in Ds])
 d = flatten(d, :qs)
-data(d) * visual(QQNorm, qqline=:fit) * mapping(:qs, main=:D, color=:D, layout=:D) |> draw
+#data(d) * visual(QQNorm, qqline=:fit) * mapping(:qs, main=:D, color=:D, layout=:D)
+
+d.Z = rand(Normal(0,1), size(d,1))
+data(d) * visual(QQPlot, qqline=:fit) * mapping(:Z, :qs, layout=:D) |> draw
 ```
 
 
@@ -513,7 +516,9 @@ probs = range(0.01, 0.99, 40)
 d = DataFrame(D = ["F($ν₁,$ν₂)" for (ν₁, ν₂) ∈ νs],
               qs = [quantile.(FDist(ν...), probs) for ν ∈ νs])
 d = flatten(d, :qs)
-data(d) * visual(QQNorm, qqline=:fit) * mapping(:qs, main=:D, color=:D, layout=:D) |> draw
+#data(d) * visual(QQNorm, qqline=:fit) * mapping(:qs, main=:D, color=:D, layout=:D) |> draw
+d.Z = rand(Normal(0,1), size(d,1))
+data(d) * visual(QQPlot, qqline=:fit) * mapping(:Z, :qs, layout=:D) |> draw
 ```
 
 
@@ -558,11 +563,12 @@ Ds = (normal      = Normal(0,1),
       platykurtic = Uniform(0,1))
 df = DataFrame(D=collect(keys(Ds)), zs = [sxbar(D, 10) for D in values(Ds)])
 
-d = data(flatten(df, :zs))
-p = d * visual(QQNorm, qqline=:fit) *
-    mapping(:zs, layout = :D, main=:D, color=:D)
-
-draw(p)
+d = flatten(df, :zs)
+#p = data(d) * visual(QQNorm, qqline=:fit) *
+#    mapping(:zs, layout = :D, main=:D, color=:D)
+# draw(p)
+d.Z = rand(Normal(0,1), size(d,1))
+data(d) * visual(QQPlot, qqline=:fit) * mapping(:Z, :zs, layout=:D) |> draw
 ```
 
 
@@ -665,9 +671,9 @@ df = DataFrame([(D="$SDk $Popk", x=quantile(Popv, ps), y = quantile(rand(SDv, N)
                 for (SDk,SDv) in pairs(SDs) for (Popk, Popv) in pairs(Pops)])
 
 p = data(flatten(df, [:x,:y])) * (visual(Scatter) + linear(;interval=nothing)) *
-    mapping(:x, :y, main=:D, layout=:D, color=:D)
-
+    mapping(:x, :y,layout=:D, color=:D)
 draw(p, facet=(; linkxaxes=:none, linkyaxes=:none))
+
 ```
 
 ### The sample median
@@ -696,7 +702,7 @@ ds = [combine(DataFrame(;z= [MXbar(D,10) for _ in 1:100]),
 d = stack(reduce(append!, ds), [:M, :Xbar])
 
 p = data(d) * visual(BoxPlot) *
-    mapping(:variable, :value, color=:variable, layout=:D, main=:D)
+    mapping(:variable, :value, color=:variable, layout=:D)
 
 draw(p)
 ```

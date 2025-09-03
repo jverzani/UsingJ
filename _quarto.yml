@@ -1,7 +1,7 @@
 version: "0.0.4"
-jupyter: julia-1.9
+engines: ['julia']
 
-Project:
+project:
   type: book
 
 book:
@@ -61,5 +61,6 @@ format:
 
 execute:
   warning: false
-  error: true
-  freeze: auto
+  error: false
+#  freeze: auto
+  cache: false

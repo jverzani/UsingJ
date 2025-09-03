@@ -5386,11 +5386,11 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">tally</span>(v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Int64}:
- 1 │ 5
+ 1 │ 11
  2 │ 7
- 3 │ 6
- 4 │ 13
- 5 │ 19</code></pre>
+ 3 │ 15
+ 4 │ 9
+ 5 │ 8</code></pre>
 </div>
 </div>
 <p>Using <code>map</code>, we can provide an alternate, oft used view for tallying:</p>
@@ -5406,11 +5406,11 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(prison_count, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Any}:
- 1 │ "┼┼┼┼ "
+ 1 │ "┼┼┼┼ ┼┼┼┼ |"
  2 │ "┼┼┼┼ ||"
- 3 │ "┼┼┼┼ |"
- 4 │ "┼┼┼┼ ┼┼┼┼ |||"
- 5 │ "┼┼┼┼ ┼┼┼┼ ┼┼┼┼ ||||"</code></pre>
+ 3 │ "┼┼┼┼ ┼┼┼┼ ┼┼┼┼ "
+ 4 │ "┼┼┼┼ ||||"
+ 5 │ "┼┼┼┼ |||"</code></pre>
 </div>
 </div>
 </div>
@@ -5428,15 +5428,15 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>9-element Dictionaries.Dictionary{Int64, Int64}:
- 0 │ 129
- 1 │ 1137
- 2 │ 15556
- 3 │ 1578
- 4 │ 58
- 5 │ 12
- 6 │ 2246
- 7 │ 34
- 9 │ 347</code></pre>
+ 0 │ 149
+ 1 │ 236
+ 2 │ 3389
+ 3 │ 22
+ 4 │ 28
+ 6 │ 4
+ 7 │ 57
+ 8 │ 67
+ 9 │ 22259</code></pre>
 </div>
 </div>
 </div>

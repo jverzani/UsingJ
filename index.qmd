@@ -4,7 +4,7 @@ This is a collection of notes for using `Julia` for introductory statistics.
 
 In case you haven't heard, [Julia](https://julialang.org/) is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance -- Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than `R` and `Python`, widely used scripting languages for the tasks illustrated herein.
 
-Why these notes on introductory statistics? No compelling reason save I had done something similar for `R` when `R` was a fledgling `S-Plus` clone. No more, `R` is a juggernaut, and it is almost certain `Julia` will never replace `R` as the programming langauage of choice for statistics. Besides, `Julia` users can already interface with `R` quite easily through `RCall`. *However*, there are some reasons that `Julia` could be a useful language when learning basic inferential statistics, especially if other real strengths of the `Julia` ecosystem were needed. So these notes show how `Julia` can be used for these tasks, and, hopefully, shows that it works pretty well.
+Why these notes on introductory statistics? No compelling reason save I had done something similar for `R` when `R` was a fledgling `S-Plus` clone. No more, `R` is a juggernaut, and it is almost certain `Julia` will never replace `R` as the programming language of choice for statistics. Besides, `Julia` users can already interface with `R` quite easily through `RCall`. *However*, there are some reasons that `Julia` could be a useful language when learning basic inferential statistics, especially if other real strengths of the `Julia` ecosystem were needed. So these notes show how `Julia` can be used for these tasks, and, hopefully, shows that it works pretty well.
 
 There are some great books published about using `Julia` [@bezanson2017julia] with data
 science, within which much of this material is covered. For example,
@@ -29,11 +29,11 @@ Once downloaded and installed the `Julia` installation will provide a *command l
 
 Some alternatives to the REPL for interacting with `Julia` are:
 
-* [IJulia](https://github.com/JuliaLang/IJulia.jl): This is a means to use the Jupyter interactive environment to interact with `Julia` through notebooks. It is made available by installing the package `IJulia` (details on package installation follow below). This relies on `Julia`'s seamless interaction with  `Python` and leverages many technologies developed for that langauge.
+* [IJulia](https://github.com/JuliaLang/IJulia.jl): This is a means to use the Jupyter interactive environment to interact with `Julia` through notebooks. It is made available by installing the package `IJulia` (details on package installation follow below). This relies on `Julia`'s seamless interaction with  `Python` and leverages many technologies developed for that language.
 * [Pluto](https://githuhttps://plutojl.org/): The Pluto environment provides a notebook interface for `Julia` written in `Julia` leveraging many JavaScript technologies for the browser. It has the feature of being reactive, making it well suited for many exploratory tasks and pedagogical demonstrations.
 * [Visual Studio Code](https://www.julia-vscode.org/): `Julia` is a supported language for the Visual Studio Code editor of Microsoft, a programmer's IDE.
 
-These notes use `quarto` to organize the mix of text, code, and graphics. The `quarto` publishing system is developed by [Posit](https://posit.co/), the developers of the wildly sucessful `RStudio` interface for `R`. The code snippets are run as blocks (within `IJulia`) and the last command executed is shown. (If code is copy-and-pasted into the REPL, each line's output will be displayed.) The code display occurs below the cell, as here, where we show that `Julia` can handle basic addition:
+These notes use `quarto` to organize the mix of text, code, and graphics. The `quarto` publishing system is developed by [Posit](https://posit.co/), the developers of the wildly successful `RStudio` interface for `R`. The code snippets are run as blocks (within `IJulia`) and the last command executed is shown. (If code is copy-and-pasted into the REPL, each line's output will be displayed.) The code display occurs below the cell, as here, where we show that `Julia` can handle basic addition:
 
 ```{julia}
 2 + 2

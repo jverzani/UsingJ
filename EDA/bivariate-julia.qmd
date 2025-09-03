@@ -150,7 +150,7 @@ plot(p1, p2, layout=(@layout [a b]))#, size=fig_size_2)
 
 ### Histograms across groups
 
-The density plot is, perhaps, less familiar than a histogram, but makes a better graphic when comparing two or more distributions, as the individual graphics don't overlap. There are attempts to use the histogram, and they can be effective. In @fig-xword-histograms, taken from an article on [fivethirtyeight.com](https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/) on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overalpping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In `StatsPlots`, the `grouped hist` function can produce similar graphics.
+The density plot is, perhaps, less familiar than a histogram, but makes a better graphic when comparing two or more distributions, as the individual graphics don't overlap. There are attempts to use the histogram, and they can be effective. In @fig-xword-histograms, taken from an article on [fivethirtyeight.com](https://fivethirtyeight.com/features/dan-feyer-american-crossword-puzzle-tournament/) on the time to solve cross word puzzles broken out by day of week, we see a stacked dotplot, which is visually very similar to a histogram, presented for each day of the week. The use of color allows one to distinguish the day, but the overlapping aspect of the graphic inhibits part of the distribution of most days, and only effectively shows the longer tails as the week progresses. In `StatsPlots`, the `grouped hist` function can produce similar graphics.
 
 ::: {#fig-xword-histograms}
 
@@ -266,7 +266,7 @@ vline!([mean(l)], linestyle=:dash)
 hline!([mean(w)], linestyle=:dash)
 ```
 
-@fig-scatterplot-l-w shows the length and width data in a scatter plot. Jittering would be helpful to show all the data, as it has been discretized and many points are overplotte. The dashed lines are centered at the means of the respective variables. If the mean is the center of a single variable, then $(\bar{x}, \bar{y})$ may be thought of as the center of the paired data. Thinking of the dashed lines meeting at the origin, four quadrants are formed. The correlation can be viewed as a measure of how much the data sits in opposite quadrants. In the figure, there seems to be more data in quadrants I and III then II and IV, which sugests a *positive* correlation, as confirmed numerically.
+@fig-scatterplot-l-w shows the length and width data in a scatter plot. Jittering would be helpful to show all the data, as it has been discretized and many points are overplotte. The dashed lines are centered at the means of the respective variables. If the mean is the center of a single variable, then $(\bar{x}, \bar{y})$ may be thought of as the center of the paired data. Thinking of the dashed lines meeting at the origin, four quadrants are formed. The correlation can be viewed as a measure of how much the data sits in opposite quadrants. In the figure, there seems to be more data in quadrants I and III then II and IV, which suggests a *positive* correlation, as confirmed numerically.
 
 By writing the correlation in terms of  $z$-scores, the product in that formula is *positive* if the point is in quadrant I or III and negative if in II or IV. So, for example, a big positive number suggests data is concentrated in quadrants I and III or that there is a strong association between the variables. The scaling by the standard deviations, leaves the mathematical constraint that the correlation is between $-1$ and $1$.
 
@@ -816,7 +816,7 @@ for (k,d) ∈ pairs(gdf)   # GroupKey, SubDataFrame
 end
 ```
 
-Now we identify different regression lines (slope and intercepts) for each cluster. This is done throuh a *multiplicative* model and is specified in the model formula of `StatsModels` with a `*`:
+Now we identify different regression lines (slope and intercepts) for each cluster. This is done through a *multiplicative* model and is specified in the model formula of `StatsModels` with a `*`:
 
 ```{julia}
 m3 = lm(@formula(PetalLength ~ PetalWidth * Species), iris)

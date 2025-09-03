@@ -33,7 +33,7 @@ There are different ways to construct a data frame.
 
 Consider the task of the Wirecutter in trying to select the best [carry on travel bag](https://www.nytimes.com/wirecutter/reviews/best-carry-on-travel-bags/#how-we-picked-and-tested). After compiling a list of possible models by scouring travel blogs etc., they select some criteria (capacity, compartment design, aesthetics, comfort, ...) and compile data, similar to what one person collected in a
 [spreadsheet](https://docs.google.com/spreadsheets/d/1fSt_sO1s7moXPHbxBCD3JIKPa8QIZxtKWYUjD6ElZ-c/edit#gid=744941088).
-Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatability, loading style, and a last-checked date -- as this market improves constantly.
+Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatibility, loading style, and a last-checked date -- as this market improves constantly.
 
 ```
 product         v  p    l loads       checked
@@ -42,7 +42,7 @@ Minaal 3.0      35 349  Y front panel 2022-09
 Genius          25 228  Y clamshell   2022-10
 ```
 
-We see that product is a character, volume and price numeric, laptop compatability a Boolean value, load style one of a few levels, and the last checked date, a year-month date.
+We see that product is a character, volume and price numeric, laptop compatibility a Boolean value, load style one of a few levels, and the last checked date, a year-month date.
 
 We create vectors to hold each. We load the `CategoricalArrays` and `Dates` packages for a few of the variables:
 
@@ -51,7 +51,7 @@ using CategoricalArrays, Dates
 product = ["Goruck GR2", "Minaal 3.0", "Genius"]
 volume = [40, 35, 25]
 price = [395, 349, 228]
-laptop_compatability = categorical(["Y","Y","Y"])
+laptop_compatibility = categorical(["Y","Y","Y"])
 loading_style = categorical(["front panel", "front panel", "clamshell"])
 date_checked = Date.(2022, [9,9,10])
 ```
@@ -60,7 +60,7 @@ With this, we use the `DataFrame` constructor to combine these into one data set
 
 ```{julia}
 d = DataFrame(product = product, volume=volume, price=price,
-              var"laptop compatability"=laptop_compatability,
+              var"laptop compatibility"=laptop_compatibility,
               var"loading style"=loading_style, var"date checked"=date_checked)
 ```
 
@@ -79,7 +79,7 @@ In the above construction, we  repeated the names of the variables to the constr
 
 ```{julia}
 d = DataFrame(; product, volume, price,
-              var"laptop compatability"=laptop_compatability,
+              var"laptop compatibility"=laptop_compatibility,
               var"loading style"=loading_style, var"date checked"=date_checked)
 ```
 
@@ -94,7 +94,7 @@ d = DataFrame()   # empty data frame
 d.product = product
 d.volume = volume
 d.price = price
-d."laptop compatability" = laptop_compatability
+d."laptop compatibility" = laptop_compatibility
 d."loading style" = loading_style
 d."date checked" = date_checked
 d
@@ -225,7 +225,7 @@ The `rename!` function allows the names to be changed in-place (without returnin
 
 ### Indexing and assignment
 
-The values in a data frame can be referenced programatically by a row number and column number, both 1-based. For example, the 2nd row and 3rd column of `d` can be seen to be `349` by observation
+The values in a data frame can be referenced programmatically by a row number and column number, both 1-based. For example, the 2nd row and 3rd column of `d` can be seen to be `349` by observation
 
 ```{julia}
 d
@@ -441,7 +441,7 @@ cars1 = filter(:Manufacturer => ==("Volkswagen"), cars)
 cars2 = filter(:MPGCity => >=(20), cars1)
 ```
 
-The above required the introduction of an intermediate data frame to store the result of the first `filter` call to pass to the second. This threading through of the modified data is quite common in processing pipelines. The first two approaches with complicated predicate functions can grow unwieldly, so staged modification is common. To support that, the chaining or piping operation  (`|>`) is often used:
+The above required the introduction of an intermediate data frame to store the result of the first `filter` call to pass to the second. This threading through of the modified data is quite common in processing pipelines. The first two approaches with complicated predicate functions can grow unwieldy, so staged modification is common. To support that, the chaining or piping operation  (`|>`) is often used:
 
 ```{julia}
 filter(:Manufacturer => ==("Volkswagen"), cars) |>
@@ -590,7 +590,7 @@ When `AsTable` is used on the source columns, as in `AsTable([:p,:v])` then the 
 
 #### Transform
 
-Extending the columns in the data frame by `select` is common enough that the function `transform` is supplied which always keeps the columns of the original data frame, though they can also be modified through the mini language. The use of transfrom is equivalent to `select(df, :, args...)`.
+Extending the columns in the data frame by `select` is common enough that the function `transform` is supplied which always keeps the columns of the original data frame, though they can also be modified through the mini language. The use of transform is equivalent to `select(df, :, args...)`.
 
 
 ::: {.callout-note}

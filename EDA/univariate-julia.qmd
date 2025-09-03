@@ -324,7 +324,7 @@ When a vector is passed to a function, if there is no copy made (as opposed to a
 :::
 
 
-Multiple values can be assigned at once. For example, if the data was mis-arranged chronologically, we might have:
+Multiple values can be assigned at once. For example, if the data was misarranged chronologically, we might have:
 
 ```{julia}
 whale[ [1,2,3] ] = [235, 74, 122]

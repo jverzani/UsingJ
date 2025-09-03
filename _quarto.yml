@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 version: "0.0.5"
 #jupyter: julia-1.10
 engine: julia
+=======
+version: "0.0.4"
+engines: ['julia']
+>>>>>>> main
 
 project:
   type: book
@@ -65,5 +70,6 @@ format:
 
 execute:
   warning: false
-  error: true
   freeze: false #auto
+  error: false
+  cache: false

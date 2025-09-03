@@ -643,7 +643,7 @@ confint(OneSampleTTest(ys), level = 0.95)
 
 The two differ -- they use different sampling distributions and methods -- though simulations will show both manners create CIs capturing the true mean at the rate of the confidence level.
 
-The above example does not showcase the advantage of the maximimum likelihood methods, but hints at a systematic way to find confidence intervals, which for some cases is optimal, and is more systematic then finding some pivotal quantity (e.g. the $T$-statistic under a normal population assumption).
+The above example does not showcase the advantage of the maximum likelihood methods, but hints at a systematic way to find confidence intervals, which for some cases is optimal, and is more systematic then finding some pivotal quantity (e.g. the $T$-statistic under a normal population assumption).
 
 
 
@@ -656,7 +656,7 @@ The basic setup is similar to a courtroom trial in the United States -- as seen 
 * a defendant is judged by a jury with an *assumption of innocence*
 * presentation of evidence is given
 * the jury weighs the evidence *assuming* the defendant is innocent.
-* If it is a civil trial a *preponderence of evidence* is enough for the jury to say the defendent is guilty (not innocent); if a criminal trial the standard is if the evidence is "beyond a reasonable doubt" then the defendent is deemed not innocent. Otherwise the defendant is said to be "not guilty," though really it should be that they weren't "proven" to be guilty.
+* If it is a civil trial a *preponderance of evidence* is enough for the jury to say the defendant is guilty (not innocent); if a criminal trial the standard is if the evidence is "beyond a reasonable doubt" then the defendant is deemed not innocent. Otherwise the defendant is said to be "not guilty," though really it should be that they weren't "proven" to be guilty.
 
 In a hypothesis or significance test for parameters, the setup is similar:
 
@@ -1388,7 +1388,7 @@ $$
 H_0: \mu = \mu_0, \quad H_A: \mu = \mu_1
 $$
 
-Suppose the population is $Normal(\mu, \sigma)$. We had a similar setup in the discussion on power, where for a $T$-test specifying three of a $\alpha$, $\beta$, $n$, or an effect size allows the solving of the fourth using known facts about the $T$-statistic. The Neyman-Pearson lemma speaks to the *uniformly most powerful* test under this scenario with a **single** unknown parameter (the mean above, but it could also have been the standard devation, etc.).
+Suppose the population is $Normal(\mu, \sigma)$. We had a similar setup in the discussion on power, where for a $T$-test specifying three of a $\alpha$, $\beta$, $n$, or an effect size allows the solving of the fourth using known facts about the $T$-statistic. The Neyman-Pearson lemma speaks to the *uniformly most powerful* test under this scenario with a **single** unknown parameter (the mean above, but it could also have been the standard deviation, etc.).
 
 This test can be realized as a likelihood ratio test, which also covers tests of more generality. Suppose the parameters being tested are called $\theta$ which sit in some subset $\Theta_0 \subset \Theta$. The non-directional alternative would be $\theta$ is in $\Theta \setminus \Theta_0$.
 

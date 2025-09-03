@@ -13,7 +13,7 @@ using CairoMakie, AlgebraOfGraphics
 
 This section quickly reviews the basic concepts of probability.
 
-Mathematically a probability is an assignment of numbers to a collection of events (sets) of a probability space. These values may be understood from a model or through long term frequencies. For example, consider the tossing of a *fair* coin. By writing "fair" the assumption is implicitly made that each side (heads or tails) is equally likely to occur on a given toss. That is a mathematical assumption. This can be reaffirmed by tossing the coin *many* times and counting the frequency of a heads occuring. If the coin is fair, the expectation is that heads will occur in about half the tosses.
+Mathematically a probability is an assignment of numbers to a collection of events (sets) of a probability space. These values may be understood from a model or through long term frequencies. For example, consider the tossing of a *fair* coin. By writing "fair" the assumption is implicitly made that each side (heads or tails) is equally likely to occur on a given toss. That is a mathematical assumption. This can be reaffirmed by tossing the coin *many* times and counting the frequency of a heads occurring. If the coin is fair, the expectation is that heads will occur in about half the tosses.
 
 The mathematical model involves a formalism of sample spaces and events. There are some subtleties due to infinite sets, but we limit our use of events to subsets of finite or countably infinite sets or intervals of the real line. A probability *measure* is a function $P$ which assigns each event $E$ a number with:
 
@@ -75,7 +75,7 @@ A **discrete** random variable is one which has $P(X = k) > 0$ for at most a fin
 
 A **continuous** random variable is described by a function $f(x)$ where $P(X \leq a)$ is given by the *area* under $f(x)$ between $-\infty$ and $a$. The function $f(x)$ is called the pdf (probability density function). An immediate consequence is the *total* area under $f(x)$ is $1$ and $f(x) \geq 0$.
 
-When defined, the pdf is the basic description of the distribution of a random variable. It says what is *possible* and *how likely* possible things are. For the two cases above, this is done differently. In the discrete case, the possible values are all $k$ where $f(k) =P(X=k) > 0$, but not all values are equally likely unless $f(k)$ is a constant. For the continuous case there are **no** values with $P(X=k) > 0$, as probabilities are assigned to area, and the corresponding area to this event, for any $k$, is $0$. Rather, values can only appear in itervals with positive area ($f(x) > 0$ within this interval) and for equal-length intervals, those with more area above them are more likely to contain values.
+When defined, the pdf is the basic description of the distribution of a random variable. It says what is *possible* and *how likely* possible things are. For the two cases above, this is done differently. In the discrete case, the possible values are all $k$ where $f(k) =P(X=k) > 0$, but not all values are equally likely unless $f(k)$ is a constant. For the continuous case there are **no** values with $P(X=k) > 0$, as probabilities are assigned to area, and the corresponding area to this event, for any $k$, is $0$. Rather, values can only appear in intervals with positive area ($f(x) > 0$ within this interval) and for equal-length intervals, those with more area above them are more likely to contain values.
 
 A data set in statistics, $x_1, x_2, \dots, x_n$, is typically modeled by a collection of random variables, $X_1, X_2, \dots, X_n$. That is, the random variables describe the *possible* values that can be collected, the values ($x_1, x_2,\dots$) describe the actual values that were collected. Put differently, random variables describe what can happen *before* a measurement, the values are the result of the measurement.
 
@@ -147,7 +147,7 @@ Statistical inference makes statements using the language of probability about t
 
 An intuitive example is the tossing of a fair coin modeling heads by a $1$ and tails by a $0$ then we can *parameterize* the distribution by $f(1) = P(X=1) = p$ and $f(0) = P(X=0) = 1 - P(X=1) = 1-p$. This distribution is summarized by $\mu=p$, $\sigma = \sqrt{p(1-p)}$. A *fair* coin would have $p=1/2$. A sequence of coin tosses, say H,T,T,H,H might be modeled by a sequence of iid random variables, each having this distribution. Then we might expect a few things, where $\hat{p}$ below is the proportion of heads in the $n$ tosses:
 
-* A given data set is not random, but it may be viewed as the result of a random process and had that process been run again would likely result in a different outcome. These different outcomes may be described probabalistically in terms of a distribution.
+* A given data set is not random, but it may be viewed as the result of a random process and had that process been run again would likely result in a different outcome. These different outcomes may be described probabilistically in terms of a distribution.
 * If $n$ is large enough, the sample proportion $\hat{p}$ should be *close* to the population proportion $p$.
 * Were the sampling repeated, the variation in the values of $\hat{p}$ should be smaller  for larger sample sizes, $n$.
 
@@ -345,7 +345,7 @@ draw(p)
 ```
 
 
-In `Distributions` the `Categorical` type can alse have been used to construct this distribution, it being a special case of `DiscreteNonParametric` with the `xs` being $1, \dots, k$.
+In `Distributions` the `Categorical` type can also have been used to construct this distribution, it being a special case of `DiscreteNonParametric` with the `xs` being $1, \dots, k$.
 
 The multinomial distribution is the distribution of counts for a sequence of $n$ iid random variables from a `Categorical` distribution. This generalizes the binomial distribution. Let $X_i$ be the number of type $i$ in $n$ samples. Then $X_1 + X_2 + \cdots + X_k = n$, so these are not independent. They have mean $E(X_i)=np_i$, variance $VAR(X_i) = np_i (1-p_i)$, like the binomial, but covariance $COV(X_i, X_j) = -np_i p_j, i \neq j$. (Negative, as large values for $X_i$ correlate with smaller values for $X_j$ when $i \neq j$.)
 
@@ -482,13 +482,12 @@ In  @fig-qqplots-distributions the lower-right graphic is of the uniform distrib
 #| label: fig-qqplots-distributions
 #| fig-cap: Quantile-normal plots for different distributions -- $T_3$ is leptokurtic; $T_{100}$ is approximately normal; $U$ is platykurtic; and $E$ is skewed.
 
-
 probs = range(0.01, 0.99, 40)
-Ds = (N = Normal(0,1), T₃ = TDist(3), T₁₀₀=TDist(100), 
+Ds = (N = Normal(0,1), T₃ = TDist(3), T₁₀₀=TDist(100),
 	U=Uniform(0,1), E=Exponential(1))
 m = DataFrame([quantile.(D, probs) for D in Ds],collect(keys(Ds)))
 d = stack(m, Not(:N)) # need to use QQPlot, so replicate the N
-data(d) * mapping(:N, :value, layout=:variable => nonnumeric) * 
+data(d) * mapping(:N, :value, layout=:variable => nonnumeric) *
           (visual(QQPlot, qqline=:fit)) |> draw
 ```
 
@@ -512,7 +511,7 @@ kurtosis(FDist(5, 10)), kurtosis(FDist(5,100)), kurtosis(FDist(100,100))
 #| fig-cap: Quantile-normal plots of the $F$ distribution for different degrees of freedom. As the degrees of freedom values get bigger, the distribution is more normal.
 
 probs = range(0.01, 0.99, 40)
-Ds = (N = Normal(0,1), 
+Ds = (N = Normal(0,1),
 	var"F(1,10)"     = FDist(1,10),
 	var"F(5,10)"     = FDist(5,10),
 	var"F(5,100)"    = FDist(5,100),
@@ -520,7 +519,7 @@ Ds = (N = Normal(0,1),
 	)
 m = DataFrame([quantile.(D, probs) for D in Ds],collect(keys(Ds)))
 d = stack(m, Not(:N)) # need to use QQPlot, so replicate the N
-data(d) * mapping(:N, :value, layout=:variable => nonnumeric) * 
+data(d) * mapping(:N, :value, layout=:variable => nonnumeric) *
           (visual(QQPlot, qqline=:fit)) |> draw
 ```
 
@@ -569,7 +568,7 @@ Ds = (N           = Normal(0,1),
 probs = range(0.01, 0.99, 200)
 m = DataFrame([quantile.((sxbar(D,10),), probs) for D in Ds],collect(keys(Ds)))
 d = stack(m, Not(:N)) # need to use QQPlot
-p = data(d) * mapping(:N, :value, layout=:variable => nonnumeric) * 
+p = data(d) * mapping(:N, :value, layout=:variable => nonnumeric) *
           (visual(QQPlot, qqline=:fit))
 
 draw(p)
@@ -673,11 +672,13 @@ Pops = (var"long-tailed"=TDist(3), skewed=Exponential(1))
 # use scatter to produce qqplot
 df = DataFrame([(D="$SDk $Popk", x=quantile(Popv, ps), y = quantile(rand(SDv, N), ps))
                 for (SDk,SDv) in pairs(SDs) for (Popk, Popv) in pairs(Pops)])
+
 d = data(flatten(df, [:x,:y]))
-p = d * (visual(Scatter) + linear(;interval=nothing)) *
-    mapping(:x, :y, layout=:D, color=:D)
+p = d * (visual(Scatter) + linear(; interval=nothing)) *
+    mapping(:x, :y; layout=:D, color=:D)
 
 draw(p, facet=(; linkxaxes=:none, linkyaxes=:none))
+
 ```
 
 ### The sample median

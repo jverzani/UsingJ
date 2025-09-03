@@ -157,7 +157,7 @@ These imprecise statements can be made more precise, as will be seen. Figure @fi
 ```{julia}
 #| echo: false
 #| label: fig-pop-parameters-sample
-#| fig-cap: The top-left figure shows a population, the lower left parameters associated with the population. The top-right shows one sample from the population in red, other possible samples in blue with sample means summarized in the bottom most row. A density estimate of these sample means appears in the lower right figure showing how it is centered on the population, but more concentrated. Inference uses the language of probability to characterize a population parameter based on a single random sample.
+#| fig-cap: The top-left figure shows a population, the lower left parameters associated with the population. The top-right shows one sample from the population in red, other possible samples in blue with sample means summarized in the bottom most row. A density estimate of these sample means appears in the lower-right figure showing how it is centered on the population, but more concentrated. Inference uses the language of probability to characterize a population parameter based on a single random sample.
 μ, σ = 0, 1
 P = Normal(μ, σ)
 xs = range(-3, 3, length=251)
@@ -483,15 +483,13 @@ In  @fig-qqplots-distributions the lower-right graphic is of the uniform distrib
 #| fig-cap: Quantile-normal plots for different distributions -- $T_3$ is leptokurtic; $T_{100}$ is approximately normal; $U$ is platykurtic; and $E$ is skewed.
 
 probs = range(0.01, 0.99, 40)
-Ds = (T₃ = TDist(3), T₁₀₀=TDist(100), U=Uniform(0,1), E=Exponential(1))
-d = DataFrame(D=collect(keys(Ds)), qs = [quantile.(D,probs) for D in Ds])
-d = flatten(d, :qs)
-#data(d) * visual(QQNorm, qqline=:fit) * mapping(:qs, main=:D, color=:D, layout=:D)
-
-d.Z = rand(Normal(0,1), size(d,1))
-data(d) * visual(QQPlot, qqline=:fit) * mapping(:Z, :qs, layout=:D) |> draw
+Ds = (N = Normal(0,1), T₃ = TDist(3), T₁₀₀=TDist(100),
+	U=Uniform(0,1), E=Exponential(1))
+m = DataFrame([quantile.(D, probs) for D in Ds],collect(keys(Ds)))
+d = stack(m, Not(:N)) # need to use QQPlot, so replicate the N
+data(d) * mapping(:N, :value, layout=:variable => nonnumeric) *
+          (visual(QQPlot, qqline=:fit)) |> draw
 ```
-
 
 Consider now two, independent Chi-squared random variables $Y_1$ and $Y_2$ with  $\nu_1$ and $\nu_2$ degrees of freedom. The ratio
 
@@ -511,14 +509,18 @@ kurtosis(FDist(5, 10)), kurtosis(FDist(5,100)), kurtosis(FDist(100,100))
 #| echo: false
 #| label: fig-f-distributions
 #| fig-cap: Quantile-normal plots of the $F$ distribution for different degrees of freedom. As the degrees of freedom values get bigger, the distribution is more normal.
-νs = [(1, 10), (5,10), (5, 100), (100, 100)]
+
 probs = range(0.01, 0.99, 40)
-d = DataFrame(D = ["F($ν₁,$ν₂)" for (ν₁, ν₂) ∈ νs],
-              qs = [quantile.(FDist(ν...), probs) for ν ∈ νs])
-d = flatten(d, :qs)
-#data(d) * visual(QQNorm, qqline=:fit) * mapping(:qs, main=:D, color=:D, layout=:D) |> draw
-d.Z = rand(Normal(0,1), size(d,1))
-data(d) * visual(QQPlot, qqline=:fit) * mapping(:Z, :qs, layout=:D) |> draw
+Ds = (N = Normal(0,1),
+	var"F(1,10)"     = FDist(1,10),
+	var"F(5,10)"     = FDist(5,10),
+	var"F(5,100)"    = FDist(5,100),
+	var"F(100, 100)" = FDist(100,100)
+	)
+m = DataFrame([quantile.(D, probs) for D in Ds],collect(keys(Ds)))
+d = stack(m, Not(:N)) # need to use QQPlot, so replicate the N
+data(d) * mapping(:N, :value, layout=:variable => nonnumeric) *
+          (visual(QQPlot, qqline=:fit)) |> draw
 ```
 
 
@@ -557,18 +559,19 @@ In general, how large $n$ needs to be depends on the underlying shape of the *po
 xbar(D, n, N=200) = [mean(rand(D, n)) for _ in 1:N]
 sxbar(D, n, N=200) = (xbar(D,n,N) .- mean(D)) / (std(D)/sqrt(n))
 
-Ds = (normal      = Normal(0,1),
+Ds = (N           = Normal(0,1),
+      normal      = Normal(0,1),
       leptokurtic = TDist(3),
       skewed      = FDist(2,5),
       platykurtic = Uniform(0,1))
-df = DataFrame(D=collect(keys(Ds)), zs = [sxbar(D, 10) for D in values(Ds)])
 
-d = flatten(df, :zs)
-#p = data(d) * visual(QQNorm, qqline=:fit) *
-#    mapping(:zs, layout = :D, main=:D, color=:D)
-# draw(p)
-d.Z = rand(Normal(0,1), size(d,1))
-data(d) * visual(QQPlot, qqline=:fit) * mapping(:Z, :zs, layout=:D) |> draw
+probs = range(0.01, 0.99, 200)
+m = DataFrame([quantile.((sxbar(D,10),), probs) for D in Ds],collect(keys(Ds)))
+d = stack(m, Not(:N)) # need to use QQPlot
+p = data(d) * mapping(:N, :value, layout=:variable => nonnumeric) *
+          (visual(QQPlot, qqline=:fit))
+
+draw(p)
 ```
 
 
@@ -670,8 +673,10 @@ Pops = (var"long-tailed"=TDist(3), skewed=Exponential(1))
 df = DataFrame([(D="$SDk $Popk", x=quantile(Popv, ps), y = quantile(rand(SDv, N), ps))
                 for (SDk,SDv) in pairs(SDs) for (Popk, Popv) in pairs(Pops)])
 
-p = data(flatten(df, [:x,:y])) * (visual(Scatter) + linear(;interval=nothing)) *
-    mapping(:x, :y,layout=:D, color=:D)
+d = data(flatten(df, [:x,:y]))
+p = d * (visual(Scatter) + linear(; interval=nothing)) *
+    mapping(:x, :y; layout=:D, color=:D)
+
 draw(p, facet=(; linkxaxes=:none, linkyaxes=:none))
 
 ```

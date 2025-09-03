@@ -673,16 +673,26 @@ flatten(dxy, :value)
 
 The split-apply-combine strategy for wrangling data frames was popularized in the influential paper "*The Split-Apply-Combine Strategy for Data Analysis*: [@JSSv040i01] by H. Wickham which introduces this description: "where you break up a big problem into manageable pieces, operate on each piece independently and then put all the pieces back together."
 
+#### Grouping data
 
 The `groupby` function for data frames does the breaking up, the `DataFrames` mini language can operate on each piece, and the `combine` function can put things together again.
 
-The `groupby` function splits a data frame into pieces of type `GroupedDataFrame`. The basic signature is `groupby(df, cols; sort=nothing, skipmissing=false)`. The `cols` are one or more column selectors. The value of `sort` defaults to `nothing` leaving the order of the groups in the result undefined, but the grouping uses the fastest identified algorithm. The `skipmissing` argument can instruct the skipping of rows which have missing values in the selected columns.
+Grouping takes one or more *categorical variables* and creates a "grouped" data frame for each different set of *combined* levels. That is one grouped data frame for each possible combination of the levels.
+The `groupby` function splits the data frame into pieces of type `GroupedDataFrame`. The basic signature is `groupby(df, cols; sort=nothing, skipmissing=false)`. The `cols` are one or more column selectors. The value of `sort` defaults to `nothing` leaving the order of the groups in the result undefined, but the grouping uses the fastest identified algorithm. The `skipmissing` argument can instruct the skipping of rows which have missing values in the selected columns.
 
-For example, grouping by loading style, returns two sub data frames.
+For example, grouping the baggage data by loading style, returns two sub data frames.
 
 ```{julia}
 gdf = groupby(d, :load)
 ```
+
+Grouping by more than one variable is achieved by passing in a selector with multiple variables. The following also creates two sub data frames, but only because the unique combination of both load and date are the same as just load:
+
+```{julia}
+gdf = groupby(d, [:load, :d])
+```
+
+
 
 Indices may be used to get each sub data frame. Moreover, the `keys` method returns keys, like indices, to efficiently look up the different sub data frames in `gdf`. The levels for the keys are found in the property `.load`, as with `keys(gdf)[1].load`. Grouped data frames may be iterated over; the `pairs` iterator iterates over both keys and values.
 
@@ -694,11 +704,17 @@ subset(gdf, :p => ByRow(<=(350)))
 
 (The command `[subset(g, :p => ByRow(<=(350))) for g in gdf]` avoids the `combine` step.)
 
+#### Group and combine
+
 We can see that `combine` also works over `GroupedDataFrame` objects. This example shows how to find the mean city mileage of groups formed by the value of `:Origin` in the `cars` data set:
 
 ```{julia}
 combine(groupby(cars, :Origin), :MPGCity => mean)
 ```
+
+Typically, the function applied to a column is a reduction, which results in *aggregated data*.
+
+By default the keys used to group (`:Origin`) are kept by `combine`. The `keepkeys` argument for `combine` when applied to grouped data controls this feature.
 
 More than one column can be used to group the data. This example first groups by the number of cylinders, then groups by origin. For each of the 9 resulting groups, the group mean for city mileage is taken:
 
@@ -857,7 +873,7 @@ end
 #### The SplitApplyCombine package
 
 There is support for the split-apply-combine paradigm outside of the `DataFrames` package in the package `SplitApplyCombine`. This package is much lighter weight than `DataFrames`.
-This support targets other representations of tabular data, such as a vector of nested tuples:
+This support targets other representations of tabular data, such as a vector of named tuples:
 
 
 ```{julia}
@@ -871,13 +887,13 @@ tbl = [
 
 Many of the main verbs are generic functions: `filter`, `map`, `reduce`; `group` does grouping. There are some others. A few examples follow.
 
-For indexing this structure, we can't index by `[row, col]`, rather we can use `[row][col]` notation, the first to extract the row, the second to access the entries in the column. For example, he we index a selected row by position, by name, and then with multiple names:
+For indexing this structure, we can't index by `[row, col]`, rather we can use `[row][col]` notation, the first to extract the row, the second to access the entries in the column. For example, here we index a selected column by position, by name, and then with multiple names:
 
 ```{julia}
 tbl[2][2], tbl[2].v, tbl[2][ [:v, :p] ]
 ```
 
-The `invert` function reverses the access pattern, allowing in this case, `[col][row]` access, with:
+The `invert` function from `SplitApplyCombine` reverses the access pattern, allowing, in this case, `[col][row]` access, with:
 
 ```{julia}
 itbl = invert(tbl)
@@ -1059,11 +1075,27 @@ cars_price = select(cars, 1:3, r"Price" => ByRow(_mean) => :price)
 first(cars_price, 3)
 ```
 
-To aggregate over columns, the `groupby` construct can be used to specify the groupings to aggregate over. In the following this is the car type:
+To aggregate over columns, the `groupby` construct can be used to specify the groupings to aggregate over. In the following this is the car type. The `Chain` style is used to make the steps more explicit:
 
 ```{julia}
-combine(groupby(cars_price, :Type), :price => mean => :avg_price)
+@chain cars_price begin
+    groupby(:Type)
+    combine(:price => mean => :avg_price)
+end
 ```
+
+As `mean` is a reduction, the result has one row for each unique set of levels in the column selector specified to `groupby`. Again, that these columns appear in the output is due to the chosen default value of`keepkeys`.
+
+This similar example shows grouping by two variables and then aggregating miles per gallon over each:
+
+```{julia}
+@chain cars begin
+       groupby([:Type, :DriveTrain])
+       combine(:MPGHighway => mean => :avg_MPG)
+       sort(:avg_MPG, rev=true)
+end
+```
+
 
 
 ### Tidy data; stack, unstack
@@ -1078,7 +1110,35 @@ These terms are defined by
 
 > A dataset is a collection of values, usually either numbers (if quantitative) or strings (if qualitative). Values are organised in two ways. Every value belongs to a variable and an observation. A variable contains all values that measure the same underlying attribute (like height, temperature, duration) across units. An observation contains all values measured on the same unit (like a person, or a day, or a race) across attributes.
 
-In addition to `flatten`, the `DataFrames` package provides the functions `stack` and `unstack` for tidying data. We illustrate with an abbreviated version of an example in the `tidyr` vignette.
+In addition to `flatten`, the `DataFrames` package provides the functions `stack` and `unstack` for tidying data.
+
+::: {.callout-note}
+
+### Stack and unstack
+The `stack` and `unstack` commands are used to move from "wide" format, where related values are stored in multiple columns with column names representing some level, to "long" format, where related values are stored in one column, and their categorical levels in another column.
+
+For example, this wide format as the attributes are in columns `:A` and `:B`; the values in columns `:C` and `:D`.
+
+```{julia}
+wide = DataFrame(A=["A","B"], B=["a","b"], C=["c1","c2"], D=["d1","d2"])
+```
+
+With the `stack` function, the values are placed into a single column (by default `:value`) and the variable names placed into a single column (by default `:variable`):
+
+```{julia}
+long = stack(wide, [:C, :D])
+```
+
+The values in the `:variable` column come from the data frame names.
+
+With `unstack` the data can be spread back out into "wide" format. We pass in the two columns indicating the variable and the values to `unstack`:
+
+```{julia}
+unstack(long, :variable, :value)
+```
+
+
+We illustrate this further with an abbreviated version of an example in the `tidyr` vignette.
 
 Consider this data from the Global Historical Climatology Network for one weather station (MX17004) in Mexico for five months in 2010. The full data has 31 days per month, this abbreviated data works with just the first 8:
 

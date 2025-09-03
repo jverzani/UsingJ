@@ -12,6 +12,7 @@ science, within which much of this material is covered. For example,
 [@storopolihuijzeralonso2021juliadatascience] is very well done,
 [@nazarathy2021statisticsjulia] covers topics here (cf. the [JuliaCon
 Workshop](https://www.youtube.com/watch?v=IlPoU5Yr2QI)).
+[@RomeoAndJulia] covers many of the topics here with a Biologist's viewpoint.
 The quarto book [Embrace Uncertainty](https://juliamixedmodels.github.io/EmbraceUncertainty/) [@Embrace-Uncertainty-Fitting-Mixed-Effects-Models-with-Julia] covers the more advanced topic of Mixed-effects Models in `Julia`. Nothing here couldn't be found in those resources, these notes are just an introduction.
 
 

@@ -3,6 +3,8 @@ engines: ['julia']
 
 project:
   type: book
+  output-dir: _book
+
 
 book:
   title: "Using Julia for Introductory Statistics"
@@ -26,9 +28,10 @@ book:
     - EDA/makie.qmd
     - Inference/distributions.qmd
     - Inference/inference.qmd
+#    - Inference/permutation_tests.qmd
     - LinearModels/linear-regression.qmd
-    - references.qmd
 #        - LinearModels/glm.qmd
+    - references.qmd
 
 bibliography: references.bib
 csl: the-american-statistician.csl
@@ -61,6 +64,6 @@ format:
 
 execute:
   warning: false
+  freeze: false #auto
   error: false
-#  freeze: auto
   cache: false

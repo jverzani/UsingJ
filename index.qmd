@@ -2,9 +2,11 @@
 
 This is a collection of notes for using `Julia` for introductory statistics.
 
-In case you haven't heard, [Julia](https://julialang.org/) is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance -- Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than `R` and `Python`, widely used scripting languages for the tasks illustrated herein.
+In case you haven't heard, [Julia](https://julialang.org/) is an open-source programming language suitable for many tasks, like scientific programming. It is designed for high performance---Julia programs compile on the fly to efficient native code. Julia has a relatively easy to learn syntax for many tasks, certainly no harder to pick up than `R` and `Python`, widely used scripting languages for the tasks illustrated herein.
 
-Why these notes on introductory statistics? No compelling reason save I had done something similar for `R` when `R` was a fledgling `S-Plus` clone. No more, `R` is a juggernaut, and it is almost certain `Julia` will never replace `R` as the programming language of choice for statistics. Besides, `Julia` users can already interface with `R` quite easily through `RCall`. *However*, there are some reasons that `Julia` could be a useful language when learning basic inferential statistics, especially if other real strengths of the `Julia` ecosystem were needed. So these notes show how `Julia` can be used for these tasks, and, hopefully, shows that it works pretty well.
+Why these notes on introductory statistics? No compelling reason save I had done something similar for `R` when `R` was a fledgling `S-Plus` clone. No more, `R` is a juggernaut, and it is almost certain `Julia` will never replace `R` as the programming language of choice for statistics. Besides, `Julia` users can already interface with `R` quite easily through `RCall`.
+
+*However*, there are some reasons that `Julia` could be a useful language when learning basic inferential statistics, especially if other real strengths of the `Julia` ecosystem were needed. So these notes show how `Julia` can be used for these tasks, and, hopefully, shows that it works pretty well.
 
 There are some great books published about using `Julia` [@bezanson2017julia] with data
 science, within which much of this material is covered. For example,
@@ -24,7 +26,7 @@ These notes are a work in progress. Feel free to click the "edit this page" butt
 
 ## Installing and running Julia
 
-`Julia` can be downloaded from [julialang.org](https://julialang.org/). The language is evolving rapidly. The latest official release is recommended. These notes should work with any version since `v"1.6.0"`. It is recommended to use a version `v"1.9.0"` or later, as there are significant speedups with external packages that make the user experience even better.
+`Julia` can be downloaded from [julialang.org](https://julialang.org/) using `juliaup`. The language is evolving rapidly. The latest official release is recommended. These notes should work with any version since `v"1.10.0"`. It is recommended to use the latest version, as the language had general improvement with each new release and some external packages take advantage of these.
 
 Once downloaded and installed the `Julia` installation will provide a *command line* for interactive usage and a binary to run scripts. It is envisioned most users will use an alternative interface, though `Julia` has an excellent REPL for command-line usage.
 
@@ -45,9 +47,9 @@ These notes use `quarto` to organize the mix of text, code, and graphics. The `q
 
 This section gives a quick orientation for using `Julia`. See this compiled collection of [tutorials](https://julialang.org/learning/tutorials/) for more comprehensive introductions.
 
-As will be seen, `Julia` use *multiple dispatch* (as does `R`) where different function methods can be called using the same generic name. Different methods are dispatched depending on the type and number of the arguments. The `+` sign above, is actually a function call to the `+` function, which in base `Julia` has over 200 different methods, as there are many different implementations for addition. For a beginner this is great -- fewer new function names to remember.
+As will be seen, `Julia` use *multiple dispatch* (as does `R`) where different function methods can be called using the same generic name. Different methods are dispatched depending on the type and number of the arguments. The `+` sign above, is actually a function call to the `+` function, which in base `Julia` has over $150$ different methods, as there are many different implementations for addition. For a beginner this is great---fewer new function names to remember; for a power user this is greate---new methods can be specialized for performance purposes.
 
-`Julia` is a *dynamically typed* language, like `R` and `Python`, meaning variables can be reassigned to different values and with different types.^[With the one caveat that generic function names can not be reassigned as variables or vice versa.] Dynamicness makes interactive usage at the REPL or through a notebook much easier.
+`Julia` is a *dynamically typed* language, like `R` and `Python`, meaning variables can be reassigned to different values and with different types.^[With the one caveat that generic function names can not be reassigned as variables or vice versa within a session.] Dynamicness makes interactive usage at the REPL or through a notebook much easier.
 
 Julia supports the usual mathematical operations familiar to users of a calculator, such as `+`, `-`, `*`, `/`, and `^`. In addition, there a numerous built in functions such as mathematical ones like `sqrt` or programming oriented ones, like `map`.
 
@@ -75,7 +77,7 @@ xs = (1, 2, 3, 7, 9) # tuple
 sum(xs) / length(xs)
 ```
 
-The takeaway -- we can focus more on what the computations mean, and less on how to program a particular computation.
+The takeaway---we can focus more on what the computations mean, and less on how to program a particular computation.
 
 ## Add-on packages
 
@@ -108,7 +110,3 @@ These notes will utilize numerous add-on packages including:
 * [`GLM`](https://github.com/JuliaStats/GLM.jl), [`Loess`](https://github.com/JuliaStats/Loess.jl), and [`RobustModels`](https://github.com/getzze/RobustModels.jl), for statistical modeling.
 
 Most of these are maintained by the `StatsBase` organization, which provides the `StatsKit` package to load all these with a single command, though we don't illustrate that.
-
-----
-
-Copyright 2023, John Verzani. All rights reserved.

@@ -294,7 +294,7 @@ plot(p1, p2, layout = (@layout [a b]))
 
 As seen in the left graphic of @fig-grouped-barchart, there are groups of bars for each level of the first variable (`:Sex`); the groups represent the variable passed to the `group` keyword argument. The values are looked up in the data frame with the computed column that was named `:value` through the `combine` function.
 
-The same graphic on the left -- without the labeling -- is also made more directly with `groupedbar(freqtable(survey, :Sex, :Smoke))`
+The same graphic on the left---without the labeling---is also made more directly with `groupedbar(freqtable(survey, :Sex, :Smoke))`
 
 
 #### Andrews plot

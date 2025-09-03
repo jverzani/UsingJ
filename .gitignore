@@ -4,6 +4,7 @@
 /site_libs/
 /_freeze/
 /*/*_files/
+/*/*.html
 /*/*.ipynb/
 TODO.md
 Manifest.toml

@@ -72,7 +72,7 @@ Both the `mapping` and `visual` calls can be used to set attributes:
 
 The attributes are those for the underlying plotting function. For `visual(BoxPlot)`, these can be seen at the help page for `boxplot`, displayed with the command `?boxplot`.
 
-The `mapping` calls shows two uses of the mini language for data manipulation. The basic form is `source => function => target` and works very much like the DataFrames mini language does for `select` or `transform`, but unlike those, the function is *always* applied by row. This makes some transformations, such as $z$-scores not possible within this call -- transformations requiring the entire column need to be done within the values passed to `data`. The abbreviated forms are just `source`, as used with the `color=:species` argument; `source => function`; and `source => target`, such as `:bill_length_mm => "bill length (mm)"` used to rename the variable for labeling purposes. When the source involves more than one column selector, tuples should be used to group them.
+The `mapping` calls shows two uses of the mini language for data manipulation. The basic form is `source => function => target` and works very much like the DataFrames mini language does for `select` or `transform`, but unlike those, the function is *always* applied by row. This makes some transformations, such as $z$-scores not possible within this call---transformations requiring the entire column need to be done within the values passed to `data`. The abbreviated forms are just `source`, as used with the `color=:species` argument; `source => function`; and `source => target`, such as `:bill_length_mm => "bill length (mm)"` used to rename the variable for labeling purposes. When the source involves more than one column selector, tuples should be used to group them.
 
 A few functions are provided to bypass the usual mapping of the data. (For example, `color` maps levels of a factor to a color ramp behind the scenes.) Among these are `nonnumeric` to pass a numeric variable to a value expecting a categorical variable and `verbatim` to avoid this mapping. The latter, `=> verbatim`, will be necessary to add when annotating a figure.
 
@@ -337,7 +337,9 @@ Quantile-quantile plots. The left graphic shows `QQPlot` used to compare the dis
 
 A scatter plot shows $x$ and $y$ pairs as points, a line plot connects these points. There are numerous ways to draw lines with the `AlgebraOfGraphics` including: `visual(Lines)`, for connect-the-dots lines; `visual(LinesFill)`, for shading; `visual(HLines)` and `visual(VLines)`, for horizontal and vertical lines; `visual(Rangebars)` to draw vertical or horizontal line segments.
 
-The graph of a function can be drawn using `Lines`, as in this example, where we add in different range bars to emphasize the role that the two parameters play in this function's graph:
+The graph of a function can be drawn using `Lines`, as in the example shown in @fig-line-plot, where we add in different range bars to emphasize the role that the two parameters play in the function's graph.
+
+::: {#fig-line-plot}
 
 ```{julia}
 ϕ(x; μ=0, σ=1) = 1/sqrt(2*pi*σ^2) * exp(-(1/(2σ)) * (x - μ)^2)
@@ -357,6 +359,9 @@ c += data((x=[1/10, 1/2], y=[0, ϕ(1)], label=["μ", "σ"])) *
     mapping(:x, :y, text = :label => verbatim)
 draw(c)
 ```
+
+Density of standard normal distribution with annotations
+:::
 
 The `Rangebars` visual has a `direction` argument, used above to make a horizontal range bar.
 
@@ -416,6 +421,7 @@ f
 
 A corner plot, as produced by the `PairPlots` package through its `pairplot` function, is a quick plot to show pair-wise relations amongst multiple numeric values. The graphic uses the lower part of a grid to show paired scatterplots with, by default, contour lines highlighting the relationship. On the diagonal are univariate density plots.
 
+::: {#fig-pairplot}
 ```{julia}
 using PairPlots
 nms = names(penguins, 3:5)
@@ -423,6 +429,8 @@ p = select(penguins, nms .=> replace.(nms, "_mm" => "", "_" => " ")) # adjust na
 pairplot(p)
 ```
 
+Corner plot produced by the `PairPlots` package
+:::
 
 ### 3D scatterplots
 

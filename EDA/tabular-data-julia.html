@@ -289,7 +289,6 @@ window.Quarto = {
   <li><a href="#splitapplycombine" id="toc-splitapplycombine" class="nav-link" data-scroll-target="#splitapplycombine"><span class="header-section-number">3.1.9</span> SplitApplyCombine</a></li>
   <li><a href="#aggregating-data" id="toc-aggregating-data" class="nav-link" data-scroll-target="#aggregating-data"><span class="header-section-number">3.1.10</span> Aggregating data</a></li>
   <li><a href="#tidy-data-stack-unstack" id="toc-tidy-data-stack-unstack" class="nav-link" data-scroll-target="#tidy-data-stack-unstack"><span class="header-section-number">3.1.11</span> Tidy data; stack, unstack</a></li>
-  <li><a href="#joins" id="toc-joins" class="nav-link" data-scroll-target="#joins"><span class="header-section-number">3.1.12</span> Joins</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/jverzani/UsingJ/edit/master/EDA/tabular-data-julia.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/jverzani/UsingJ/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -344,19 +343,19 @@ An OG package
 <section id="data-frame-construction" class="level3" data-number="3.1.1">
 <h3 data-number="3.1.1" class="anchored" data-anchor-id="data-frame-construction"><span class="header-section-number">3.1.1</span> Data frame construction</h3>
 <p>There are different ways to construct a data frame.</p>
-<p>Consider the task of the Wirecutter in trying to select the best <a href="https://www.nytimes.com/wirecutter/reviews/best-carry-on-travel-bags/#how-we-picked-and-tested">carry on travel bag</a>. After compiling a list of possible models by scouring travel blogs etc., they select some criteria (capacity, compartment design, aesthetics, comfort, …) and compile data, similar to what one person collected in a <a href="https://docs.google.com/spreadsheets/d/1fSt_sO1s7moXPHbxBCD3JIKPa8QIZxtKWYUjD6ElZ-c/edit#gid=744941088">spreadsheet</a>. Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatability, loading style, and a last-checked date – as this market improves constantly.</p>
+<p>Consider the task of the Wirecutter in trying to select the best <a href="https://www.nytimes.com/wirecutter/reviews/best-carry-on-travel-bags/#how-we-picked-and-tested">carry on travel bag</a>. After compiling a list of possible models by scouring travel blogs etc., they select some criteria (capacity, compartment design, aesthetics, comfort, …) and compile data, similar to what one person collected in a <a href="https://docs.google.com/spreadsheets/d/1fSt_sO1s7moXPHbxBCD3JIKPa8QIZxtKWYUjD6ElZ-c/edit#gid=744941088">spreadsheet</a>. Here we create a much simplified spreadsheet for 3 listed bags with measurements of volume, price, laptop compatibility, loading style, and a last-checked date – as this market improves constantly.</p>
 <pre><code>product         v  p    l loads       checked
 Goruck GR2      40 395  Y front panel 2022-09
 Minaal 3.0      35 349  Y front panel 2022-09
 Genius          25 228  Y clamshell   2022-10</code></pre>
-<p>We see that product is a character, volume and price numeric, laptop compatability a Boolean value, load style one of a few levels, and the last checked date, a year-month date.</p>
+<p>We see that product is a character, volume and price numeric, laptop compatibility a Boolean value, load style one of a few levels, and the last checked date, a year-month date.</p>
 <p>We create vectors to hold each. We load the <code>CategoricalArrays</code> and <code>Dates</code> packages for a few of the variables:</p>
 <div id="6" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CategoricalArrays</span>, <span class="bu">Dates</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> [<span class="st">"Goruck GR2"</span>, <span class="st">"Minaal 3.0"</span>, <span class="st">"Genius"</span>]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>volume <span class="op">=</span> [<span class="fl">40</span>, <span class="fl">35</span>, <span class="fl">25</span>]</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>price <span class="op">=</span> [<span class="fl">395</span>, <span class="fl">349</span>, <span class="fl">228</span>]</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>laptop_compatability <span class="op">=</span> <span class="fu">categorical</span>([<span class="st">"Y"</span>,<span class="st">"Y"</span>,<span class="st">"Y"</span>])</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>laptop_compatibility <span class="op">=</span> <span class="fu">categorical</span>([<span class="st">"Y"</span>,<span class="st">"Y"</span>,<span class="st">"Y"</span>])</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>loading_style <span class="op">=</span> <span class="fu">categorical</span>([<span class="st">"front panel"</span>, <span class="st">"front panel"</span>, <span class="st">"clamshell"</span>])</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>date_checked <span class="op">=</span> <span class="fu">Date</span>.(<span class="fl">2022</span>, [<span class="fl">9</span>,<span class="fl">9</span>,<span class="fl">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
@@ -369,7 +368,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 <p>With this, we use the <code>DataFrame</code> constructor to combine these into one data set.</p>
 <div id="8" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">DataFrame</span>(product <span class="op">=</span> product, volume<span class="op">=</span>volume, price<span class="op">=</span>price,</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>              var<span class="st">"laptop compatability"</span><span class="op">=</span>laptop_compatability,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>              var<span class="st">"laptop compatibility"</span><span class="op">=</span>laptop_compatibility,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>              var<span class="st">"loading style"</span><span class="op">=</span>loading_style, var<span class="st">"date checked"</span><span class="op">=</span>date_checked)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
@@ -380,7 +379,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 <th style="text-align: left;" data-quarto-table-cell-role="th">product</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">volume</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">price</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">laptop compatability</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">laptop compatibility</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">loading style</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">date checked</th>
 </tr>
@@ -490,7 +489,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 </tr>
 <tr class="even">
 <td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
-<td style="text-align: left;">laptop compatability</td>
+<td style="text-align: left;">laptop compatibility</td>
 <td style="text-align: left; font-style: italic;"></td>
 <td style="text-align: left;">Y</td>
 <td style="text-align: left; font-style: italic;"></td>
@@ -526,7 +525,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 <p>In the above construction, we repeated the names of the variables to the constructor. A style, also akin to the construction of named tuple, could also have been used where variables after a semicolon are implicitly assumed to have the desired name:</p>
 <div id="12" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">DataFrame</span>(; product, volume, price,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>              var<span class="st">"laptop compatability"</span><span class="op">=</span>laptop_compatability,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>              var<span class="st">"laptop compatibility"</span><span class="op">=</span>laptop_compatibility,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>              var<span class="st">"loading style"</span><span class="op">=</span>loading_style, var<span class="st">"date checked"</span><span class="op">=</span>date_checked)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
@@ -537,7 +536,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 <th style="text-align: left;" data-quarto-table-cell-role="th">product</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">volume</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">price</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">laptop compatability</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">laptop compatibility</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">loading style</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">date checked</th>
 </tr>
@@ -592,7 +591,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>d.product <span class="op">=</span> product</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>d.volume <span class="op">=</span> volume</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>d.price <span class="op">=</span> price</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>d.<span class="st">"laptop compatability"</span> <span class="op">=</span> laptop_compatability</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>d.<span class="st">"laptop compatibility"</span> <span class="op">=</span> laptop_compatibility</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>d.<span class="st">"loading style"</span> <span class="op">=</span> loading_style</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>d.<span class="st">"date checked"</span> <span class="op">=</span> date_checked</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -605,7 +604,7 @@ Genius          25 228  Y clamshell   2022-10</code></pre>
 <th style="text-align: left;" data-quarto-table-cell-role="th">product</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">volume</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">price</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">laptop compatability</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">laptop compatibility</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">loading style</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">date checked</th>
 </tr>
@@ -1137,7 +1136,7 @@ Read and write
 </section>
 <section id="indexing-and-assignment" class="level3" data-number="3.1.3">
 <h3 data-number="3.1.3" class="anchored" data-anchor-id="indexing-and-assignment"><span class="header-section-number">3.1.3</span> Indexing and assignment</h3>
-<p>The values in a data frame can be referenced programatically by a row number and column number, both 1-based. For example, the 2nd row and 3rd column of <code>d</code> can be seen to be <code>349</code> by observation</p>
+<p>The values in a data frame can be referenced programmatically by a row number and column number, both 1-based. For example, the 2nd row and 3rd column of <code>d</code> can be seen to be <code>349</code> by observation</p>
 <div id="32" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
@@ -2609,7 +2608,7 @@ Read and write
 </div>
 </div>
 </div>
-<p>The above required the introduction of an intermediate data frame to store the result of the first <code>filter</code> call to pass to the second. This threading through of the modified data is quite common in processing pipelines. The first two approaches with complicated predicate functions can grow unwieldly, so staged modification is common. To support that, the chaining or piping operation (<code>|&gt;</code>) is often used:</p>
+<p>The above required the introduction of an intermediate data frame to store the result of the first <code>filter</code> call to pass to the second. This threading through of the modified data is quite common in processing pipelines. The first two approaches with complicated predicate functions can grow unwieldy, so staged modification is common. To support that, the chaining or piping operation (<code>|&gt;</code>) is often used:</p>
 <div id="74" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="op">:</span>Manufacturer <span class="op">=&gt;</span> <span class="op">==</span>(<span class="st">"Volkswagen"</span>), cars) <span class="op">|&gt;</span></span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    d <span class="op">-&gt;</span> <span class="fu">filter</span>(<span class="op">:</span>MPGCity <span class="op">=&gt;</span> <span class="op">&gt;=</span>(<span class="fl">20</span>), d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3615,7 +3614,7 @@ Read and write
 </section>
 <section id="transform" class="level4">
 <h4 class="anchored" data-anchor-id="transform">Transform</h4>
-<p>Extending the columns in the data frame by <code>select</code> is common enough that the function <code>transform</code> is supplied which always keeps the columns of the original data frame, though they can also be modified through the mini language. The use of transfrom is equivalent to <code>select(df, :, args...)</code>.</p>
+<p>Extending the columns in the data frame by <code>select</code> is common enough that the function <code>transform</code> is supplied which always keeps the columns of the original data frame, though they can also be modified through the mini language. The use of transform is equivalent to <code>select(df, :, args...)</code>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3951,9 +3950,11 @@ The DataFrames’ mini language
 <section id="splitapplycombine" class="level3" data-number="3.1.9">
 <h3 data-number="3.1.9" class="anchored" data-anchor-id="splitapplycombine"><span class="header-section-number">3.1.9</span> SplitApplyCombine</h3>
 <p>The split-apply-combine strategy for wrangling data frames was popularized in the influential paper “<em>The Split-Apply-Combine Strategy for Data Analysis</em>: <span class="citation" data-cites="JSSv040i01">(<a href="../references.html#ref-JSSv040i01" role="doc-biblioref">Wickham 2011</a>)</span> by H. Wickham which introduces this description:”where you break up a big problem into manageable pieces, operate on each piece independently and then put all the pieces back together.”</p>
+<section id="grouping-data" class="level4">
+<h4 class="anchored" data-anchor-id="grouping-data">Grouping data</h4>
 <p>The <code>groupby</code> function for data frames does the breaking up, the <code>DataFrames</code> mini language can operate on each piece, and the <code>combine</code> function can put things together again.</p>
-<p>The <code>groupby</code> function splits a data frame into pieces of type <code>GroupedDataFrame</code>. The basic signature is <code>groupby(df, cols; sort=nothing, skipmissing=false)</code>. The <code>cols</code> are one or more column selectors. The value of <code>sort</code> defaults to <code>nothing</code> leaving the order of the groups in the result undefined, but the grouping uses the fastest identified algorithm. The <code>skipmissing</code> argument can instruct the skipping of rows which have missing values in the selected columns.</p>
-<p>For example, grouping by loading style, returns two sub data frames.</p>
+<p>Grouping takes one or more <em>categorical variables</em> and creates a “grouped” data frame for each different set of <em>combined</em> levels. That is one grouped data frame for each possible combination of the levels. The <code>groupby</code> function splits the data frame into pieces of type <code>GroupedDataFrame</code>. The basic signature is <code>groupby(df, cols; sort=nothing, skipmissing=false)</code>. The <code>cols</code> are one or more column selectors. The value of <code>sort</code> defaults to <code>nothing</code> leaving the order of the groups in the result undefined, but the grouping uses the fastest identified algorithm. The <code>skipmissing</code> argument can instruct the skipping of rows which have missing values in the selected columns.</p>
+<p>For example, grouping the baggage data by loading style, returns two sub data frames.</p>
 <div id="120" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> <span class="fu">groupby</span>(d, <span class="op">:</span>load)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
@@ -4037,10 +4038,94 @@ The DataFrames’ mini language
 </div>
 </div>
 </div>
+<p>Grouping by more than one variable is achieved by passing in a selector with multiple variables. The following also creates two sub data frames, but only because the unique combination of both load and date are the same as just load:</p>
+<div id="122" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> <span class="fu">groupby</span>(d, [<span class="op">:</span>load, <span class="op">:</span>d])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<p><b>GroupedDataFrame with 2 groups based on keys: load, d</b></p><div><div style="float: left;"><span>First Group (2 rows): load = CategoricalArrays.CategoricalValue{String, UInt32} "front panel", d = 2022-09-01</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">b</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">p</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lap</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">load</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">d</th>
+</tr>
+<tr class="subheader headerLastRow even">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int64">Int64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalArrays.CategoricalValue{String, UInt32}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalArrays.CategoricalValue{String, UInt32}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Dates.Date">Date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">Goruck GR2</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">395.99</td>
+<td style="text-align: left;">Y</td>
+<td style="text-align: left;">front panel</td>
+<td style="text-align: left;">2022-09-01</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">Minaal 3.0</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">349.99</td>
+<td style="text-align: left;">Y</td>
+<td style="text-align: left;">front panel</td>
+<td style="text-align: left;">2022-09-01</td>
+</tr>
+</tbody>
+</table>
+</div><p>⋮</p><div><div style="float: left;"><span>Last Group (1 row): load = CategoricalArrays.CategoricalValue{String, UInt32} "clamshell", d = 2022-10-01</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">b</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">v</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">p</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">lap</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">load</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">d</th>
+</tr>
+<tr class="subheader headerLastRow even">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Int64">Int64</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, Float64}">Float64?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalArrays.CategoricalValue{String, UInt32}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalArrays.CategoricalValue{String, UInt32}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Dates.Date">Date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">Genius</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">228.99</td>
+<td style="text-align: left;">Y</td>
+<td style="text-align: left;">clamshell</td>
+<td style="text-align: left;">2022-10-01</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <p>Indices may be used to get each sub data frame. Moreover, the <code>keys</code> method returns keys, like indices, to efficiently look up the different sub data frames in <code>gdf</code>. The levels for the keys are found in the property <code>.load</code>, as with <code>keys(gdf)[1].load</code>. Grouped data frames may be iterated over; the <code>pairs</code> iterator iterates over both keys and values.</p>
 <p>The <code>select</code> and <code>subset</code> functions work over <code>GroupedDataFrame</code> objects, here we see the returned values are combined:</p>
-<div id="122" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(gdf, <span class="op">:</span>p <span class="op">=&gt;</span> <span class="fu">ByRow</span>(<span class="op">&lt;=</span>(<span class="fl">350</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="124" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(gdf, <span class="op">:</span>p <span class="op">=&gt;</span> <span class="fu">ByRow</span>(<span class="op">&lt;=</span>(<span class="fl">350</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4089,9 +4174,12 @@ The DataFrames’ mini language
 </div>
 </div>
 <p>(The command <code>[subset(g, :p =&gt; ByRow(&lt;=(350))) for g in gdf]</code> avoids the <code>combine</code> step.)</p>
+</section>
+<section id="group-and-combine" class="level4">
+<h4 class="anchored" data-anchor-id="group-and-combine">Group and combine</h4>
 <p>We can see that <code>combine</code> also works over <code>GroupedDataFrame</code> objects. This example shows how to find the mean city mileage of groups formed by the value of <code>:Origin</code> in the <code>cars</code> data set:</p>
-<div id="124" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars, <span class="op">:</span>Origin), <span class="op">:</span>MPGCity <span class="op">=&gt;</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="126" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars, <span class="op">:</span>Origin), <span class="op">:</span>MPGCity <span class="op">=&gt;</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4123,9 +4211,11 @@ The DataFrames’ mini language
 </div>
 </div>
 </div>
+<p>Typically, the function applied to a column is a reduction, which results in <em>aggregated data</em>.</p>
+<p>By default the keys used to group (<code>:Origin</code>) are kept by <code>combine</code>. The <code>keepkeys</code> argument for <code>combine</code> when applied to grouped data controls this feature.</p>
 <p>More than one column can be used to group the data. This example first groups by the number of cylinders, then groups by origin. For each of the 9 resulting groups, the group mean for city mileage is taken:</p>
-<div id="126" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars, [<span class="op">:</span>Cylinders, <span class="op">:</span>Origin]), <span class="op">:</span>MPGCity <span class="op">=&gt;</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="128" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars, [<span class="op">:</span>Cylinders, <span class="op">:</span>Origin]), <span class="op">:</span>MPGCity <span class="op">=&gt;</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>9×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4204,12 +4294,12 @@ The DataFrames’ mini language
 </div>
 </div>
 <p>The <code>@chain</code> macro may make this more readable:</p>
-<div id="128" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> cars <span class="cf">begin</span></span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Cylinders, <span class="op">:</span>Origin])</span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(<span class="op">:</span>MPGCity <span class="op">=&gt;</span> mean)</span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>    describe</span>
-<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="130" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> cars <span class="cf">begin</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>Cylinders, <span class="op">:</span>Origin])</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(<span class="op">:</span>MPGCity <span class="op">=&gt;</span> mean)</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>    describe</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×7 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4273,10 +4363,10 @@ The DataFrames’ mini language
 </div>
 <div id="exm-legos-example" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.1 (Lego sets)</strong></span> For an example, we download a data set from the internet describing all the sets of Legos sold during some time period. This data set is part of the data sets provided by <code>openintro.org</code>, an organization trying to make interesting educational products that are free and transparent.</p>
-<div id="130" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>csv_data <span class="op">=</span> <span class="fu">download</span>(<span class="st">"https://www.openintro.org/data/csv/lego_population.csv"</span>)</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>legos <span class="op">=</span> CSV.<span class="fu">read</span>(csv_data, DataFrame)</span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos, <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="132" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>csv_data <span class="op">=</span> <span class="fu">download</span>(<span class="st">"https://www.openintro.org/data/csv/lego_population.csv"</span>)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>legos <span class="op">=</span> CSV.<span class="fu">read</span>(csv_data, DataFrame)</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos, <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×14 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4358,17 +4448,17 @@ The DataFrames’ mini language
 </div>
 <p>Let’s explore this data.</p>
 <p>The size of the data set is printed, though suppressed above as only the first 2 rows are requested to be shown, or can be programmatically identified with <code>size(legos)</code>.</p>
-<div id="132" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(legos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="134" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">size</span>(legos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>(1304, 14)</code></pre>
 </div>
 </div>
 <p>Each row is a product; there are a lot of different ones.</p>
 <p>The types <em>identified</em> by <code>CSV.read</code> are not perfect. The data uses <code>NA</code> for not-available. We read again using the argument <code>missingstring="NA"</code>:</p>
-<div id="134" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>legos <span class="op">=</span> CSV.<span class="fu">read</span>(csv_data, DataFrame; missingstring<span class="op">=</span><span class="st">"NA"</span>)</span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos, <span class="fl">2</span>)  <span class="co"># show first 2 rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="136" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>legos <span class="op">=</span> CSV.<span class="fu">read</span>(csv_data, DataFrame; missingstring<span class="op">=</span><span class="st">"NA"</span>)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos, <span class="fl">2</span>)  <span class="co"># show first 2 rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×14 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4449,10 +4539,10 @@ The DataFrames’ mini language
 </div>
 </div>
 <p>The <code>:theme</code> and <code>:packaging</code> variables are categorical, so we make them so:</p>
-<div id="136" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>legos.theme <span class="op">=</span> <span class="fu">categorical</span>(legos.theme)</span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>legos.packaging <span class="op">=</span> <span class="fu">categorical</span>(legos.packaging);</span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos, <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="138" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>legos.theme <span class="op">=</span> <span class="fu">categorical</span>(legos.theme)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>legos.packaging <span class="op">=</span> <span class="fu">categorical</span>(legos.packaging);</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos, <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×14 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4534,25 +4624,25 @@ The DataFrames’ mini language
 </div>
 <p>We see data on the number of pieces and the age range. Is there some relationship?</p>
 <p>The <code>:age</code> variable should be an ordered factor, ordered by the youngest age intended for use. The <code>:ages</code> variable has a pattern <code>Ages_startXXX</code> where <code>XXX</code> may be <code>+</code> to indicate or up, or a dash to indicate a range. We use this to identify the youngest intended age.</p>
-<div id="138" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative to</span></span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="co"># `(m = match(r"Ages_(\d+)", x); m === nothing ? missing : parse(Int, m.captures[1]))`</span></span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">pick_first_age</span>(x)</span>
-<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ismissing</span>(x) <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">missing</span></span>
-<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>    nos <span class="op">=</span> <span class="fu">collect</span>(<span class="fu">string</span>(<span class="fl">0</span><span class="op">:</span><span class="fl">9</span><span class="op">...</span>))</span>
-<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> xi <span class="kw">in</span> x[<span class="fl">6</span><span class="op">:</span><span class="kw">end</span>] <span class="co"># drop Ages_</span></span>
-<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>        !(xi <span class="kw">in</span> nos) <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
-<span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out <span class="op">*</span> xi</span>
-<span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb85-11"><a href="#cb85-11" aria-hidden="true" tabindex="-1"></a>    out <span class="op">==</span> <span class="st">""</span> <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">missing</span></span>
-<span id="cb85-12"><a href="#cb85-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">parse</span>(<span class="dt">Int</span>, out)</span>
-<span id="cb85-13"><a href="#cb85-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb85-14"><a href="#cb85-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-15"><a href="#cb85-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-16"><a href="#cb85-16" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(legos, <span class="op">:</span>ages <span class="op">=&gt;</span> <span class="fu">ByRow</span>(pick_first_age) <span class="op">=&gt;</span> <span class="op">:</span>youngest_age)</span>
-<span id="cb85-17"><a href="#cb85-17" aria-hidden="true" tabindex="-1"></a>legos.youngest_age <span class="op">=</span> <span class="fu">categorical</span>(legos.youngest_age, ordered<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb85-18"><a href="#cb85-18" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos[<span class="op">:</span>,<span class="st">r"age"</span>], <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="140" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative to</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="co"># `(m = match(r"Ages_(\d+)", x); m === nothing ? missing : parse(Int, m.captures[1]))`</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">pick_first_age</span>(x)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ismissing</span>(x) <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">missing</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>    nos <span class="op">=</span> <span class="fu">collect</span>(<span class="fu">string</span>(<span class="fl">0</span><span class="op">:</span><span class="fl">9</span><span class="op">...</span>))</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> xi <span class="kw">in</span> x[<span class="fl">6</span><span class="op">:</span><span class="kw">end</span>] <span class="co"># drop Ages_</span></span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>        !(xi <span class="kw">in</span> nos) <span class="op">&amp;&amp;</span> <span class="cf">break</span></span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out <span class="op">*</span> xi</span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>    out <span class="op">==</span> <span class="st">""</span> <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">missing</span></span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">parse</span>(<span class="dt">Int</span>, out)</span>
+<span id="cb86-13"><a href="#cb86-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb86-14"><a href="#cb86-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-16"><a href="#cb86-16" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(legos, <span class="op">:</span>ages <span class="op">=&gt;</span> <span class="fu">ByRow</span>(pick_first_age) <span class="op">=&gt;</span> <span class="op">:</span>youngest_age)</span>
+<span id="cb86-17"><a href="#cb86-17" aria-hidden="true" tabindex="-1"></a>legos.youngest_age <span class="op">=</span> <span class="fu">categorical</span>(legos.youngest_age, ordered<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb86-18"><a href="#cb86-18" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(legos[<span class="op">:</span>,<span class="st">r"age"</span>], <span class="fl">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4589,12 +4679,12 @@ The DataFrames’ mini language
 </div>
 </div>
 <p>With that ordering, an expected pattern becomes clear – kits for older users have on average more pieces – though there are unexpected exceptions:</p>
-<div id="140" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
-<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>(<span class="op">:</span>youngest_age)</span>
-<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>([<span class="op">:</span>pieces, <span class="op">:</span>unique_pieces] <span class="op">.=&gt;</span> mean<span class="op">∘</span>skipmissing</span>
-<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>            <span class="op">.=&gt;</span> [<span class="op">:</span>avg_pieces, <span class="op">:</span>avg_unique_pieces])</span>
-<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="142" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>(<span class="op">:</span>youngest_age)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>([<span class="op">:</span>pieces, <span class="op">:</span>unique_pieces] <span class="op">.=&gt;</span> mean<span class="op">∘</span>skipmissing</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>            <span class="op">.=&gt;</span> [<span class="op">:</span>avg_pieces, <span class="op">:</span>avg_unique_pieces])</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>16×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4730,8 +4820,8 @@ The Lego Group
 </div>
 </div>
 <p>Lego is a mature company with an origin dating to 1934. The number of products per year should be fairly stable, though it is easy enough to check. The data set has a <code>:year</code> variable, so we would only need to group the data by that, then count the number of cases per each group. The <code>nrow</code> function will count the cases. This function is special cased in the <code>DataFrames</code>’ mini language and can appear by itself:</p>
-<div id="142" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(legos, <span class="op">:</span>year), nrow) <span class="co"># use `nrow =&gt; :n`, or some such, to label differently</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="144" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(legos, <span class="op">:</span>year), nrow) <span class="co"># use `nrow =&gt; :n`, or some such, to label differently</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4769,13 +4859,13 @@ The Lego Group
 </div>
 </div>
 <p>We can take other summaries by year, for example, here we find the average price by year and size:</p>
-<div id="144" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>year, <span class="op">:</span>size])</span>
-<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>n,</span>
-<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span>price <span class="op">=&gt;</span> mean<span class="op">∘</span>skipmissing <span class="op">=&gt;</span> <span class="op">:</span>avg_price</span>
-<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="146" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>year, <span class="op">:</span>size])</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>n,</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span>price <span class="op">=&gt;</span> mean<span class="op">∘</span>skipmissing <span class="op">=&gt;</span> <span class="op">:</span>avg_price</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>9×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4865,19 +4955,19 @@ The Lego Group
 </div>
 </div>
 <p>The youngest age range is a bit long. We wish to collapse it to the ranges 1-6, 7-12, and 12-18. The data has been stored as a categorical array. The <code>cut</code> function can group numeric data easily, but to group categorical data, the cut-ranges must be promoted to a <code>CategoricalValue</code>. We have the following, where <code>Ref</code> is used to stop the broadcasting for that value:</p>
-<div id="146" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> <span class="fu">CategoricalValue</span>.([<span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">12</span>, <span class="fl">18</span>], <span class="fu">Ref</span>(legos.youngest_age))</span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(legos,</span>
-<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>           <span class="op">:</span>youngest_age <span class="op">=&gt;</span> (x <span class="fu">-&gt;cut</span>(x, vals; extend<span class="op">=</span><span class="cn">true</span>))</span>
-<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>           <span class="op">=&gt;</span> <span class="op">:</span>youngest_age_range);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="148" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> <span class="fu">CategoricalValue</span>.([<span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">12</span>, <span class="fl">18</span>], <span class="fu">Ref</span>(legos.youngest_age))</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(legos,</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>           <span class="op">:</span>youngest_age <span class="op">=&gt;</span> (x <span class="fu">-&gt;cut</span>(x, vals; extend<span class="op">=</span><span class="cn">true</span>))</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>           <span class="op">=&gt;</span> <span class="op">:</span>youngest_age_range);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now check if the number of pieces has dramatically changed over the year. We break up the data by the age range, as we expect variation in that value so it is best to dis-aggregate over that factor:</p>
-<div id="148" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>youngest_age_range, <span class="op">:</span>year])</span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>n,</span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span>pieces <span class="op">=&gt;</span> mean<span class="op">∘</span>skipmissing <span class="op">=&gt;</span> <span class="op">:</span>avg_pieces)</span>
-<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="150" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>([<span class="op">:</span>youngest_age_range, <span class="op">:</span>year])</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>n,</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span>pieces <span class="op">=&gt;</span> mean<span class="op">∘</span>skipmissing <span class="op">=&gt;</span> <span class="op">:</span>avg_pieces)</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>12×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -4989,14 +5079,14 @@ The Lego Group
 </div>
 <p>No real pattern shows up.</p>
 <p>There are many different themes. The command <code>unique(legos.theme)</code> shows 41. Which are the most popular? To see, the data is grouped by the theme, each group is counted, missing themes are dropped, then the data frame is sorted and the top 5 rows are shown:</p>
-<div id="150" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>(<span class="op">:</span>theme)</span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>n)</span>
-<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
-<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="op">:</span>n; rev<span class="op">=</span><span class="cn">true</span>)</span>
-<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">first</span>(<span class="fl">5</span>)</span>
-<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="152" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> legos <span class="cf">begin</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>(<span class="op">:</span>theme)</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(nrow <span class="op">=&gt;</span> <span class="op">:</span>n)</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>    dropmissing</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(<span class="op">:</span>n; rev<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">first</span>(<span class="fl">5</span>)</span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>5×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5044,16 +5134,17 @@ The Lego Group
 </div>
 </div>
 </div>
+</section>
 <section id="the-splitapplycombine-package" class="level4">
 <h4 class="anchored" data-anchor-id="the-splitapplycombine-package">The SplitApplyCombine package</h4>
-<p>There is support for the split-apply-combine paradigm outside of the <code>DataFrames</code> package in the package <code>SplitApplyCombine</code>. This package is much lighter weight than <code>DataFrames</code>. This support targets other representations of tabular data, such as a vector of nested tuples:</p>
-<div id="152" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SplitApplyCombine</span></span>
-<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> [</span>
-<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>(b <span class="op">=</span> <span class="st">"Goruck GR2"</span>, v <span class="op">=</span> <span class="fl">40</span>, p <span class="op">=</span> <span class="fl">395</span>, lap <span class="op">=</span> <span class="st">"Y"</span>, load <span class="op">=</span> <span class="st">"front panel"</span>, d <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2022-09-01"</span>)),</span>
-<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>(b <span class="op">=</span> <span class="st">"Minaal 3.0"</span>, v <span class="op">=</span> <span class="fl">35</span>, p <span class="op">=</span> <span class="fl">349</span>, lap <span class="op">=</span> <span class="st">"Y"</span>, load <span class="op">=</span> <span class="st">"front panel"</span>, d <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2022-09-01"</span>)),</span>
-<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>(b <span class="op">=</span> <span class="st">"Genius    "</span>,     v <span class="op">=</span> <span class="fl">25</span>, p <span class="op">=</span> <span class="fl">228</span>, lap <span class="op">=</span> <span class="st">"Y"</span>, load <span class="op">=</span> <span class="st">"clamshell"</span>,   d <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2022-10-01"</span>))</span>
-<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There is support for the split-apply-combine paradigm outside of the <code>DataFrames</code> package in the package <code>SplitApplyCombine</code>. This package is much lighter weight than <code>DataFrames</code>. This support targets other representations of tabular data, such as a vector of named tuples:</p>
+<div id="154" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SplitApplyCombine</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> [</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>(b <span class="op">=</span> <span class="st">"Goruck GR2"</span>, v <span class="op">=</span> <span class="fl">40</span>, p <span class="op">=</span> <span class="fl">395</span>, lap <span class="op">=</span> <span class="st">"Y"</span>, load <span class="op">=</span> <span class="st">"front panel"</span>, d <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2022-09-01"</span>)),</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>(b <span class="op">=</span> <span class="st">"Minaal 3.0"</span>, v <span class="op">=</span> <span class="fl">35</span>, p <span class="op">=</span> <span class="fl">349</span>, lap <span class="op">=</span> <span class="st">"Y"</span>, load <span class="op">=</span> <span class="st">"front panel"</span>, d <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2022-09-01"</span>)),</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>(b <span class="op">=</span> <span class="st">"Genius    "</span>,     v <span class="op">=</span> <span class="fl">25</span>, p <span class="op">=</span> <span class="fl">228</span>, lap <span class="op">=</span> <span class="st">"Y"</span>, load <span class="op">=</span> <span class="st">"clamshell"</span>,   d <span class="op">=</span> <span class="fu">Date</span>(<span class="st">"2022-10-01"</span>))</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>WARNING: using SplitApplyCombine.product in module Notebook conflicts with an existing identifier.
 WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an existing identifier.</code></pre>
@@ -5066,25 +5157,25 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>Many of the main verbs are generic functions: <code>filter</code>, <code>map</code>, <code>reduce</code>; <code>group</code> does grouping. There are some others. A few examples follow.</p>
-<p>For indexing this structure, we can’t index by <code>[row, col]</code>, rather we can use <code>[row][col]</code> notation, the first to extract the row, the second to access the entries in the column. For example, he we index a selected row by position, by name, and then with multiple names:</p>
-<div id="154" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>tbl[<span class="fl">2</span>][<span class="fl">2</span>], tbl[<span class="fl">2</span>].v, tbl[<span class="fl">2</span>][ [<span class="op">:</span>v, <span class="op">:</span>p] ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For indexing this structure, we can’t index by <code>[row, col]</code>, rather we can use <code>[row][col]</code> notation, the first to extract the row, the second to access the entries in the column. For example, here we index a selected column by position, by name, and then with multiple names:</p>
+<div id="156" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>tbl[<span class="fl">2</span>][<span class="fl">2</span>], tbl[<span class="fl">2</span>].v, tbl[<span class="fl">2</span>][ [<span class="op">:</span>v, <span class="op">:</span>p] ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>(35, 35, (v = 35, p = 349))</code></pre>
 </div>
 </div>
-<p>The <code>invert</code> function reverses the access pattern, allowing in this case, <code>[col][row]</code> access, with:</p>
-<div id="156" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>itbl <span class="op">=</span> <span class="fu">invert</span>(tbl)</span>
-<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>itbl[<span class="fl">3</span>][<span class="fl">1</span>], itbl[<span class="op">:</span>p][<span class="fl">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>invert</code> function from <code>SplitApplyCombine</code> reverses the access pattern, allowing, in this case, <code>[col][row]</code> access, with:</p>
+<div id="158" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>itbl <span class="op">=</span> <span class="fu">invert</span>(tbl)</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>itbl[<span class="fl">3</span>][<span class="fl">1</span>], itbl[<span class="op">:</span>p][<span class="fl">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>(395, 349)</code></pre>
 </div>
 </div>
 <p>In some ways, the <code>invert</code> function flips the viewpoint from an array of structs to a struct of arrays.</p>
 <p>To filter out rows, we have the same calling style as with data frames: <code>filter(pred, tbl)</code>. With the outer container of <code>tbl</code> being an array, no special method is utilized, iteration is over each row. For example,</p>
-<div id="158" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(r <span class="op">-&gt;</span> r.v <span class="op">&gt;=</span> <span class="fl">35</span>, tbl) <span class="op">|&gt;</span> DataFrame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="160" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(r <span class="op">-&gt;</span> r.v <span class="op">&gt;=</span> <span class="fl">35</span>, tbl) <span class="op">|&gt;</span> DataFrame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5134,12 +5225,12 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 <p>(The call to <code>DataFrame</code> is to take advantage of the prettier printing. <code>DataFrame</code> can consume a vector of named tuples for its input.)</p>
 <p>The <code>DataPipes</code> package composes a bit more nicely with this approach, but we continue using <code>Chain</code> for examples<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, like this one of nested calls to <code>filter</code>:</p>
-<div id="160" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> tbl <span class="cf">begin</span></span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(r <span class="op">-&gt;</span> r.v <span class="op">&gt;=</span> <span class="fl">35</span>,  _)</span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(r <span class="op">-&gt;</span> r.p <span class="op">&gt;=</span> <span class="fl">350</span>, _)</span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>    DataFrame</span>
-<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="162" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> tbl <span class="cf">begin</span></span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(r <span class="op">-&gt;</span> r.v <span class="op">&gt;=</span> <span class="fl">35</span>,  _)</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(r <span class="op">-&gt;</span> r.p <span class="op">&gt;=</span> <span class="fl">350</span>, _)</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>    DataFrame</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>1×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5179,9 +5270,9 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>Selecting columns and adding a transformation can be achieved through <code>map</code>, which iterates over each named tuple in this example:</p>
-<div id="162" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(r <span class="op">-&gt;</span> (b<span class="op">=</span>r.b, v<span class="op">=</span>r.v, p<span class="op">=</span>r.p, pv <span class="op">=</span> <span class="fu">round</span>(r.p<span class="op">/</span>r.v; digits<span class="op">=</span><span class="fl">2</span>)), tbl) <span class="op">|&gt;</span></span>
-<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>    DataFrame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="164" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(r <span class="op">-&gt;</span> (b<span class="op">=</span>r.b, v<span class="op">=</span>r.v, p<span class="op">=</span>r.p, pv <span class="op">=</span> <span class="fu">round</span>(r.p<span class="op">/</span>r.v; digits<span class="op">=</span><span class="fl">2</span>)), tbl) <span class="op">|&gt;</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>    DataFrame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5229,10 +5320,10 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>The <code>group</code> function can group <em>by</em> values of a function call. This example from the package’s Readme is instructive:</p>
-<div id="164" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>nms <span class="op">=</span> [<span class="st">"Andrew Smith"</span>, <span class="st">"John Smith"</span>, <span class="st">"Alice Baker"</span>,</span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>       <span class="st">"Robert Baker"</span>, <span class="st">"Jane Smith"</span>, <span class="st">"Jason Bourne"</span>]</span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="fu">group</span>(last, <span class="fu">split</span>.(nms))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="166" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>nms <span class="op">=</span> [<span class="st">"Andrew Smith"</span>, <span class="st">"John Smith"</span>, <span class="st">"Alice Baker"</span>,</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>       <span class="st">"Robert Baker"</span>, <span class="st">"Jane Smith"</span>, <span class="st">"Jason Bourne"</span>]</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a><span class="fu">group</span>(last, <span class="fu">split</span>.(nms))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>3-element Dictionaries.Dictionary{SubString{String}, Vector{Vector{SubString{String}}}}:
   "Smith" │ Vector{SubString{String}}[["Andrew", "Smith"], ["John", "Smith"], […
@@ -5242,8 +5333,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 <p>The names are split on spaces, and the keys of the group are determined by the <code>last</code> function, which here gets the last piece after splitting (aka the “last” name, but by coincidence, not intelligence).</p>
 <p>For numeric operations, this is quite convenient. Here we <code>group</code> by the remainder upon division by <code>3</code>:</p>
-<div id="166" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group</span>(x <span class="op">-&gt;</span> <span class="fu">rem</span>(x,<span class="fl">3</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="168" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group</span>(x <span class="op">-&gt;</span> <span class="fu">rem</span>(x,<span class="fl">3</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>3-element Dictionaries.Dictionary{Int64, Vector{Int64}}:
  1 │ [1, 4, 7, 10]
@@ -5253,8 +5344,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 <p>The grouping basically creates a dictionary and adds to the key determined by the function.</p>
 <p>To apply a function to the values of a base <code>Julia</code> dictionary is not directly supported by <code>map</code>, however the dictionary used by <code>group</code> (from the <code>Dictionaries</code> packages) does allow this, so we could, for example, add up the values in each group with:</p>
-<div id="168" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(sum, <span class="fu">group</span>(x <span class="op">-&gt;</span> <span class="fu">rem</span>(x,<span class="fl">3</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="170" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(sum, <span class="fu">group</span>(x <span class="op">-&gt;</span> <span class="fu">rem</span>(x,<span class="fl">3</span>), <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>3-element Dictionaries.Dictionary{Int64, Int64}:
  1 │ 22
@@ -5263,8 +5354,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>The <code>group</code> function can do this in one call, by placing the function to apply in between the <code>by</code> function and the table. Here we apply <code>first</code> to pick off the first name. That is, <code>["Andrew", "Smith"]</code> becomes just <code>"Andrew"</code>, the first element of that vector.</p>
-<div id="170" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>gps <span class="op">=</span> <span class="fu">group</span>(last, first, <span class="fu">split</span>.(nms))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="172" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>gps <span class="op">=</span> <span class="fu">group</span>(last, first, <span class="fu">split</span>.(nms))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>3-element Dictionaries.Dictionary{SubString{String}, Vector{SubString{String}}}:
   "Smith" │ SubString{String}["Andrew", "John", "Jane"]
@@ -5275,78 +5366,77 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <div id="exm-prison-count" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.2 (A tally function)</strong></span> The <code>Tally</code> package provides a quick way to tally up numbers. Here we do a simplified version.</p>
 <p>To tally, we have three steps: group by each by value, count the number in each groups, sort the values. This is implemented with this composition of functions:</p>
-<div id="172" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(v; by<span class="op">=</span>identity) <span class="op">=</span> SplitApplyCombine.<span class="fu">sortkeys</span>(<span class="fu">map</span>(length, <span class="fu">group</span>(by, v)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="174" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tally</span>(v; by<span class="op">=</span>identity) <span class="op">=</span> SplitApplyCombine.<span class="fu">sortkeys</span>(<span class="fu">map</span>(length, <span class="fu">group</span>(by, v)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>tally (generic function with 1 method)</code></pre>
 </div>
 </div>
 <p>To see, we have:</p>
-<div id="174" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">50</span>)</span>
-<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">tally</span>(v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="176" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">50</span>)</span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">tally</span>(v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Int64}:
- 1 │ 10
- 2 │ 12
- 3 │ 6
- 4 │ 10
- 5 │ 12</code></pre>
+ 1 │ 9
+ 2 │ 16
+ 3 │ 11
+ 4 │ 8
+ 5 │ 6</code></pre>
 </div>
 </div>
 <p>Using <code>map</code>, we can provide an alternate, oft used view for tallying:</p>
-<div id="176" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>tallies <span class="op">=</span> <span class="st">"\u007C"</span><span class="op">^</span><span class="fl">4</span></span>
-<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>ftally <span class="op">=</span> <span class="st">"┼┼┼┼ "</span></span>
-<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">prison_count</span>(x)</span>
-<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>    d, r <span class="op">=</span> <span class="fu">divrem</span>(x, <span class="fl">5</span>)</span>
-<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>    ftally<span class="op">^</span>d <span class="op">*</span> tallies[<span class="fl">1</span><span class="op">:</span>r]</span>
-<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb114-9"><a href="#cb114-9" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(prison_count, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="178" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>tallies <span class="op">=</span> <span class="st">"\u007C"</span><span class="op">^</span><span class="fl">4</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>ftally <span class="op">=</span> <span class="st">"┼┼┼┼ "</span></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">prison_count</span>(x)</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>    d, r <span class="op">=</span> <span class="fu">divrem</span>(x, <span class="fl">5</span>)</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>    ftally<span class="op">^</span>d <span class="op">*</span> tallies[<span class="fl">1</span><span class="op">:</span>r]</span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(prison_count, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Any}:
- 1 │ "┼┼┼┼ ┼┼┼┼ "
- 2 │ "┼┼┼┼ ┼┼┼┼ ||"
- 3 │ "┼┼┼┼ |"
- 4 │ "┼┼┼┼ ┼┼┼┼ "
- 5 │ "┼┼┼┼ ┼┼┼┼ ||"</code></pre>
+ 1 │ "┼┼┼┼ ||||"
+ 2 │ "┼┼┼┼ ┼┼┼┼ ┼┼┼┼ |"
+ 3 │ "┼┼┼┼ ┼┼┼┼ |"
+ 4 │ "┼┼┼┼ |||"
+ 5 │ "┼┼┼┼ |"</code></pre>
 </div>
 </div>
 </div>
 <div id="exm-stem-leaf" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.3 (A simple stem and leaf diagram)</strong></span> The grouping and sorting made quite accessible by <code>SplitApplyCombine</code> could also be used to produce a simple stem-and-leaf type diagram. Here we don’t bother displaying stems with no associated leaves, which does change the interpretation of spread in the data, and could easily be added in, though it takes us a bit afield, as it requires some manipulation of the display:</p>
-<div id="178" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">32</span>)  <span class="co"># 32 test scores</span></span>
-<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>stem_unit <span class="op">=</span> <span class="fl">10</span>       <span class="co"># stem * 10 is value of stem</span></span>
-<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> x <span class="cf">begin</span></span>
-<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>.(<span class="dt">Int</span>, <span class="fl">10</span><span class="op">*</span>_<span class="op">/</span>stem_unit)</span>
-<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>    SplitApplyCombine.<span class="fu">group</span>(x <span class="op">-&gt;</span> x <span class="op">÷</span> <span class="fl">10</span>, <span class="fu">x-&gt;rem</span>(x,<span class="fl">10</span>), _)</span>
-<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>    SplitApplyCombine.<span class="fu">sortkeys</span>(_)</span>
-<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(sort, _)</span>
-<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(x <span class="op">-&gt;</span> <span class="fu">parse</span>(<span class="dt">Int</span>,<span class="fu">join</span>(x)), _)</span>
-<span id="cb116-9"><a href="#cb116-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="180" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">32</span>)  <span class="co"># 32 test scores</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>stem_unit <span class="op">=</span> <span class="fl">10</span>       <span class="co"># stem * 10 is value of stem</span></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> x <span class="cf">begin</span></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>.(<span class="dt">Int</span>, <span class="fl">10</span><span class="op">*</span>_<span class="op">/</span>stem_unit)</span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a>    SplitApplyCombine.<span class="fu">group</span>(x <span class="op">-&gt;</span> x <span class="op">÷</span> <span class="fl">10</span>, <span class="fu">x-&gt;rem</span>(x,<span class="fl">10</span>), _)</span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>    SplitApplyCombine.<span class="fu">sortkeys</span>(_)</span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(sort, _)</span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(x <span class="op">-&gt;</span> <span class="fu">parse</span>(<span class="dt">Int</span>,<span class="fu">join</span>(x)), _)</span>
+<span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>10-element Dictionaries.Dictionary{Int64, Int64}:
- 0 │ 4446
- 1 │ 5589
- 2 │ 23
- 3 │ 5
- 4 │ 567
- 5 │ 12369
- 6 │ 145
- 7 │ 4
- 8 │ 268
- 9 │ 35689</code></pre>
+<pre><code>9-element Dictionaries.Dictionary{Int64, Int64}:
+ 1 │ 459
+ 2 │ 12278
+ 3 │ 122446
+ 4 │ 4
+ 5 │ 2
+ 6 │ 269
+ 7 │ 11
+ 8 │ 368
+ 9 │ 3488</code></pre>
 </div>
 </div>
 </div>
 <hr>
 <p>Let’s return to the <code>cars</code> data and use <code>group</code> to identify the average mileage per type. For this task, we group by <code>:Type</code>and then apply a function to extract the mileage from a row. The <code>copy.(eachrow(cars))</code> command creates a vector of named tuples.</p>
-<div id="180" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>cs <span class="op">=</span> <span class="fu">copy</span>.(<span class="fu">eachrow</span>(cars))  <span class="co"># Can also call `NamedTuple` for `copy`</span></span>
-<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>gps <span class="op">=</span> <span class="fu">group</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, r <span class="op">-&gt;</span> r.MPGCity, cs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="182" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>cs <span class="op">=</span> <span class="fu">copy</span>.(<span class="fu">eachrow</span>(cars))  <span class="co"># Can also call `NamedTuple` for `copy`</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>gps <span class="op">=</span> <span class="fu">group</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, r <span class="op">-&gt;</span> r.MPGCity, cs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>6-element Dictionaries.Dictionary{CategoricalValue{String, UInt8}, Vector{Int32}}:
  CategoricalValue{String, UInt8} "Smal… │ Int32[25, 29, 23, 29, 31, 23, 46, 42,…
@@ -5358,8 +5448,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>We now can map <code>mean</code> over each group:</p>
-<div id="182" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>ms <span class="op">=</span> <span class="fu">map</span>(mean, gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="184" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>ms <span class="op">=</span> <span class="fu">map</span>(mean, gps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>6-element Dictionaries.Dictionary{CategoricalValue{String, UInt8}, Float64}:
    CategoricalValue{String, UInt8} "Small" │ 29.857142857142858
@@ -5371,8 +5461,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>This requires two passes through the grouped data, the first to get just the mileage values, the next to call <code>mean</code>. The following <code>DataFrames</code> syntax hides this:</p>
-<div id="184" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars, <span class="op">:</span><span class="dt">Type</span>), <span class="op">:</span>MPGHighway <span class="op">=&gt;</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="186" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars, <span class="op">:</span><span class="dt">Type</span>), <span class="op">:</span>MPGHighway <span class="op">=&gt;</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>6×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5425,8 +5515,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>Reductions, like sum and count which can be written easily using the higher-order function <code>reduce</code>, have support to combine the grouping and reduction. The <code>groupreduce</code> function takes the additional arguments of <code>reduce</code> (an <em>op</em>eration and an optional <code>init</code> value). For example, to get the group sum, we could call:</p>
-<div id="186" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">groupreduce</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, r <span class="op">-&gt;</span> r.MPGCity, <span class="op">+</span>, cs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="188" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">groupreduce</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, r <span class="op">-&gt;</span> r.MPGCity, <span class="op">+</span>, cs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>6-element Dictionaries.Dictionary{CategoricalValue{String, UInt8}, Int32}:
    CategoricalValue{String, UInt8} "Small" │ 627
@@ -5438,8 +5528,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>The group sum and group count have shortcuts, so the mean could have been computed as:</p>
-<div id="188" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">groupsum</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, r <span class="op">-&gt;</span> r.MPGCity, cs) <span class="op">./</span> <span class="fu">groupcount</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, cs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="190" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">groupsum</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, r <span class="op">-&gt;</span> r.MPGCity, cs) <span class="op">./</span> <span class="fu">groupcount</span>(r <span class="op">-&gt;</span> r.<span class="dt">Type</span>, cs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>6-element Dictionaries.Dictionary{CategoricalValue{String, UInt8}, Float64}:
    CategoricalValue{String, UInt8} "Small" │ 29.857142857142858
@@ -5453,8 +5543,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <p>(Unlike for a <code>Dict</code> instance, the dictionaries above allow such division.)</p>
 <hr>
 <p>The “combine” part of the paradigm takes the pieces and reassembles. The data frames example returns a data frame, whereas with <code>SplitApplyCombine.jl</code> we have a dictionary. A dictionary does not map directly to a data frame. While both dictionaries and named tuples are associative arrays, we wouldn’t necessarily want to map our data to a row. Rather, here we use the <code>pairs</code> iterator to iterate over the keys and values to produce an array of named tuples:</p>
-<div id="190" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>[ (; <span class="dt">Type</span>, MPG) for (<span class="dt">Type</span>,MPG) <span class="kw">in</span> <span class="fu">pairs</span>(ms)] <span class="op">|&gt;</span> DataFrame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="192" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>[ (; <span class="dt">Type</span>, MPG) for (<span class="dt">Type</span>,MPG) <span class="kw">in</span> <span class="fu">pairs</span>(ms)] <span class="op">|&gt;</span> DataFrame</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>6×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5512,16 +5602,16 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <h3 data-number="3.1.10" class="anchored" data-anchor-id="aggregating-data"><span class="header-section-number">3.1.10</span> Aggregating data</h3>
 <p>Somewhat inverse to flattening data is to aggregate data, by which we mean combining multiple columns into a single one, or combining multiple rows into a single one. The <code>select</code> and <code>combine</code> methods can do these tasks.</p>
 <p>Consider the three price variables in the <code>cars</code> data. We can find an average of the three price numbers easily enough. This function allows the specification as different arguments, not in a container:</p>
-<div id="192" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">_mean</span>(xs<span class="op">...</span>) <span class="op">=</span> <span class="fu">mean</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="194" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">_mean</span>(xs<span class="op">...</span>) <span class="op">=</span> <span class="fu">mean</span>(xs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>_mean (generic function with 1 method)</code></pre>
 </div>
 </div>
 <p>We can then use <code>select</code> to aggregate the three price variables. In the following, these are selected with a regular expression:</p>
-<div id="194" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>cars_price <span class="op">=</span> <span class="fu">select</span>(cars, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="st">r"Price"</span> <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_mean) <span class="op">=&gt;</span> <span class="op">:</span>price)</span>
-<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(cars_price, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="196" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>cars_price <span class="op">=</span> <span class="fu">select</span>(cars, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="st">r"Price"</span> <span class="op">=&gt;</span> <span class="fu">ByRow</span>(_mean) <span class="op">=&gt;</span> <span class="op">:</span>price)</span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(cars_price, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5568,9 +5658,12 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 </div>
-<p>To aggregate over columns, the <code>groupby</code> construct can be used to specify the groupings to aggregate over. In the following this is the car type:</p>
-<div id="196" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combine</span>(<span class="fu">groupby</span>(cars_price, <span class="op">:</span><span class="dt">Type</span>), <span class="op">:</span>price <span class="op">=&gt;</span> mean <span class="op">=&gt;</span> <span class="op">:</span>avg_price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To aggregate over columns, the <code>groupby</code> construct can be used to specify the groupings to aggregate over. In the following this is the car type. The <code>Chain</code> style is used to make the steps more explicit:</p>
+<div id="198" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> cars_price <span class="cf">begin</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">groupby</span>(<span class="op">:</span><span class="dt">Type</span>)</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">combine</span>(<span class="op">:</span>price <span class="op">=&gt;</span> mean <span class="op">=&gt;</span> <span class="op">:</span>avg_price)</span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>6×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5622,6 +5715,121 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 </div>
+<p>As <code>mean</code> is a reduction, the result has one row for each unique set of levels in the column selector specified to <code>groupby</code>. Again, that these columns appear in the output is due to the chosen default value of<code>keepkeys</code>.</p>
+<p>This similar example shows grouping by two variables and then aggregating miles per gallon over each:</p>
+<div id="200" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@chain</span> cars <span class="cf">begin</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">groupby</span>([<span class="op">:</span><span class="dt">Type</span>, <span class="op">:</span>DriveTrain])</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">combine</span>(<span class="op">:</span>MPGHighway <span class="op">=&gt;</span> mean <span class="op">=&gt;</span> <span class="op">:</span>avg_MPG)</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>       <span class="fu">sort</span>(<span class="op">:</span>avg_MPG, rev<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div><div style="float: left;"><span>14×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Type</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">DriveTrain</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">avg_MPG</th>
+</tr>
+<tr class="subheader headerLastRow even">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalArrays.CategoricalValue{String, UInt8}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="CategoricalArrays.CategoricalValue{String, UInt8}">Cat…</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Float64">Float64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">Small</td>
+<td style="text-align: left;">Front</td>
+<td style="text-align: right;">35.6842</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">Small</td>
+<td style="text-align: left;">4WD</td>
+<td style="text-align: right;">33.5</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: left;">Sporty</td>
+<td style="text-align: left;">Front</td>
+<td style="text-align: right;">30.5714</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: left;">Compact</td>
+<td style="text-align: left;">Front</td>
+<td style="text-align: right;">30.0769</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">5</td>
+<td style="text-align: left;">Compact</td>
+<td style="text-align: left;">4WD</td>
+<td style="text-align: right;">30.0</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">6</td>
+<td style="text-align: left;">Compact</td>
+<td style="text-align: left;">Rear</td>
+<td style="text-align: right;">28.5</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">7</td>
+<td style="text-align: left;">Large</td>
+<td style="text-align: left;">Front</td>
+<td style="text-align: right;">27.2857</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">8</td>
+<td style="text-align: left;">Midsize</td>
+<td style="text-align: left;">Front</td>
+<td style="text-align: right;">27.1765</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">9</td>
+<td style="text-align: left;">Sporty</td>
+<td style="text-align: left;">4WD</td>
+<td style="text-align: right;">27.0</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">10</td>
+<td style="text-align: left;">Sporty</td>
+<td style="text-align: left;">Rear</td>
+<td style="text-align: right;">27.0</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">11</td>
+<td style="text-align: left;">Large</td>
+<td style="text-align: left;">Rear</td>
+<td style="text-align: right;">25.75</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">12</td>
+<td style="text-align: left;">Midsize</td>
+<td style="text-align: left;">Rear</td>
+<td style="text-align: right;">25.2</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">13</td>
+<td style="text-align: left;">Van</td>
+<td style="text-align: left;">Front</td>
+<td style="text-align: right;">22.5</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">14</td>
+<td style="text-align: left;">Van</td>
+<td style="text-align: left;">4WD</td>
+<td style="text-align: right;">21.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 <section id="tidy-data-stack-unstack" class="level3" data-number="3.1.11">
 <h3 data-number="3.1.11" class="anchored" data-anchor-id="tidy-data-stack-unstack"><span class="header-section-number">3.1.11</span> Tidy data; stack, unstack</h3>
@@ -5635,25 +5843,178 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <blockquote class="blockquote">
 <p>A dataset is a collection of values, usually either numbers (if quantitative) or strings (if qualitative). Values are organised in two ways. Every value belongs to a variable and an observation. A variable contains all values that measure the same underlying attribute (like height, temperature, duration) across units. An observation contains all values measured on the same unit (like a person, or a day, or a race) across attributes.</p>
 </blockquote>
-<p>In addition to <code>flatten</code>, the <code>DataFrames</code> package provides the functions <code>stack</code> and <code>unstack</code> for tidying data. We illustrate with an abbreviated version of an example in the <code>tidyr</code> vignette.</p>
+<p>In addition to <code>flatten</code>, the <code>DataFrames</code> package provides the functions <code>stack</code> and <code>unstack</code> for tidying data.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Stack and unstack
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>stack</code> and <code>unstack</code> commands are used to move from “wide” format, where related values are stored in multiple columns with column names representing some level, to “long” format, where related values are stored in one column, and their categorical levels in another column.</p>
+<p>For example, this wide format as the attributes are in columns <code>:A</code> and <code>:B</code>; the values in columns <code>:C</code> and <code>:D</code>.</p>
+<div id="202" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>wide <span class="op">=</span> <span class="fu">DataFrame</span>(A<span class="op">=</span>[<span class="st">"A"</span>,<span class="st">"B"</span>], B<span class="op">=</span>[<span class="st">"a"</span>,<span class="st">"b"</span>], C<span class="op">=</span>[<span class="st">"c1"</span>,<span class="st">"c2"</span>], D<span class="op">=</span>[<span class="st">"d1"</span>,<span class="st">"d2"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div><div style="float: left;"><span>2×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">A</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">B</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">C</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">D</th>
+</tr>
+<tr class="subheader headerLastRow even">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">a</td>
+<td style="text-align: left;">c1</td>
+<td style="text-align: left;">d1</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">b</td>
+<td style="text-align: left;">c2</td>
+<td style="text-align: left;">d2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>With the <code>stack</code> function, the values are placed into a single column (by default <code>:value</code>) and the variable names placed into a single column (by default <code>:variable</code>):</p>
+<div id="204" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>long <span class="op">=</span> <span class="fu">stack</span>(wide, [<span class="op">:</span>C, <span class="op">:</span>D])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div><div style="float: left;"><span>4×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">A</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">B</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">value</th>
+</tr>
+<tr class="subheader headerLastRow even">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">a</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">c1</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">b</td>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">c2</td>
+</tr>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">3</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">a</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">d1</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">4</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">b</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">d2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The values in the <code>:variable</code> column come from the data frame names.</p>
+<p>With <code>unstack</code> the data can be spread back out into “wide” format. We pass in the two columns indicating the variable and the values to <code>unstack</code>:</p>
+<div id="206" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unstack</span>(long, <span class="op">:</span>variable, <span class="op">:</span>value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div><div style="float: left;"><span>2×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
+<table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">Row</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">A</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">B</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">C</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">D</th>
+</tr>
+<tr class="subheader headerLastRow even">
+<th class="rowNumber" data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="String">String</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, String}">String?</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th" title="Union{Missing, String}">String?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">1</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">a</td>
+<td style="text-align: left;">c1</td>
+<td style="text-align: left;">d1</td>
+</tr>
+<tr class="even">
+<td class="rowNumber" style="text-align: right; font-weight: bold;">2</td>
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">b</td>
+<td style="text-align: left;">c2</td>
+<td style="text-align: left;">d2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We illustrate this further with an abbreviated version of an example in the <code>tidyr</code> vignette.</p>
 <p>Consider this data from the Global Historical Climatology Network for one weather station (MX17004) in Mexico for five months in 2010. The full data has 31 days per month, this abbreviated data works with just the first 8:</p>
-<div id="198" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>weather <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="st">"id","year","month","element","d1","d2","d3","d4","d5","d6","d7","d8"</span></span>
-<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","1","tmax","---","---","---","---","---","---","---","---"</span></span>
-<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","1","tmin","---","---","---","---","---","---","---","---"</span></span>
-<span id="cb132-5"><a href="#cb132-5" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","2","tmax","---","27.3","24.1","---","---","---","---","---"</span></span>
-<span id="cb132-6"><a href="#cb132-6" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","2","tmin","---","14.4","14.4","---","---","---","---","---"</span></span>
-<span id="cb132-7"><a href="#cb132-7" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","3","tmax","---","---","---","---","32.1","---","---","---"</span></span>
-<span id="cb132-8"><a href="#cb132-8" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","3","tmin","---","---","---","---","14.2","---","---","---"</span></span>
-<span id="cb132-9"><a href="#cb132-9" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","4","tmax","---","---","---","---","---","---","---","---"</span></span>
-<span id="cb132-10"><a href="#cb132-10" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","4","tmin","---","---","---","---","---","---","---","---"</span></span>
-<span id="cb132-11"><a href="#cb132-11" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","5","tmax","---","---","---","---","---","---","---","---"</span></span>
-<span id="cb132-12"><a href="#cb132-12" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","5","tmin","---","---","---","---","---","---","---","---"</span></span>
-<span id="cb132-13"><a href="#cb132-13" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb132-14"><a href="#cb132-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb132-15"><a href="#cb132-15" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="fu">IOBuffer</span>(weather), DataFrame; missingstring<span class="op">=</span><span class="st">"---"</span>)</span>
-<span id="cb132-16"><a href="#cb132-16" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(w, <span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="208" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>weather <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="st">"id","year","month","element","d1","d2","d3","d4","d5","d6","d7","d8"</span></span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","1","tmax","---","---","---","---","---","---","---","---"</span></span>
+<span id="cb137-4"><a href="#cb137-4" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","1","tmin","---","---","---","---","---","---","---","---"</span></span>
+<span id="cb137-5"><a href="#cb137-5" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","2","tmax","---","27.3","24.1","---","---","---","---","---"</span></span>
+<span id="cb137-6"><a href="#cb137-6" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","2","tmin","---","14.4","14.4","---","---","---","---","---"</span></span>
+<span id="cb137-7"><a href="#cb137-7" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","3","tmax","---","---","---","---","32.1","---","---","---"</span></span>
+<span id="cb137-8"><a href="#cb137-8" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","3","tmin","---","---","---","---","14.2","---","---","---"</span></span>
+<span id="cb137-9"><a href="#cb137-9" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","4","tmax","---","---","---","---","---","---","---","---"</span></span>
+<span id="cb137-10"><a href="#cb137-10" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","4","tmin","---","---","---","---","---","---","---","---"</span></span>
+<span id="cb137-11"><a href="#cb137-11" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","5","tmax","---","---","---","---","---","---","---","---"</span></span>
+<span id="cb137-12"><a href="#cb137-12" aria-hidden="true" tabindex="-1"></a><span class="st">"MX17004","2010","5","tmin","---","---","---","---","---","---","---","---"</span></span>
+<span id="cb137-13"><a href="#cb137-13" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb137-14"><a href="#cb137-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-15"><a href="#cb137-15" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="fu">IOBuffer</span>(weather), DataFrame; missingstring<span class="op">=</span><span class="st">"---"</span>)</span>
+<span id="cb137-16"><a href="#cb137-16" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(w, <span class="fl">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>4×12 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5756,11 +6117,11 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>This example is said to have variables stored in both rows and columns. The first step to tidying the data is to stack days 1 through 8 into a column. We use the <code>Between</code> column selector to select the columns for <code>d1</code> though <code>d8</code> (an alternative to, say, <code>r"^d"</code>):</p>
-<div id="200" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>w1 <span class="op">=</span> <span class="pp">@chain</span> w <span class="cf">begin</span></span>
-<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stack</span>(<span class="fu">Between</span>(<span class="op">:</span>d1, <span class="op">:</span>d8); variable_name <span class="op">=</span> <span class="op">:</span>day)</span>
-<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="op">:</span>value <span class="op">=&gt;</span> !ismissing, _)</span>
-<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="210" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>w1 <span class="op">=</span> <span class="pp">@chain</span> w <span class="cf">begin</span></span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stack</span>(<span class="fu">Between</span>(<span class="op">:</span>d1, <span class="op">:</span>d8); variable_name <span class="op">=</span> <span class="op">:</span>day)</span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="op">:</span>value <span class="op">=&gt;</span> !ismissing, _)</span>
+<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>6×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5846,8 +6207,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 <p>As in the example being followed, missing values are skipped, requiring the reader to imply the lack of measurement on a given day.</p>
 <p>The day is coded with a leading “d” and as a string, not an integer. We can strip this prefix out using a regular expression or, as here, string indexing then parse the result to an integer:</p>
-<div id="202" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(w1, <span class="op">:</span>day <span class="op">=&gt;</span> <span class="fu">ByRow</span>(x <span class="op">-&gt;</span> <span class="fu">parse</span>(<span class="dt">Int</span>, x[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>])) <span class="op">=&gt;</span> <span class="op">:</span>day)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="212" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transform!</span>(w1, <span class="op">:</span>day <span class="op">=&gt;</span> <span class="fu">ByRow</span>(x <span class="op">-&gt;</span> <span class="fu">parse</span>(<span class="dt">Int</span>, x[<span class="fl">2</span><span class="op">:</span><span class="kw">end</span>])) <span class="op">=&gt;</span> <span class="op">:</span>day)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>6×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5932,8 +6293,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>Finally, the <code>element</code> column does not hold a variable, rather it stores the names of two variables (<code>tmin</code> and <code>tmax</code>). For this the data is “unstacked” splitting the longer variable <code>value</code> in two:</p>
-<div id="204" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>w2 <span class="op">=</span> <span class="fu">unstack</span>(w1, <span class="op">:</span>element, <span class="op">:</span>value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="214" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a>w2 <span class="op">=</span> <span class="fu">unstack</span>(w1, <span class="op">:</span>element, <span class="op">:</span>value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×6 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -5991,41 +6352,40 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>As described in the vignette, now each variable is in one column, and each row describes one day.</p>
-</section>
 <section id="joins" class="level3" data-number="3.1.12">
 <h3 data-number="3.1.12" class="anchored" data-anchor-id="joins"><span class="header-section-number">3.1.12</span> Joins</h3>
 <p>Consider the three following assessments of some class. The students have somewhat spotty attendance:</p>
-<div id="206" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="st">first,last,points</span></span>
-<span id="cb136-3"><a href="#cb136-3" aria-hidden="true" tabindex="-1"></a><span class="st">Alice, Smith, 100</span></span>
-<span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a><span class="st">Bob, Jones, 200</span></span>
-<span id="cb136-5"><a href="#cb136-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb136-6"><a href="#cb136-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb136-7"><a href="#cb136-7" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb136-8"><a href="#cb136-8" aria-hidden="true" tabindex="-1"></a><span class="st">first,last,score</span></span>
-<span id="cb136-9"><a href="#cb136-9" aria-hidden="true" tabindex="-1"></a><span class="st">Carol, Gates, 125</span></span>
-<span id="cb136-10"><a href="#cb136-10" aria-hidden="true" tabindex="-1"></a><span class="st">Chad, Gad, 200</span></span>
-<span id="cb136-11"><a href="#cb136-11" aria-hidden="true" tabindex="-1"></a><span class="st">Bob, Jones, 225</span></span>
-<span id="cb136-12"><a href="#cb136-12" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb136-13"><a href="#cb136-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb136-14"><a href="#cb136-14" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb136-15"><a href="#cb136-15" aria-hidden="true" tabindex="-1"></a><span class="st">first,last,points</span></span>
-<span id="cb136-16"><a href="#cb136-16" aria-hidden="true" tabindex="-1"></a><span class="st">Bob, Jones, 300</span></span>
-<span id="cb136-17"><a href="#cb136-17" aria-hidden="true" tabindex="-1"></a><span class="st">Carol, Gates, 150</span></span>
-<span id="cb136-18"><a href="#cb136-18" aria-hidden="true" tabindex="-1"></a><span class="st">Erin, Dan, 100</span></span>
-<span id="cb136-19"><a href="#cb136-19" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb136-20"><a href="#cb136-20" aria-hidden="true" tabindex="-1"></a>a1, a2, a3 <span class="op">=</span> [CSV.<span class="fu">read</span>(<span class="fu">IOBuffer</span>(txt), DataFrame) for txt <span class="op">∈</span> (t1, t2, t3)];</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="216" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a><span class="st">first,last,points</span></span>
+<span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a><span class="st">Alice, Smith, 100</span></span>
+<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a><span class="st">Bob, Jones, 200</span></span>
+<span id="cb141-5"><a href="#cb141-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb141-6"><a href="#cb141-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-7"><a href="#cb141-7" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb141-8"><a href="#cb141-8" aria-hidden="true" tabindex="-1"></a><span class="st">first,last,score</span></span>
+<span id="cb141-9"><a href="#cb141-9" aria-hidden="true" tabindex="-1"></a><span class="st">Carol, Gates, 125</span></span>
+<span id="cb141-10"><a href="#cb141-10" aria-hidden="true" tabindex="-1"></a><span class="st">Chad, Gad, 200</span></span>
+<span id="cb141-11"><a href="#cb141-11" aria-hidden="true" tabindex="-1"></a><span class="st">Bob, Jones, 225</span></span>
+<span id="cb141-12"><a href="#cb141-12" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb141-13"><a href="#cb141-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-14"><a href="#cb141-14" aria-hidden="true" tabindex="-1"></a>t3 <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb141-15"><a href="#cb141-15" aria-hidden="true" tabindex="-1"></a><span class="st">first,last,points</span></span>
+<span id="cb141-16"><a href="#cb141-16" aria-hidden="true" tabindex="-1"></a><span class="st">Bob, Jones, 300</span></span>
+<span id="cb141-17"><a href="#cb141-17" aria-hidden="true" tabindex="-1"></a><span class="st">Carol, Gates, 150</span></span>
+<span id="cb141-18"><a href="#cb141-18" aria-hidden="true" tabindex="-1"></a><span class="st">Erin, Dan, 100</span></span>
+<span id="cb141-19"><a href="#cb141-19" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb141-20"><a href="#cb141-20" aria-hidden="true" tabindex="-1"></a>a1, a2, a3 <span class="op">=</span> [CSV.<span class="fu">read</span>(<span class="fu">IOBuffer</span>(txt), DataFrame) for txt <span class="op">∈</span> (t1, t2, t3)];</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We have several ways to combine these three data frames.</p>
 <p>We can concatenate them using <code>vcat</code>. Before doing so, we need to align the column names, as the second data set used a different name:</p>
-<div id="208" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select!</span>(a2, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">:</span>score <span class="op">=&gt;</span> <span class="op">:</span>points);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="218" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select!</span>(a2, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">:</span>score <span class="op">=&gt;</span> <span class="op">:</span>points);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>vcat</code> method for data frames takes a named argument <code>source</code> allowing a variable to be appended indicating the source of the data frame. The following will indicate with a <code>1</code>, <code>2</code>, or <code>3</code> what data frame contributed what row:</p>
-<div id="210" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>aₛ <span class="op">=</span> <span class="fu">vcat</span>(a1, a2, a3; source<span class="op">=:</span>assignment)</span>
-<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(aₛ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="220" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>aₛ <span class="op">=</span> <span class="fu">vcat</span>(a1, a2, a3; source<span class="op">=:</span>assignment)</span>
+<span id="cb143-2"><a href="#cb143-2" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(aₛ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>4×7 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6100,12 +6460,12 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <p>Similarly, <code>append!</code> could be used in combination with <code>reduce</code> (as in <code>reduce(append!, (a1, a2, a3))</code>).</p>
 <p>A more common alternative to the above is to <em>join</em> the data frames using one of several join commands. Joins allow multiple tables to be merged, or mashed. into one. We briefly illustrate the implementations in <code>DataFrames</code> of outer, left, right, inner, semi, and anti joins, leaving the cross join and further details to the documentation.</p>
 <p>We return to the original data, with the differently named columns:</p>
-<div id="212" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>a1, a2, a3 <span class="op">=</span> [CSV.<span class="fu">read</span>(<span class="fu">IOBuffer</span>(txt), DataFrame) for txt <span class="op">∈</span> (t1, t2, t3)];</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="222" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>a1, a2, a3 <span class="op">=</span> [CSV.<span class="fu">read</span>(<span class="fu">IOBuffer</span>(txt), DataFrame) for txt <span class="op">∈</span> (t1, t2, t3)];</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The first join we introduce is <code>outerjoin</code>. It combines two data frames with rows for keys found in <em>any</em> of the data frames passed in.</p>
-<div id="214" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outerjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="224" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outerjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>4×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6163,8 +6523,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <p>The variable to join on is often called the “key,” though in <code>Julia</code> that terminology is also used with associative arrays.</p>
 <p>The joined data frame includes all columns from either data frame not specified in <code>on</code>. The resulting data frame, in this case, is in a wide, not tidy, format.</p>
 <p>In the above, the columns do not have names in conflict. However, were <code>a1</code> and <code>a3</code> joined, they would have been. Passing <code>makeunique=true</code> instructs distinguishing names to be produced:</p>
-<div id="216" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outerjoin</span>(a1, a3, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>], makeunique<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="226" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outerjoin</span>(a1, a3, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>], makeunique<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>4×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6219,8 +6579,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>More than two data frames may be passed to <code>outerjoin</code>, as illustrated below where all three are. The result includes a row for each person (key) in any of the data sets.</p>
-<div id="218" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outerjoin</span>(a1, a2, a3, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>], makeunique<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="228" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outerjoin</span>(a1, a2, a3, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>], makeunique<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>5×5 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6296,8 +6656,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <li><code>innerjoin(df1, df2; on, ...)</code> which includes all rows with keys in <em>both</em> data data frames.</li>
 </ul>
 <p>To illustrate:</p>
-<div id="220" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">leftjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="230" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">leftjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>2×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6337,8 +6697,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 </div>
-<div id="222" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rightjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="232" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rightjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>3×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6386,8 +6746,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>In the following, we must qualify the function below, as <code>SplitApplyCombine</code> has a conflicting use, though this isn’t typically needed:</p>
-<div id="224" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>DataFrames.<span class="fu">innerjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="234" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>DataFrames.<span class="fu">innerjoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>1×4 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6423,8 +6783,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <p>Joins have an analog in set operations: the outer join is like a union, the inner join is like an intersection.</p>
 <p>The next two joins do not join columns, as the ones above. Rather, they use the second data frame to filter out rows of the first data frame.</p>
 <p>The <code>semijoin</code> returns the rows of the left data frame that <em>match</em> a key of the right data frame:</p>
-<div id="226" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semijoin</span>(a1, a2[<span class="fl">3</span><span class="op">:</span><span class="fl">3</span>, <span class="op">:</span>]; on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="236" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semijoin</span>(a1, a2[<span class="fl">3</span><span class="op">:</span><span class="fl">3</span>, <span class="op">:</span>]; on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>1×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6455,8 +6815,8 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 </div>
 <p>An <code>antijoin</code> includes rows in the left data frame that <em>do not</em> match a key in the right data frame. (Like the set difference). Here we see the row in common to <code>a1</code> and <code>a2</code> is not included:</p>
-<div id="228" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">antijoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="238" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">antijoin</span>(a1, a2, on<span class="op">=</span>[<span class="st">"first"</span>, <span class="st">"last"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <div><div style="float: left;"><span>1×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -6488,6 +6848,9 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 </div>
 
 
+</section>
+</div>
+</div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-JSSv107i04" class="csl-entry" role="listitem">
 Bouchet-Valat, M., and Kamiński, B. (2023), <span>“DataFrames.jl: Flexible and fast tabular data in julia,”</span> <em>Journal of Statistical Software</em>, 107, 1â32. <a href="https://doi.org/10.18637/jss.v107.i04">https://doi.org/10.18637/jss.v107.i04</a>.

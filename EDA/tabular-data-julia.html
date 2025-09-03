@@ -1059,8 +1059,13 @@ Read and write
 <p>The methods <code>read</code> and <code>write</code> are qualified in the above usage with the <code>CSV</code> module. In the <code>Julia</code> ecosystem, the <code>FileIO</code> package provides a common framework for reading and writing files; it uses the verbs <code>load</code> and <code>save</code>. This can also be used with <code>DataFrames</code>, though it works through the <code>CSVFiles</code> package—and not <code>CSV</code>, as illustrated above. The read command would look like <code>DataFrame(load(fname))</code> and the write command like <code>save(fname, df)</code>. Here <code>fname</code> would have a “.csv” extension so that the type of file could be detected.</p>
 </div>
 </div>
+<div id="tbl-read-write-data-frame" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-read-write-data-frame-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3.1: Basic usage to read/write <code>.csv</code> file into a data frame.
+</figcaption>
+<div aria-describedby="tbl-read-write-data-frame-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Basic usage to read/write <code>.csv</code> file into a data frame.</caption>
 <colgroup>
 <col style="width: 40%">
 <col style="width: 59%">
@@ -1098,6 +1103,9 @@ Read and write
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 </section>
 <section id="tablescraper" class="level4">
 <h4 class="anchored" data-anchor-id="tablescraper">TableScraper</h4>
@@ -5378,11 +5386,11 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">tally</span>(v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Int64}:
- 1 │ 9
- 2 │ 14
- 3 │ 10
- 4 │ 10
- 5 │ 7</code></pre>
+ 1 │ 5
+ 2 │ 7
+ 3 │ 6
+ 4 │ 13
+ 5 │ 19</code></pre>
 </div>
 </div>
 <p>Using <code>map</code>, we can provide an alternate, oft used view for tallying:</p>
@@ -5398,11 +5406,11 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(prison_count, d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>5-element Dictionaries.Dictionary{Int64, Any}:
- 1 │ "┼┼┼┼ ||||"
- 2 │ "┼┼┼┼ ┼┼┼┼ ||||"
- 3 │ "┼┼┼┼ ┼┼┼┼ "
- 4 │ "┼┼┼┼ ┼┼┼┼ "
- 5 │ "┼┼┼┼ ||"</code></pre>
+ 1 │ "┼┼┼┼ "
+ 2 │ "┼┼┼┼ ||"
+ 3 │ "┼┼┼┼ |"
+ 4 │ "┼┼┼┼ ┼┼┼┼ |||"
+ 5 │ "┼┼┼┼ ┼┼┼┼ ┼┼┼┼ ||||"</code></pre>
 </div>
 </div>
 </div>
@@ -5419,17 +5427,16 @@ WARNING: using SplitApplyCombine.flatten in module Notebook conflicts with an ex
 <span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(x <span class="op">-&gt;</span> <span class="fu">parse</span>(<span class="dt">Int</span>,<span class="fu">join</span>(x)), _)</span>
 <span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>10-element Dictionaries.Dictionary{Int64, Int64}:
- 0 │ 9
- 1 │ 334
- 2 │ 447
- 3 │ 5
- 4 │ 1
- 5 │ 47788
- 6 │ 2
- 7 │ 25888
- 8 │ 123588
- 9 │ 179</code></pre>
+<pre><code>9-element Dictionaries.Dictionary{Int64, Int64}:
+ 0 │ 129
+ 1 │ 1137
+ 2 │ 15556
+ 3 │ 1578
+ 4 │ 58
+ 5 │ 12
+ 6 │ 2246
+ 7 │ 34
+ 9 │ 347</code></pre>
 </div>
 </div>
 </div>

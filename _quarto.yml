@@ -1,9 +1,11 @@
+version: "0.0.5"
+#jupyter: julia-1.10
+engine: julia
+
 project:
   type: book
   output-dir: _book
 
-version: "0.0.4"
-jupyter: julia-1.10
 
 book:
   title: "Using Julia for Introductory Statistics"
@@ -27,9 +29,10 @@ book:
     - EDA/makie.qmd
     - Inference/distributions.qmd
     - Inference/inference.qmd
+#    - Inference/permutation_tests.qmd
     - LinearModels/linear-regression.qmd
-    - references.qmd
 #        - LinearModels/glm.qmd
+    - references.qmd
 
 bibliography: references.bib
 csl: the-american-statistician.csl
@@ -63,4 +66,4 @@ format:
 execute:
   warning: false
   error: true
-  freeze: auto
+  freeze: false #auto

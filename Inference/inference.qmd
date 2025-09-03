@@ -37,7 +37,7 @@ xs = rand(Y, n); ys = zeros(n);
 d = data((x=xs, y=ys))
 p = deepcopy(p₀)
 p = p + d * visual(Scatter) * mapping(:x,:y)
-p = p + d * visual(Density; color=:black, alpha=0.15) * mapping(:x)
+p = p + d * visual(Density; colormap=(:gray10, 0.15)) * mapping(:x)
 draw(p; axis=(; title="n = $n"))
 ```
 
@@ -49,7 +49,7 @@ xs = rand(Y, n); ys = zeros(n);
 d = data((x=xs, y=ys))
 p = deepcopy(p₀)
 p = p + d * visual(Scatter) * mapping(:x,:y)
-p = p + d * visual(Density; color=:black, alpha=0.15) * mapping(:x)
+p = p + d * visual(Density; colormap=(:gray10, 0.15)) * mapping(:x)
 draw(p; axis=(; title="n = $n"))
 ```
 
@@ -61,7 +61,7 @@ xs = rand(Y, n); ys = zeros(n);
 d = data((x=xs, y=ys))
 p = deepcopy(p₀)
 p = p + d * visual(Scatter) * mapping(:x,:y)
-p = p + d * visual(Density; color=:black, alpha=0.15) * mapping(:x)
+p = p + d * visual(Density; colormap=(:gray10, 0.15)) * mapping(:x)
 draw(p; axis=(; title="n = $n"))
 ```
 
@@ -73,7 +73,7 @@ xs = rand(Y, n); ys = zeros(n);
 d = data((x=xs, y=ys))
 p = deepcopy(p₀)
 p = p + d * visual(Scatter) * mapping(:x,:y)
-p = p + d * visual(Density; color=:black, alpha=0.15) * mapping(:x)
+p = p + d * visual(Density; colormap=(:gray10, 0.15)) * mapping(:x)
 draw(p; axis=(; title="n = $n"))
 ```
 

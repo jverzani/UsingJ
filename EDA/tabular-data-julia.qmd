@@ -188,6 +188,7 @@ The filename, may be more general. For example, it could be `download(url)` for 
 The methods `read` and `write` are qualified in the above usage with the `CSV` module. In the `Julia` ecosystem, the `FileIO` package provides a common framework for reading and writing files; it uses the verbs `load` and `save`. This can also be used with `DataFrames`, though it works through the `CSVFiles` package---and not `CSV`, as illustrated above. The read command would look like `DataFrame(load(fname))` and the write command like `save(fname, df)`. Here `fname` would have a ".csv" extension so that the type of file could be detected.
 :::
 
+
 | Command | Description |
 |---------|-------------|
 | `CSV.read(file_name, DataFrame)` | Read csv file from file with given name |
@@ -197,7 +198,8 @@ The methods `read` and `write` are qualified in the above usage with the `CSV` m
 | `DataFrame(load(file_name))` | Read csv file from file with given name using `CSVFiles` |
 | `save(file_name, df)` | Write data frame `df` to a csv file using `CSVFiles` |
 
-: Basic usage to read/write `.csv` file into a data frame.
+: Basic usage to read/write `.csv` file into a data frame. {#tbl-read-write-data-frame}
+
 
 #### TableScraper
 

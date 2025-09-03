@@ -699,7 +699,7 @@ To test this, we characterize the probability a sample mean would be even more t
 For this problem the $p$-value is the probability the sample mean is `mean(xs)` or more assuming the *null hypothesis*. Centering by $\mu$ and scaling by the standard error, this is:
 
 $$
-P(\frac{\bar{X} - \mu}{SE(\bar{X})} > \frac{\bar{x} - \mu}{s/\sqrt{n}} \mid H_0).
+P\left(\frac{\bar{X} - \mu}{SE(\bar{X})} > \frac{\bar{x} - \mu}{s/\sqrt{n}} \mid H_0\right).
 $$
 
 That is, large values of $\bar{X}$ are not enough to be considered statistically significant, rather large values measured in terms of the number of standard errors are.
@@ -1513,8 +1513,9 @@ prof = profile(prob, sol; param_ranges=param_ranges)
 prof[:β₁]
 ```
 
-We can visualize the log-likelihood over the value in the $95$% confidence interval with the following:
+We can visualize the log-likelihood over the value in the $95$% confidence interval (cf. @fig-log-likelihood).
 
+::: {#fig-log-likelihood}
 ```{julia}
 xs = range(-0.02, 0.02, length=100); ys = prof[:β₁].(xs)
 p = data((x=xs, y=ys)) * visual(Lines) * mapping(:x, :y)
@@ -1523,6 +1524,9 @@ ci = [extrema(prof.confidence_intervals[2])...]
 p += data((x=ci, y = prof[:β₁].(ci))) * visual(Lines) * mapping(:x, :y)
 draw(p)
 ```
+
+A 95% confidence interval for the log-likelihood
+:::
 
 Were a significance test desired, the test statistic requires one more optimization calculuation, this time the maximum log likelihood under $H_0$, which assumes a fixed value of $\beta_1$:
 

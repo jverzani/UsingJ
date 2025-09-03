@@ -397,7 +397,7 @@ show(whale)
 |`x[[2,3]] = [4,5]`| Assign values to second and third elements of `x`.
 |`x[:] = [1, 2, 3]` | In-place assignment. Size *and type* of right-hand side must match left-hand side |
 
-: Various indexing patterns.  {tbl-colwidths="[30,70]"}
+: Various indexing patterns.  {#tbl-indexing-patterns tbl-colwidths="[30,70]"}
 
 
 
@@ -1057,7 +1057,7 @@ sum(f, xi - mean(whale) for xi in whale)
 | `eachcol` | for tabular data, iterate over the columns |
 | `eachrow` | for tabular data, iterate over the rows |
 
-: Various convenient iterators in `Julia`. {tbl-colwidths="[25,75]"}
+: Various convenient iterators in `Julia` {#tbl-iterators tbl-colwidths="[25,75]"}
 
 
 
@@ -1133,6 +1133,8 @@ These measures are sensitive---or not *resistant*---to one or more *outlying* va
 :::
 
 
+
+
 | Measure     | Type   | Description   |
 |-------------|--------|---------------|
 | `mean`      | center | Average value |
@@ -1147,7 +1149,8 @@ These measures are sensitive---or not *resistant*---to one or more *outlying* va
 | `summarystats` | position | The quartiles and extrema |
 | `zscore`    | position | Standardizing transformation |
 
-: Various measures of center, spread, and position in a univariate data set.  {tbl-colwidths="[25,25,50]"}
+: Various measures of center, spread, and position in a univariate data set.  {#tbl-measures-center-spread-position tbl-colwidths="[25,25,50]"}
+
 
 ## Shape {#sec-shape}
 

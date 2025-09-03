@@ -448,11 +448,16 @@ lm(@formula(PetalWidth ~ PetalLength), d)
 
 The output has more detail to be explained later. For now, we only need to know that the method `coef` will extract the coefficients (in the first column) as a vector of length 2, which we assign to the values `bhat0` and `bhat1` below:
 
+::: {#fig-regression-jitter}
+
 ```{julia}
 scatter(jitter(l), jitter(w); legend=false)  # spread out values
 bhat0, bhat1 = coef(res)                     # the coefficients
 plot!(x -> bhat0 + bhat1 * x)                # `predict` does this generically
 ```
+
+Scatter plot with computed regression line
+:::
 
 ::: {.callout-note}
 ##### A constant model
